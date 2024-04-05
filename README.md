@@ -23,7 +23,7 @@ caracteristicas.
 
 ### Modelo
 
-![](https://raw.githubusercontent.com/estebannbn/tp-desarrollo/main/der.jpg)
+![](https://github.com/Mauro-Dorigoni/DesarrolloSoftware-2024/blob/main/DER%20Patentar%20un%20Hechizo.jpg)
 
 ## Alcance Funcional 
 
@@ -33,7 +33,7 @@ Regularidad:
 
 |Req| Detalle                                                                                                                                                                                                                                                                                                 |
 |:-|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|CRUD simple| 1. CRUD Cliente<br>2. CRUD Tecnico<br>3. CRUD Practica<br/> 4. CRUD Tipo Dispositivo                                                                                                                                                                                                                    |
+|CRUD simple| 1. CRUD Mago<br>2. CRUD Empleado<br>3. CRUD TipoHechizo<br/> 4. CRUD Etiquetas|
 |CRUD dependiente| 1. CRUD Dispositivo {depende de} CRUD Tipo Dispositivo y CRUD Cliente<br>2. CRUD Solicitud Reparacion {depende de} CRUD Dispositivo                                                                                                                                                                     |
 |Listado<br>+<br>detalle| 1. Listado de dispositivos de cliente, muestra marca y modelo => detalle CRUD Dispositivo<br> 2. Listado de trabajos realizados filtrado por rango de fecha, muestra datos del dispositivo, fecha inicio y fin, nombre del cliente, practicas realizadas => detalle muestra datos completos del trabajo |
 |CUU/Epic| 1. Registrar una solicitud de reparación<br>2. Registro del cliente<br/> 3. Confirmación de solicitud.                                                                                                                                                                                                  |
