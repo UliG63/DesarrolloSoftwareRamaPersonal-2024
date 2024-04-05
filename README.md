@@ -43,7 +43,7 @@ Adicionales para Aprobación
 
 |Req| Detalle                                                                                  |
 |:-|:-----------------------------------------------------------------------------------------|
-|CRUD | 1.CRUD Etiquetas<br>                                               |
+|CRUD | 1. CRUD Etiquetas<br>                                               |
 |CUU/Epic| 1. Otorgar permiso de visualizacion de hechizos restringidos|
 
 
@@ -53,6 +53,6 @@ Adicionales para Aprobación
 
 |Req| Detalle                                                  |
 |:-|:---------------------------------------------------------|
-|Listados | 1. Listado de todos los hechizos en BD <br> 2-Listado filtrado de solicitudes            |
+|Listados | 1. Listado de todos los hechizos en BD <br> 2. Listado filtrado de solicitudes            |
 |CUU/Epic| 1. Cancelación de solicitud|
 |Otros| 1. Notificacion de solicitud aceptada                     |
