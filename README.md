@@ -33,18 +33,18 @@ Regularidad:
 
 |Req| Detalle                                                                                                                                                                                                                                                                                                 |
 |:-|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|CRUD simple| 1. CRUD Mago<br>2. CRUD Empleado<br>3. CRUD TipoHechizo<br/> 4. CRUD Etiquetas|
-|CRUD dependiente| 1. CRUD Dispositivo {depende de} CRUD Tipo Dispositivo y CRUD Cliente<br>2. CRUD Solicitud Reparacion {depende de} CRUD Dispositivo                                                                                                                                                                     |
-|Listado<br>+<br>detalle| 1. Listado de dispositivos de cliente, muestra marca y modelo => detalle CRUD Dispositivo<br> 2. Listado de trabajos realizados filtrado por rango de fecha, muestra datos del dispositivo, fecha inicio y fin, nombre del cliente, practicas realizadas => detalle muestra datos completos del trabajo |
-|CUU/Epic| 1. Registrar una solicitud de reparación<br>2. Registro del cliente<br/> 3. Confirmación de solicitud.                                                                                                                                                                                                  |
+|CRUD simple| 1. CRUD Mago<br>2. CRUD Empleado<br>3. CRUD TipoHechizo<br/>|
+|CRUD dependiente| 1. CRUD Patente {depende de} CRUD Mago<br>2. CRUD Hechizo {depende de} CRUD Patente y CRUD TipoHechizo <br>|3.CRUD SolicitudPermisoVisualizacion {depende de} CRUD Mago y CRUD Hechizo<br>|                                                                                                                                                                |
+|Listado<br>+<br>detalle| 1. Listado de todos los hechizos con filtro (etiquetas/palabra clave/tipo) => detalle CRUD Hechizo<br> 2. Listado de patentes con filtro (aprobada/rechazada/fecha/mago/etc.) => detalle CRUD Patente |
+|CUU/Epic| 1. Patentar un nuevo hechizo<br>2. Aprobar la patente de un nuevo hechizo<br>3. Solicitar permisos de visualizacion|.                                                                                                                                                                                                  |
 
 
 Adicionales para Aprobación
 
 |Req| Detalle                                                                                  |
 |:-|:-----------------------------------------------------------------------------------------|
-|CRUD | 1. CRUD Componentes<br>2. CRUD Precio<br>                                                |
-|CUU/Epic| 1. Registrar nuevo componente<br>2. Registrar fin de trabajo<br>3. Registrar dispositivo |
+|CRUD | 1.CRUD Etiquetas<br>                                               |
+|CUU/Epic| 1. Otorgar permiso de visualizacion de hechizos restringidos|
 
 
 ### Alcance Adicional Voluntario
@@ -53,6 +53,6 @@ Adicionales para Aprobación
 
 |Req| Detalle                                                  |
 |:-|:---------------------------------------------------------|
-|Listados | 1. Listado histórico de practicas por tecnico            |
-|CUU/Epic| 1. Cancelación de solicitud <br> 2. Registro de tecnicos |
-|Otros| 1. Notificacion de trabajo realizado                     |
+|Listados | 1. Listado de todos los hechizos en BD <br> 2-Listado filtrado de solicitudes            |
+|CUU/Epic| 1. Cancelación de solicitud|
+|Otros| 1. Notificacion de solicitud aceptada                     |
