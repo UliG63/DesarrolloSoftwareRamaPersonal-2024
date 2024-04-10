@@ -23,7 +23,7 @@ caracteristicas.
 
 ### Modelo
 
-![](https://github.com/Mauro-Dorigoni/DesarrolloSoftware-2024/assets/media/DER_TP_IntegradorDS_HP.jpg)
+![](https://github.com/Mauro-Dorigoni/DesarrolloSoftware-2024/blob/main/assets/media/DER_TP_IntegradorDS_HP.jpg)
 
 ## Alcance Funcional 
 
