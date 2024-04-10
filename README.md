@@ -23,7 +23,7 @@ caracteristicas.
 
 ### Modelo
 
-![](https://github.com/Mauro-Dorigoni/DesarrolloSoftware-2024/blob/main/DER%20Patentar%20un%20Hechizo.jpg)
+![](https://github.com/Mauro-Dorigoni/DesarrolloSoftware-2024/assets/media/DER_TP_IntegradorDS_HP.jpg)
 
 ## Alcance Funcional 
 
