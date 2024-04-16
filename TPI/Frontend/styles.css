@@ -25,15 +25,31 @@ body{
   background-size: auto 100%;
 }
 
-.menu{
-
-
-}
-
+/* Botones de menu lateral izquierdo*/
 .menu-item{
   display: block;
   margin-bottom: 1rem;
   border: 1px solid;
   background-color:peru;
   text-align: center;
+}
+
+/*Creacion de cuenta*/
+h2{
+  margin-top: 0;
+}
+
+.form-control{
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.error{
+  color: red;
+  display: none;
+}
+
+.show-error{
+  display: block;
+
 }
