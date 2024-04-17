@@ -53,3 +53,16 @@ h2{
   display: block;
 
 }
+
+/* Estilos aplicados a los elementos de la pagina de
+generar_nombre_aleatorio*/
+#get-user {
+  display:block;
+  margin: 0 auto;
+}
+
+#user-name {
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
