@@ -38,10 +38,15 @@ body{
   margin-bottom: 1rem;
   border: 1px solid;
   border-color: #5B2837;
-  
   background-color:#C19148;
   text-align: center;
+  text-decoration: none;
+  color: #5B2837;
 }
+a.menu-item.visited{
+  color: #5B2837;
+}
+
 
 /*Creacion de cuenta*/
 h2{
@@ -51,6 +56,8 @@ h2{
 .form-control{
   display: block;
   margin: 0.5rem 0;
+  opacity: 0.5;
+
 }
 
 .error{
@@ -75,3 +82,13 @@ generar_nombre_aleatorio*/
   display: block;
   margin: 0 auto;
 }
+
+#crear-cuenta-submit{
+  color: wheat;
+  background-color: #5B2837;
+  border-color: #5B2837;
+}
+.fieldset-auto-width {
+  display: inline-block;
+  border-color: #5B2837; 
+  }
