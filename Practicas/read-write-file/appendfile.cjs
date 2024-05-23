@@ -6,7 +6,7 @@ const readline = require('readline').createInterface({
   });
   
   readline.question('String a appendear? ', strapp => {
-    fs.appendFileSync("data.txt",strapp,"utf-8");
+    fs.appendFile("data.txt",strapp,"utf-8");
     console.log('Inicio del archivo');
     const text = fs.readFileSync('data.txt','utf-8');
     console.log(text);

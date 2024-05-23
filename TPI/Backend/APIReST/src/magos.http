@@ -1,0 +1,15 @@
+### obtener todos los magos
+GET http://localhost:3000/api/magos
+
+### obtener un mago
+GET http://localhost:3000/api/magos/92d28b60-5af8-483d-abd9-c6d1651ba2fa
+
+### crear un nuevo mago
+POST http://localhost:3000/api/magos
+Content-Type: application/json
+
+{
+    "name": "Hermione",
+    "apellido": "Granger",
+    "varita": ["Vid","Fibra de Corazon de Dragon","27.3cm"]
+}
