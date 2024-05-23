@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/magos
 
 ### obtener un mago
-GET http://localhost:3000/api/magos/92d28b60-5af8-483d-abd9-c6d1651ba2fa
+GET http://localhost:3000/api/magos/260494cb-6df5-48fa-bc5f-8c43d8214f5b
 
 ### crear un nuevo mago
 POST http://localhost:3000/api/magos
@@ -13,3 +13,26 @@ Content-Type: application/json
     "apellido": "Granger",
     "varita": ["Vid","Fibra de Corazon de Dragon","27.3cm"]
 }
+
+### modificar un mago (PUT)
+PUT http://localhost:3000/api/magos/abb836da-23d3-4e08-95d1-e99dfc2ec218
+Content-Type: application/json
+
+{
+    "name": "Hermione",
+    "apellido": "Granger",
+    "varita": ["Nogal","Fibra de Corazon de Dragon","32.38cm"]
+}
+
+### modificar un mago (PATCH)
+PATCH http://localhost:3000/api/magos/f4721750-761f-43bd-bbe7-e34d8bf29e97
+Content-Type: application/json
+
+{
+    "name": "Hermione",
+    "apellido": "Granger",
+    "varita": ["Nogal","Fibra de Corazon de Dragon","32.38cm"]
+}
+
+### Borrar un mago
+DELETE http://localhost:3000/api/magos/96049124-4abf-4596-aa06-0cc2706dd74d
