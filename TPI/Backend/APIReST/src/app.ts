@@ -10,11 +10,13 @@ const magos: Magos[] = [
         'Harry',
         'Potter',
         ['Acebo','Pluma de Fenix', '28cm'],
+        '08fd3621-4b75-4041-af49-6071547e81a8'
     ),
     new Magos (
         'Albus Percival Wulfric Brian',
         'Dumbledore',
-        ['Sauco', 'Pelo de cola de Thestral','34cm']
+        ['Sauco', 'Pelo de cola de Thestral','34cm'],
+        '6481190f-5832-4946-a1bd-ac2a332b4f6b'
     ),
 ]
 
@@ -56,8 +58,8 @@ app.post('/api/magos',sanitizeMagoInput,(req,res)=>{
 })
 
 app.put('/api/magos/:id',sanitizeMagoInput,(req,res)=>{
-    const magoIdx = magos.findIndex((mago) => {mago.idMago === req.params.id})
-    if(magoIdx===-1){
+    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id)
+    if(magoIdx === -1){
         res.status(404).send({message:'Mago not Found'}) 
     }
     magos[magoIdx] = { ...magos[magoIdx], ...req.body.sanitizedInput}
@@ -65,8 +67,8 @@ app.put('/api/magos/:id',sanitizeMagoInput,(req,res)=>{
 })
 
 app.patch('/api/magos/:id',sanitizeMagoInput,(req,res)=>{
-    const magoIdx = magos.findIndex((mago) => {mago.idMago === req.params.id})
-    if(magoIdx===-1){
+    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id)
+    if(magoIdx === -1){
         res.status(404).send({message:'Mago not Found'}) 
     }
     magos[magoIdx] = { ...magos[magoIdx], ...req.body.sanitizedInput}
@@ -74,8 +76,8 @@ app.patch('/api/magos/:id',sanitizeMagoInput,(req,res)=>{
 })
 
 app.delete('/api/magos/:id', (req,res)=>{
-    const magoIdx = magos.findIndex((mago) => {mago.idMago === req.params.id})
-    if(magoIdx===-1){
+    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id)
+    if(magoIdx === -1){
         res.status(404).send({message:'Mago not Found'}) 
     }
     magos.splice(magoIdx,1)

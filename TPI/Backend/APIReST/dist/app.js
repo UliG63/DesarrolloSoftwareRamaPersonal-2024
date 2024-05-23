@@ -3,8 +3,8 @@ import { Magos } from './magos.js';
 const app = express();
 app.use(express.json());
 const magos = [
-    new Magos('Harry', 'Potter', ['Acebo', 'Pluma de Fenix', '28cm']),
-    new Magos('Albus Percival Wulfric Brian', 'Dumbledore', ['Sauco', 'Pelo de cola de Thestral', '34cm']),
+    new Magos('Harry', 'Potter', ['Acebo', 'Pluma de Fenix', '28cm'], '08fd3621-4b75-4041-af49-6071547e81a8'),
+    new Magos('Albus Percival Wulfric Brian', 'Dumbledore', ['Sauco', 'Pelo de cola de Thestral', '34cm'], '6481190f-5832-4946-a1bd-ac2a332b4f6b'),
 ];
 function sanitizeMagoInput(req, res, next) {
     req.body.sanitizedInput = {
@@ -35,7 +35,7 @@ app.post('/api/magos', sanitizeMagoInput, (req, res) => {
     res.status(201).send({ message: 'Mago Creado', data: mago });
 });
 app.put('/api/magos/:id', sanitizeMagoInput, (req, res) => {
-    const magoIdx = magos.findIndex((mago) => { mago.idMago === req.params.id; });
+    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id);
     if (magoIdx === -1) {
         res.status(404).send({ message: 'Mago not Found' });
     }
@@ -43,7 +43,7 @@ app.put('/api/magos/:id', sanitizeMagoInput, (req, res) => {
     res.status(200).send({ message: "Mago actualizado correctamente", data: magos[magoIdx] });
 });
 app.patch('/api/magos/:id', sanitizeMagoInput, (req, res) => {
-    const magoIdx = magos.findIndex((mago) => { mago.idMago === req.params.id; });
+    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id);
     if (magoIdx === -1) {
         res.status(404).send({ message: 'Mago not Found' });
     }
@@ -51,7 +51,7 @@ app.patch('/api/magos/:id', sanitizeMagoInput, (req, res) => {
     res.status(200).send({ message: "Mago actualizado correctamente", data: magos[magoIdx] });
 });
 app.delete('/api/magos/:id', (req, res) => {
-    const magoIdx = magos.findIndex((mago) => { mago.idMago === req.params.id; });
+    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id);
     if (magoIdx === -1) {
         res.status(404).send({ message: 'Mago not Found' });
     }

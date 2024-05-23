@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/magos
 
 ### obtener un mago
-GET http://localhost:3000/api/magos/260494cb-6df5-48fa-bc5f-8c43d8214f5b
+GET http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
 
 ### crear un nuevo mago
 POST http://localhost:3000/api/magos
@@ -15,24 +15,23 @@ Content-Type: application/json
 }
 
 ### modificar un mago (PUT)
-PUT http://localhost:3000/api/magos/abb836da-23d3-4e08-95d1-e99dfc2ec218
+PUT http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
 Content-Type: application/json
 
 {
-    "name": "Hermione",
-    "apellido": "Granger",
-    "varita": ["Nogal","Fibra de Corazon de Dragon","32.38cm"]
+    "name": "Albus Percival Wulfric Brian",
+    "apellido": "Dumbledore",
+    "varita": ["Sauco","Pelo de cola de Thestral","38.4cm"]
 }
 
 ### modificar un mago (PATCH)
-PATCH http://localhost:3000/api/magos/f4721750-761f-43bd-bbe7-e34d8bf29e97
+PATCH http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
 Content-Type: application/json
 
 {
-    "name": "Hermione",
-    "apellido": "Granger",
-    "varita": ["Nogal","Fibra de Corazon de Dragon","32.38cm"]
+    "name": "Albus Brian",
+    "varita": ["Sauco","Pelo de cola de Thestral","38.4cm"]
 }
 
 ### Borrar un mago
-DELETE http://localhost:3000/api/magos/96049124-4abf-4596-aa06-0cc2706dd74d
+DELETE http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
