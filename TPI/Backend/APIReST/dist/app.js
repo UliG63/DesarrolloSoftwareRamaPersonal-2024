@@ -24,7 +24,7 @@ app.get('/api/magos', (req, res) => {
 app.get('/api/magos/:id', (req, res) => {
     const mago = magos.find((mago) => mago.idMago === req.params.id);
     if (!mago) {
-        res.status(404).send({ message: 'Mago not Found' });
+        return res.status(404).send({ message: 'Mago not Found' });
     }
     res.json({ data: mago });
 });
@@ -32,31 +32,38 @@ app.post('/api/magos', sanitizeMagoInput, (req, res) => {
     const input = req.body.sanitizedInput;
     const mago = new Magos(input.name, input.apellido, input.varita);
     magos.push(mago);
-    res.status(201).send({ message: 'Mago Creado', data: mago });
+    return res.status(201).send({ message: 'Mago Creado', data: mago });
 });
 app.put('/api/magos/:id', sanitizeMagoInput, (req, res) => {
     const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id);
     if (magoIdx === -1) {
-        res.status(404).send({ message: 'Mago not Found' });
+        return res.status(404).send({ message: 'Mago not Found' });
     }
     magos[magoIdx] = { ...magos[magoIdx], ...req.body.sanitizedInput };
-    res.status(200).send({ message: "Mago actualizado correctamente", data: magos[magoIdx] });
+    return res.status(200).send({ message: "Mago actualizado correctamente", data: magos[magoIdx] });
 });
 app.patch('/api/magos/:id', sanitizeMagoInput, (req, res) => {
     const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id);
     if (magoIdx === -1) {
-        res.status(404).send({ message: 'Mago not Found' });
+        return res.status(404).send({ message: 'Mago not Found' });
     }
     magos[magoIdx] = { ...magos[magoIdx], ...req.body.sanitizedInput };
-    res.status(200).send({ message: "Mago actualizado correctamente", data: magos[magoIdx] });
+    return res.status(200).send({ message: "Mago actualizado correctamente", data: magos[magoIdx] });
 });
 app.delete('/api/magos/:id', (req, res) => {
     const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id);
     if (magoIdx === -1) {
-        res.status(404).send({ message: 'Mago not Found' });
+        return res.status(404).send({ message: 'Mago not Found' });
     }
     magos.splice(magoIdx, 1);
-    res.status(200).send({ message: 'Mago eliminado exitosamente' });
+    return res.status(200).send({ message: 'Mago eliminado exitosamente' });
+});
+/*
+    El siguiente metodo se encarga de devolver un mensaje compatible
+    con la API cuando se introduce una URL invalida, y no contenido HTML
+*/
+app.use((_, res) => {
+    return res.status(404).send({ message: 'Resource not found' });
 });
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000/');
