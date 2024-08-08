@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { Magos } from './magos.js'
+import { Magos } from './magos/magos.entity.js'
 
 const app = express()
 

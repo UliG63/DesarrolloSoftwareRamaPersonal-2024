@@ -1,5 +1,5 @@
 import express from 'express';
-import { Magos } from './magos.js';
+import { Magos } from './magos/magos.entity.js';
 const app = express();
 app.use(express.json());
 const magos = [
