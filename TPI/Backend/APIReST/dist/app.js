@@ -1,7 +1,9 @@
 import express from 'express';
 import { Magos } from './magos/magos.entity.js';
+import { MagosRepository } from './magos/magos.repository.js';
 const app = express();
 app.use(express.json());
+const repository = new MagosRepository;
 const magos = [
     new Magos('Harry', 'Potter', ['Acebo', 'Pluma de Fenix', '28cm'], '08fd3621-4b75-4041-af49-6071547e81a8'),
     new Magos('Albus Percival Wulfric Brian', 'Dumbledore', ['Sauco', 'Pelo de cola de Thestral', '34cm'], '6481190f-5832-4946-a1bd-ac2a332b4f6b'),
@@ -19,10 +21,11 @@ function sanitizeMagoInput(req, res, next) {
     next();
 }
 app.get('/api/magos', (req, res) => {
-    res.json({ data: magos });
+    res.json({ data: repository.findAll() });
 });
 app.get('/api/magos/:id', (req, res) => {
-    const mago = magos.find((mago) => mago.idMago === req.params.id);
+    const id = req.params.id;
+    const mago = repository.findOne({ id });
     if (!mago) {
         return res.status(404).send({ message: 'Mago not Found' });
     }

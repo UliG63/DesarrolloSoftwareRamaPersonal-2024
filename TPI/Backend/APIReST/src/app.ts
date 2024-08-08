@@ -1,10 +1,13 @@
 import express, { NextFunction, Request, Response } from 'express'
 import { Magos } from './magos/magos.entity.js'
+import { MagosRepository } from './magos/magos.repository.js'
 
 const app = express()
 
 app.use(express.json())
 
+
+const repository = new MagosRepository
 const magos: Magos[] = [
     new Magos(
         'Harry',
@@ -36,11 +39,12 @@ function sanitizeMagoInput(req: Request, res: Response, next: NextFunction){
 }
 
 app.get('/api/magos', (req,res)=>{
-    res.json({data:magos})
+    res.json({data:repository.findAll()})
 })
 
 app.get('/api/magos/:id',(req,res)=>{
-    const mago = magos.find((mago)=>mago.idMago===req.params.id)
+    const id= req.params.id
+    const mago = repository.findOne({id})
     if(!mago){
         return res.status(404).send({message:'Mago not Found'})
     }
