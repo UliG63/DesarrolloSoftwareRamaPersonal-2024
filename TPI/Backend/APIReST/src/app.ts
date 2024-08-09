@@ -12,13 +12,13 @@ const magos: Magos[] = [
     new Magos(
         'Harry',
         'Potter',
-        ['Acebo','Pluma de Fenix', '28cm'],
+        ['Acebo','Pluma de Fenix', '29cm'],
         '08fd3621-4b75-4041-af49-6071547e81a8'
     ),
     new Magos (
         'Albus Percival Wulfric Brian',
         'Dumbledore',
-        ['Sauco', 'Pelo de cola de Thestral','34cm'],
+        ['Sauco', 'Pelo de cola de Thestral','35cm'],
         '6481190f-5832-4946-a1bd-ac2a332b4f6b'
     ),
 ]
@@ -54,39 +54,47 @@ app.get('/api/magos/:id',(req,res)=>{
 app.post('/api/magos',sanitizeMagoInput,(req,res)=>{
     const input=req.body.sanitizedInput
 
-    const mago=new Magos(
-        input.name,input.apellido,input.varita
+    const magoInput=new Magos(
+        input.name,
+        input.apellido,
+        input.varita
     )
-    magos.push(mago)
+    const mago= repository.add(magoInput)
     return res.status(201).send({message:'Mago Creado',data:mago})
 })
 
 app.put('/api/magos/:id',sanitizeMagoInput,(req,res)=>{
-    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id)
-    if(magoIdx === -1){
+    //Por laguna razon, el id del sanitizedInput no es id, sino idMago
+    req.body.sanitizedInput.idMago =req.params.id
+    const mago=repository.update(req.body.sanitizedInput)
+
+    if(!mago){
         return res.status(404).send({message:'Mago not Found'}) 
     }
-    magos[magoIdx] = { ...magos[magoIdx], ...req.body.sanitizedInput}
-    return res.status(200).send({message:"Mago actualizado correctamente",data: magos[magoIdx] })
+    return res.status(200).send({message:"Mago actualizado correctamente",data:mago})
 })
 
 app.patch('/api/magos/:id',sanitizeMagoInput,(req,res)=>{
-    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id)
-    if(magoIdx === -1){
+    //Por laguna razon, el id del sanitizedInput no es id, sino idMago
+    req.body.sanitizedInput.idMago =req.params.id
+    const mago=repository.update(req.body.sanitizedInput)
+
+    if(!mago){
         return res.status(404).send({message:'Mago not Found'}) 
     }
-    magos[magoIdx] = { ...magos[magoIdx], ...req.body.sanitizedInput}
-    return res.status(200).send({message:"Mago actualizado correctamente",data: magos[magoIdx] })
+    return res.status(200).send({message:"Mago actualizado correctamente",data:mago})
 })
 
 app.delete('/api/magos/:id', (req,res)=>{
-    const magoIdx = magos.findIndex((mago) => mago.idMago === req.params.id)
-    if(magoIdx === -1){
+    const id=req.params.id
+    const mago=repository.delete({id})
+    
+    if(!mago){
         return res.status(404).send({message:'Mago not Found'}) 
     }
-    magos.splice(magoIdx,1)
-    return res.status(200).send({message:'Mago eliminado exitosamente'})
-
+    else{
+        return res.status(200).send({message:'Mago eliminado exitosamente'})
+    }
 })
 /*
     El siguiente metodo se encarga de devolver un mensaje compatible

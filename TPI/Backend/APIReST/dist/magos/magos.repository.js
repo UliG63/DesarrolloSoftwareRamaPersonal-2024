@@ -1,4 +1,5 @@
 import { Magos } from "./magos.entity.js";
+//Para facilitar la lectura se aconseja que el nombre de la clase "Magos" se lea como "Mago"
 const magos = [
     new Magos('Harry', 'Potter', ['Acebo', 'Pluma de Fenix', '28cm'], '08fd3621-4b75-4041-af49-6071547e81a8'),
     new Magos('Albus Percival Wulfric Brian', 'Dumbledore', ['Sauco', 'Pelo de cola de Thestral', '34cm'], '6481190f-5832-4946-a1bd-ac2a332b4f6b'),
