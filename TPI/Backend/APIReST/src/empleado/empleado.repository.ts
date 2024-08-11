@@ -20,15 +20,26 @@ const empleados: Empleado[]=[
     ['Ministro de Magia'],
     'f7878e37-8c84-44c3-85c0-1987c1a6baa1'
   ),
+  
+  /*
+  El siguiente empleado estara comentado por que lo utilizaremos
+  temporalmente para probar la creacion de un nuevo empleado
+
   new Empleado(
     'Rufus',
     'Scrimgeour',
     ['Jefe de la Oficina de Aurores'],
     'b12a7332-7e71-4666-8361-5de6bd9ec5fd'
   ),
+  */
 ]
 
-
+/*
+La siguiente clase utiliza la interfaz "Repository<T>""
+utilizada por todas las clases que la implementen para
+ser la clase "XRepository" que representara la capa de datos
+para cada CRUD.
+*/ 
 export class EmpleadoRepository implements Repository<Empleado>{
 
   public findAll(): Empleado[] | undefined {
