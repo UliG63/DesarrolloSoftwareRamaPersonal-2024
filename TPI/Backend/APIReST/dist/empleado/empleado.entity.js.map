@@ -1,0 +1,1 @@
+{"version":3,"file":"empleado.entity.js","sourceRoot":"","sources":["../../src/empleado/empleado.entity.ts"],"names":[],"mappings":"AAAA,OAAO,MAAM,MAAM,aAAa,CAAA;AAChC,MAAM,OAAO,QAAQ;IACjB,YACW,MAAa,EACb,QAAe,EACf,SAAkB,EAClB,aAAY,MAAM,CAAC,UAAU,EAAE;QAH/B,WAAM,GAAN,MAAM,CAAO;QACb,aAAQ,GAAR,QAAQ,CAAO;QACf,cAAS,GAAT,SAAS,CAAS;QAClB,eAAU,GAAV,UAAU,CAAqB;IACvC,CAAC;CAEP"}
