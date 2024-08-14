@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express"
+/*import { Request, Response, NextFunction } from "express"
 import { EmpleadoRepository } from "./empleado.repository.js"
 import { Empleado } from "./empleado.entity.js"
 
@@ -6,6 +6,7 @@ import { Empleado } from "./empleado.entity.js"
     La siguiente clase repository se encarga de enlazar la capa del
     repositorio con la capa del controlador, a partir de sus funciones.
 */
+/*
 const repository = new EmpleadoRepository
 
 function sanitizeEmpleadoInput(req: Request, res: Response, next: NextFunction){
@@ -72,4 +73,28 @@ function remove(req:Request,res:Response){
         return res.status(200).send({message:'Empleado eliminado exitosamente'})
     }
 }
-export{sanitizeEmpleadoInput, findAll, findOne, add, update, remove}
+export{sanitizeEmpleadoInput, findAll, findOne, add, update, remove}*/
+
+import { Request, Response } from "express";
+
+async function findAll(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function findOne(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function add(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function update(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function remove(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+export {findAll, findOne, add, update, remove}

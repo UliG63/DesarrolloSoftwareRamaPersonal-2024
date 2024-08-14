@@ -1,4 +1,4 @@
-import { Repository } from "../shared/repository.js";
+/*import { Repository } from "../shared/repository.js";
 import { Magos } from "./magos.entity.js";
 
 //Para facilitar la lectura se aconseja que el nombre de la clase "Magos" se lea como "Mago"
@@ -49,4 +49,4 @@ export class MagosRepository implements Repository<Magos>{
     
    
   }
-}
+}*/

@@ -1,5 +1,5 @@
-import { MikroORM } from "@mikro-orm/core";
-import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
+import { MikroORM } from '@mikro-orm/mysql';
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 
 export const orm = await MikroORM.init({
     entities: ['dist/**/*.entity.js'],
@@ -12,10 +12,10 @@ export const orm = await MikroORM.init({
         disableForeignKeys: true,
         createForeignKeyConstraints: true,
     }
-})
+});
 
 export const syncSchema = async () => {
-    const generator = orm.getSchemaGenerator()
-    await generator.updateSchema()
-}
+    const generator = orm.getSchemaGenerator();
+    await generator.updateSchema();
+};
 

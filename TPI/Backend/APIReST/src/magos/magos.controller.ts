@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express"
+/*import { Request, Response, NextFunction } from "express"
 import { MagosRepository } from "./magos.repository.js"
 import { Magos } from "./magos.entity.js"
 
@@ -69,4 +69,28 @@ function remove(req:Request,res:Response){
 
 
 
-export{sanitizeMagoInput, findAll, findOne, add, update, remove}
+export{sanitizeMagoInput, findAll, findOne, add, update, remove}*/
+
+import { Request, Response } from "express";
+
+async function findAll(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function findOne(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function add(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function update(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+async function remove(req: Request, res:Response){
+    res.status(500).json({message:'Not implemented'})
+}
+
+export {findAll, findOne, add, update, remove}

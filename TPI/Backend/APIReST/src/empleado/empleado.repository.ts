@@ -1,6 +1,7 @@
 import { Repository } from "../shared/repository.js";
 import { Empleado } from "./empleado.entity.js";
 
+/*
 const empleados: Empleado[]=[
   new Empleado(
     'Arthur',
@@ -31,7 +32,6 @@ const empleados: Empleado[]=[
     ['Jefe de la Oficina de Aurores'],
     'b12a7332-7e71-4666-8361-5de6bd9ec5fd'
   ),
-  */
 ]
 
 /*
@@ -40,6 +40,7 @@ utilizada por todas las clases que la implementen para
 ser la clase "XRepository" que representara la capa de datos
 para cada CRUD.
 */ 
+/*
 export class EmpleadoRepository implements Repository<Empleado>{
 
   public findAll(): Empleado[] | undefined {
@@ -73,6 +74,4 @@ export class EmpleadoRepository implements Repository<Empleado>{
    
   }
 }
-/*
-
 */
