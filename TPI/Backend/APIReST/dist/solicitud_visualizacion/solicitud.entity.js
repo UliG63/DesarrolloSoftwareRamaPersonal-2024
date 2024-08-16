@@ -7,12 +7,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, Property } from "@mikro-orm/core";
-/* import { Hechizo } from "../hechizo/hechizo.entity.js" */
+import { Entity, Property, ManyToOne } from "@mikro-orm/core";
+import { Hechizo } from "../hechizo/hechizo.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.js";
-/* import { Empleado } from "../empleado/empleado.entity.js"
-import { Magos } from "../magos/magos.entity.js"
- */
+import { Empleado } from "../empleado/empleado.entity.js";
+import { Magos } from "../magos/magos.entity.js";
 let Solicitud = class Solicitud extends BaseEntity {
 };
 __decorate([
@@ -27,6 +26,18 @@ __decorate([
     Property({ nullable: true, unique: false }),
     __metadata("design:type", Boolean)
 ], Solicitud.prototype, "estado", void 0);
+__decorate([
+    ManyToOne(() => Hechizo, { nullable: false }),
+    __metadata("design:type", Object)
+], Solicitud.prototype, "hechizo", void 0);
+__decorate([
+    ManyToOne(() => Empleado, { nullable: true }),
+    __metadata("design:type", Object)
+], Solicitud.prototype, "empleado", void 0);
+__decorate([
+    ManyToOne(() => Magos, { nullable: false }),
+    __metadata("design:type", Object)
+], Solicitud.prototype, "mago", void 0);
 Solicitud = __decorate([
     Entity()
 ], Solicitud);

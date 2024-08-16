@@ -7,13 +7,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, Property } from "@mikro-orm/core";
-/* import { Hechizo } from "../hechizo/hechizo.entity.js" */
+import { Entity, OneToMany, Property, Cascade, Collection } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.js";
-/* import { Institucion } from "../institucion/institucion.entity.js"
-import { Patente } from "../patente/patente.entity.js"
-import { Solicitud } from "../solicitud_visualizacion/solicitud.entity.js" */
+import { Patente } from "../patente/patente.entity.js";
+import { Solicitud } from "../solicitud_visualizacion/solicitud.entity.js";
 let Empleado = class Empleado extends BaseEntity {
+    constructor() {
+        super(...arguments);
+        this.patentes = new Collection(this);
+        this.solicitudes = new Collection(this);
+    }
 };
 __decorate([
     Property({ nullable: false, unique: false }),
@@ -51,6 +54,14 @@ __decorate([
     Property({ nullable: false, unique: false }),
     __metadata("design:type", Boolean)
 ], Empleado.prototype, "isEmpleado", void 0);
+__decorate([
+    OneToMany(() => Patente, patente => patente.empleado, { cascade: [Cascade.ALL] }),
+    __metadata("design:type", Object)
+], Empleado.prototype, "patentes", void 0);
+__decorate([
+    OneToMany(() => Solicitud, solicitud => solicitud.empleado, { cascade: [Cascade.ALL] }),
+    __metadata("design:type", Object)
+], Empleado.prototype, "solicitudes", void 0);
 Empleado = __decorate([
     Entity()
 ], Empleado);

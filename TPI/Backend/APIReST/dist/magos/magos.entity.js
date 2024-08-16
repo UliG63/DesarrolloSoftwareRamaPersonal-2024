@@ -7,13 +7,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, Property } from "@mikro-orm/core";
-/* import { Hechizo } from "../hechizo/hechizo.entity.js" */
+import { Entity, OneToMany, Property, Cascade, Collection, ManyToOne } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.js";
-/* import { Institucion } from "../institucion/institucion.entity.js"
-import { Patente } from "../patente/patente.entity.js"
-import { Solicitud } from "../solicitud_visualizacion/solicitud.entity.js" */
+import { Institucion } from "../institucion/institucion.entity.js";
+import { Patente } from "../patente/patente.entity.js";
+import { Solicitud } from "../solicitud_visualizacion/solicitud.entity.js";
 let Magos = class Magos extends BaseEntity {
+    constructor() {
+        super(...arguments);
+        this.patentes = new Collection(this);
+        this.solicitudes = new Collection(this);
+    }
 };
 __decorate([
     Property({ nullable: false, unique: false }),
@@ -51,6 +55,18 @@ __decorate([
     Property({ nullable: false, unique: false }),
     __metadata("design:type", Boolean)
 ], Magos.prototype, "isEmpleado", void 0);
+__decorate([
+    ManyToOne(() => Institucion, { nullable: false }),
+    __metadata("design:type", Institucion)
+], Magos.prototype, "institucion", void 0);
+__decorate([
+    OneToMany(() => Patente, patente => patente.mago, { cascade: [Cascade.ALL] }),
+    __metadata("design:type", Object)
+], Magos.prototype, "patentes", void 0);
+__decorate([
+    OneToMany(() => Solicitud, solicitud => solicitud.mago, { cascade: [Cascade.ALL] }),
+    __metadata("design:type", Object)
+], Magos.prototype, "solicitudes", void 0);
 Magos = __decorate([
     Entity()
 ], Magos);

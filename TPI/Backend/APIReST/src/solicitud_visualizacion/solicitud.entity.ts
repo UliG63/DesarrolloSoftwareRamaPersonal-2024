@@ -1,4 +1,4 @@
-import { Entity, OneToMany, PrimaryKey, Property, Cascade, Collection, OneToOne, ManyToOne } from "@mikro-orm/core"
+import { Entity, OneToMany, PrimaryKey, Property, Cascade, Collection, OneToOne, ManyToOne, Rel } from "@mikro-orm/core"
 import { Hechizo } from "../hechizo/hechizo.entity.js"
 import { BaseEntity } from "../shared/db/baseEntity.js"
 import { Empleado } from "../empleado/empleado.entity.js"
@@ -13,9 +13,9 @@ export class Solicitud extends BaseEntity{
     @Property({nullable: true, unique: false})
     estado?: boolean
     @ManyToOne(()=>Hechizo,{nullable:false})
-    hechizo!: Hechizo
+    hechizo!: Rel<Hechizo>
     @ManyToOne(()=>Empleado, {nullable:true})
-    empleado?: Empleado
+    empleado?: Rel<Empleado>
     @ManyToOne(()=>Magos, {nullable:false})
-    mago!: Magos
+    mago!: Rel<Magos>
 }

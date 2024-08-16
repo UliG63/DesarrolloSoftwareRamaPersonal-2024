@@ -7,10 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, Property } from "@mikro-orm/core";
-/* import { Magos } from "../magos/magos.entity.js" */
+import { Entity, OneToMany, Property, Cascade, Collection } from "@mikro-orm/core";
+import { Magos } from "../magos/magos.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.js";
 let Institucion = class Institucion extends BaseEntity {
+    constructor() {
+        super(...arguments);
+        this.magos = new Collection(this);
+    }
 };
 __decorate([
     Property({ nullable: false, unique: true }),
@@ -24,6 +28,10 @@ __decorate([
     Property({ nullable: false, unique: false }),
     __metadata("design:type", String)
 ], Institucion.prototype, "pais", void 0);
+__decorate([
+    OneToMany(() => Magos, magos => magos.institucion, { cascade: [Cascade.ALL] }),
+    __metadata("design:type", Object)
+], Institucion.prototype, "magos", void 0);
 Institucion = __decorate([
     Entity()
 ], Institucion);
