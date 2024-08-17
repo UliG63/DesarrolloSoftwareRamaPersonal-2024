@@ -1,4 +1,4 @@
-import { Entity, OneToMany, PrimaryKey, Property, Cascade, Collection, OneToOne, ManyToOne } from "@mikro-orm/core"
+import { Entity, OneToMany, PrimaryKey, Property, Cascade, Collection, OneToOne, ManyToOne, Rel } from "@mikro-orm/core"
 import { Hechizo } from "../hechizo/hechizo.entity.js"
 import { BaseEntity } from "../shared/db/baseEntity.js"
 import { Institucion } from "../institucion/institucion.entity.js"
@@ -27,9 +27,13 @@ export class Magos extends BaseEntity{
     @Property({nullable:false,unique:false})
     isEmpleado!:boolean
     @ManyToOne(()=>Institucion,{nullable:false})
-    institucion!:Institucion
+    institucion!:Rel<Institucion>
     @OneToMany(()=>Patente, patente=>patente.mago,{cascade: [Cascade.ALL]})
     patentes?= new Collection<Patente>(this)
+    /*
+    @OneToMany(()=>Patente, patente=>patente.empleado,{cascade: [Cascade.ALL]})
+    patentes_evaluadas?= new Collection<Patente>(this)
+    */
     @OneToMany(()=>Solicitud, solicitud=>solicitud.mago,{cascade: [Cascade.ALL]})
     solicitudes?= new Collection<Solicitud>(this)
 }

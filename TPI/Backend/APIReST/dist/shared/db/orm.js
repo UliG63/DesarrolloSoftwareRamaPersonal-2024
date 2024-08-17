@@ -10,10 +10,15 @@ export const orm = await MikroORM.init({
     schemaGenerator: {
         disableForeignKeys: true,
         createForeignKeyConstraints: true,
+        //ignoreSchema:[]
     }
 });
 export const syncSchema = async () => {
     const generator = orm.getSchemaGenerator();
+    /*
+    await generator.dropSchema();
+    await generator.createSchema();
+    */
     await generator.updateSchema();
 };
 //# sourceMappingURL=orm.js.map

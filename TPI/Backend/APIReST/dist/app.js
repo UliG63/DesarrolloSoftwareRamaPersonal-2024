@@ -3,7 +3,6 @@ import express from 'express';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 import { magosRouter } from './magos/magos.routes.js';
-import { empleadoRouter } from './empleado/empleado.routes.js';
 import { institucionRouter } from './institucion/institucion.routes.js';
 import { etiquetaRouter } from './etiqueta/etiqueta.routes.js';
 import { hechizoRouter } from './hechizo/hechizo.routes.js';
@@ -17,7 +16,6 @@ app.use((req, res, next) => {
 });
 app.use('/api/institucion', institucionRouter);
 app.use('/api/magos', magosRouter);
-app.use('/api/empleado', empleadoRouter);
 app.use('/api/etiqueta', etiquetaRouter);
 app.use('/api/hechizo', hechizoRouter);
 app.use('/api/patente', patenteRouter);

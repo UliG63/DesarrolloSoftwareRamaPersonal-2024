@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Entity, OneToMany, Property, Collection, ManyToOne } from "@mikro-orm/core";
 import { Hechizo } from "../hechizo/hechizo.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.js";
-import { Empleado } from "../empleado/empleado.entity.js";
 import { Magos } from "../magos/magos.entity.js";
 let Patente = class Patente extends BaseEntity {
     constructor() {
@@ -35,12 +34,12 @@ __decorate([
     __metadata("design:type", Object)
 ], Patente.prototype, "hechizos", void 0);
 __decorate([
-    ManyToOne(() => Empleado, { nullable: true }),
+    ManyToOne(() => Magos, { nullable: true }),
     __metadata("design:type", Object)
 ], Patente.prototype, "empleado", void 0);
 __decorate([
     ManyToOne(() => Magos, { nullable: false }),
-    __metadata("design:type", Magos)
+    __metadata("design:type", Object)
 ], Patente.prototype, "mago", void 0);
 Patente = __decorate([
     Entity()

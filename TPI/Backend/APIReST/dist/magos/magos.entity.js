@@ -16,6 +16,10 @@ let Magos = class Magos extends BaseEntity {
     constructor() {
         super(...arguments);
         this.patentes = new Collection(this);
+        /*
+        @OneToMany(()=>Patente, patente=>patente.empleado,{cascade: [Cascade.ALL]})
+        patentes_evaluadas?= new Collection<Patente>(this)
+        */
         this.solicitudes = new Collection(this);
     }
 };
@@ -57,7 +61,7 @@ __decorate([
 ], Magos.prototype, "isEmpleado", void 0);
 __decorate([
     ManyToOne(() => Institucion, { nullable: false }),
-    __metadata("design:type", Institucion)
+    __metadata("design:type", Object)
 ], Magos.prototype, "institucion", void 0);
 __decorate([
     OneToMany(() => Patente, patente => patente.mago, { cascade: [Cascade.ALL] }),

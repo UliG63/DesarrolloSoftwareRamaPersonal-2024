@@ -1,2 +1,24 @@
-### GET ALL
-GET http:/localhost:3000/api/institucion
+### obtener todas las instituciones
+GET http://localhost:3000/api/institucion
+
+### crear una nueva institucion
+POST http://localhost:3000/api/institucion
+Content-Type: application/json
+
+{
+    "nombre": "Hogwarts",
+    "ciudad": "Unknown",
+    "pais": "Escocia"
+}
+
+### ID
+
+//La siguiente referencia para asignar a la variable "id", 
+//el valor de id de la entidad creada con el post no me
+//funciona. Asi que utilizo un valor discreto.*/
+//@id = {{createInstitucion.response.body.data.id}}
+
+@id=1
+
+###GET ONE
+GET http://localhost:3000/api/institucion/{{id}}
