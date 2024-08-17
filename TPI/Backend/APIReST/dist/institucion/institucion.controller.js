@@ -34,10 +34,27 @@ async function add(req, res) {
     }
 }
 async function update(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
+    try {
+        const id = Number.parseInt(req.params.id);
+        const institucion = em.getReference(Institucion, id);
+        em.assign(institucion, req.body);
+        await em.flush();
+        res.status(200).json({ message: 'Institucion updated' });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 async function remove(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
+    try {
+        const id = Number.parseInt(req.params.id);
+        const institucion = em.getReference(Institucion, id);
+        await em.removeAndFlush(institucion);
+        res.status(200).send({ message: 'Institucion removed' });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 export { findAll, findOne, add, update, remove };
 //# sourceMappingURL=institucion.controller.js.map

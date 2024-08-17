@@ -1,7 +1,8 @@
 ### obtener todas las instituciones
 GET http://localhost:3000/api/institucion
 
-### crear una nueva institucion
+### POST (crear una nueva institucion)
+# @name createInstitucion
 POST http://localhost:3000/api/institucion
 Content-Type: application/json
 
@@ -12,13 +13,35 @@ Content-Type: application/json
 }
 
 ### ID
+@id = {{createInstitucion.response.body.data.id}}
 
-//La siguiente referencia para asignar a la variable "id", 
-//el valor de id de la entidad creada con el post no me
-//funciona. Asi que utilizo un valor discreto.*/
-//@id = {{createInstitucion.response.body.data.id}}
-
-@id=1
-
-###GET ONE
+###GET ONE (Obtener una institucion)
 GET http://localhost:3000/api/institucion/{{id}}
+
+###PUT (modificar una institucion)
+PUT http://localhost:3000/api/institucion/{{id}}
+Content-Type: application/json
+
+{
+    "nombre": "Hogwarts",
+    "ciudad": "Unknown",
+    "pais": "Scotland"
+}
+
+
+### POST-DELETE (crear una nueva institucion para luego ser borrada)
+# @name createInstitucionToDelete
+POST http://localhost:3000/api/institucion
+Content-Type: application/json
+
+{
+    "nombre": "Beauxbatons",
+    "ciudad": "Cannes",
+    "pais": "Francia"
+}
+
+###Delete (Borrar una institucion)
+@idToDelete = {{createInstitucionToDelete.response.body.data.id}}
+DELETE http://localhost:3000/api/institucion/{{idToDelete}}
+###Notar que el idToDelete se utilizo solamente para borrar la institucion recien creada
+###Para borrar la institucion correcta, se deberia usar un id especifico.

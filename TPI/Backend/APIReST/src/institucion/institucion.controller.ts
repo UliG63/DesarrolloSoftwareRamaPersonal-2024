@@ -37,11 +37,26 @@ async function add(req: Request, res:Response){
 }
 
 async function update(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
+    try{
+        const id= Number.parseInt(req.params.id)
+        const institucion = em.getReference(Institucion, id)
+        em.assign(institucion, req.body)
+        await em.flush()
+        res.status(200).json({ message: 'Institucion updated'})
+    }catch(error: any){
+        res.status(500).json({message: error.message})
+    }
 }
 
 async function remove(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
+    try{
+        const id = Number.parseInt(req.params.id)
+        const institucion = em.getReference(Institucion, id)
+        await em.removeAndFlush(institucion)
+        res.status(200).send({ message: 'Institucion removed'})
+    }catch(error: any){
+        res.status(500).json({message: error.message})
+    }
 }
 
 export {findAll, findOne, add, update, remove}
