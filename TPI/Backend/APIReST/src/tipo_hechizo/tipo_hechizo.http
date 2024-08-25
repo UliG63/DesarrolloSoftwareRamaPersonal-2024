@@ -1,2 +1,39 @@
 ### GET ALL
 GET http:/localhost:3000/api/tipo_hechizo
+
+### POST
+# @name createTipo_Hechizo
+POST http://localhost:3000/api/tipo_hechizo
+Content-Type: application/json
+
+{
+    "nombre": "Transformacion",
+    "caracteristicas": "Tambien conocidos como hechizos de transfiguracion, alteran la forma o apariencia del objetivo"
+}
+### ID
+@id = {{createTipo_Hechizo.response.body.data.id}}
+
+###GET ONE
+GET http://localhost:3000/api/tipo_hechizo/{{id}}
+
+###PUT
+PUT http://localhost:3000/api/tipo_hechizo/{{id}}
+Content-Type: application/json
+
+{
+    "nombre": "Transofrmacion",
+    "caracteristicas": "Alteran la forma o apariencia del objetivo"
+}
+
+### POST-DELETE
+# @name createTipo_HechizoToDelete
+POST http://localhost:3000/api/tipo_hechizo
+Content-Type: application/json
+
+{
+    "nombre": "Encantamiento",
+    "caracteristicas": "Estos hechizos alteran las propiedades de sus objetivos. No alteran la esencia de las propiedades de quien lo sufre, solo aumentan o cambian sus propiedades"
+}
+###Delete
+@idToDelete = {{createTipo_HechizoToDelete.response.body.data.id}}
+DELETE http://localhost:3000/api/tipo_hechizo/{{idToDelete}}
