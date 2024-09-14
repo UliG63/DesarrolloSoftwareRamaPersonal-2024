@@ -1,10 +1,7 @@
 ### obtener todos los magos
 GET http://localhost:3000/api/magos
 
-### obtener un mago
-GET http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
-
-### crear un nuevo mago
+### crear un nuevo mago (notar que no se incluyeron aun las patentes ni solicitudes)
 POST http://localhost:3000/api/magos
 Content-Type: application/json
 
@@ -13,16 +10,18 @@ Content-Type: application/json
     "apellido": "Granger",
     "email":"hermGrang@Hogwarts.com",
     "pass":"Crookshanks",
+    "profesion":"Estudiante del Colegio Hogwarts de Magia y Hechicería",
     "madera_varita":"Vid",
     "nucleo_varita":"Fibra de Corazon de Dragon",
     "largo_varita":"27.3",
     "isEmpleado":false,
     "institucion": 4,
-    "patentes":[""],
-    "solicitudes":[""] 
+    "patentes":[],
+    "solicitudes":[] 
 }
 
-###Crear un segundo mago (notar que en este no se incluyeron patentes ni solicitudes)
+###Crear un segundo mago (notar que no se incluyeron aun las patentes ni solicitudes)
+# @name createMago
 POST http://localhost:3000/api/magos
 Content-Type: application/json
 
@@ -31,32 +30,75 @@ Content-Type: application/json
     "apellido": "Dumbledore",
     "email":"AlDumbledore@Hogwarts.com",
     "pass":"root",
+    "profesion":"Director del Colegio Hogwarts de Magia y Hechicería",
     "madera_varita":"Sauco",
     "nucleo_varita":"Pelo de cola de Thestral",
     "largo_varita":"38.4",
     "isEmpleado":false,
-    "institucion": 4
-
+    "institucion": 4,
+    "patentes":[],
+    "solicitudes":[] 
 }
 
+### ID
+@id ={{createMago.response.body.data.id}}
+
+###GET ONE (obtener un mago)
+GET http://localhost:3000/api/magos/{{id}}
+
 ### modificar un mago (PUT)
-PUT http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
+PUT http://localhost:3000/api/magos/{{id}}
 Content-Type: application/json
 
 {
-    "name": "Albus Percival Wulfric Brian",
+    "name": "Albus",
     "apellido": "Dumbledore",
-    "varita": ["Sauco","Pelo de cola de Thestral","38.4cm"]
+    "email":"AlDumbledore@Hogwarts.com",
+    "pass":"root",
+    "profesion":"Director del Colegio Hogwarts de Magia y Hechicería",
+    "madera_varita":"Sauco",
+    "nucleo_varita":"Pelo de cola de Thestral",
+    "largo_varita":"38.4",
+    "isEmpleado":false,
+    "institucion": 5,
+    "patentes":[],
+    "solicitudes":[] 
 }
 
 ### modificar un mago (PATCH)
-PATCH http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
+PATCH http://localhost:3000/api/magos/{{id}}
 Content-Type: application/json
 
 {
     "name": "Albus Brian",
-    "varita": ["Sauco","Pelo de cola de Thestral","38.4cm"]
+    "madera_varita":"Roble"
 }
 
-### Borrar un mago
-DELETE http://localhost:3000/api/magos/6481190f-5832-4946-a1bd-ac2a332b4f6b
+
+### POST-DELETE (crear una nuevo mago para luego ser borrado)
+# @name createMagoToDelete
+POST http://localhost:3000/api/magos
+Content-Type: application/json
+
+{
+    "nombre": "Draco",
+    "apellido": "Malfoy",
+    "email":"dragoMal@Hogwarts.com",
+    "pass":"scaredPotter?",
+    "profesion":"Estudiante del Colegio Hogwarts de Magia y Hechicería",
+    "madera_varita":"Espino",
+    "nucleo_varita":"Pelo de Unicornio",
+    "largo_varita":"25.40",
+    "isEmpleado":false,
+    "institucion": 4,
+    "patentes":[],
+    "solicitudes":[]   
+
+}
+
+###Delete (Borrar un mago)
+@idToDelete = 1
+
+DELETE http://localhost:3000/api/magos/{{idToDelete}}
+###Notar que el idToDelete se utilizo solamente para borrar el mago recien creado
+###Para borrar el mago correcto, se deberia usar un id especifico.

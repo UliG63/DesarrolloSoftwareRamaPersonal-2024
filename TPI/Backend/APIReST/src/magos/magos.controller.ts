@@ -1,63 +1,3 @@
-/*import { Request, Response, NextFunction } from "express"
-import { MagosRepository } from "./magos.repository.js"
-import { Magos } from "./magos.entity.js"
-*/
-
-
-/*
-function findAll( req:Request,res:Response){
-    res.json({data:repository.findAll()})
-}
-
-function findOne(req:Request,res:Response){
-    const id= req.params.id
-    const mago = repository.findOne({id})
-    if(!mago){
-        return res.status(404).send({message:'Mago not Found'})
-    }
-    res.json({data:mago})
-}
-
-
-function add(req:Request,res:Response){
-    const input=req.body.sanitizedInput
-
-    const magoInput=new Magos(
-        input.name,
-        input.apellido,
-        input.varita
-    )
-    const mago= repository.add(magoInput)
-    return res.status(201).send({message:'Mago Creado',data:mago})
-}
-
-function update(req:Request,res:Response){
-    //Por laguna razon, el id del sanitizedInput no es id, sino idMago
-    req.body.sanitizedInput.idMago =req.params.id
-    const mago=repository.update(req.body.sanitizedInput)
-
-    if(!mago){
-        return res.status(404).send({message:'Mago not Found'}) 
-    }
-    return res.status(200).send({message:"Mago actualizado correctamente",data:mago})
-}
-
-function remove(req:Request,res:Response){
-    const id=req.params.id
-    const mago=repository.delete({id})
-    
-    if(!mago){
-        return res.status(404).send({message:'Mago not Found'}) 
-    }
-    else{
-        return res.status(200).send({message:'Mago eliminado exitosamente'})
-    }
-}
-
-
-
-*/
-
 import { Request, Response, NextFunction } from "express";
 import { orm } from "../shared/db/orm.js";
 import { Magos } from "./magos.entity.js";
@@ -70,6 +10,7 @@ function sanitizeMagoInput(req: Request, res: Response, next: NextFunction)
         apellido: req.body.apellido,     
         email:req.body.email,
         pass:req.body.pass,
+        profesion:req.body.profesion,
         madera_varita:req.body.madera_varita,
         nucleo_varita:req.body.nucleo_varita,
         largo_varita:req.body.largo_varita,
@@ -89,7 +30,7 @@ function sanitizeMagoInput(req: Request, res: Response, next: NextFunction)
 
 async function findAll(req: Request, res:Response){
     try {
-        const magos = await em.find(Magos, {},{populate:['institucion']} )
+        const magos = await em.find(Magos, {},{populate:['institucion','patentes','solicitudes']} )
         res.status(200).json({ message: 'found all magos', data:magos})
     }
     catch(error: any){
@@ -99,7 +40,15 @@ async function findAll(req: Request, res:Response){
 }
 
 async function findOne(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
+    try{
+        const id = Number.parseInt(req.params.id)
+        const mago = await em.findOneOrFail(Magos,{ id },{populate:['institucion','patentes','solicitudes']})
+        res.status(200).json({message: 'found mago', data :mago})
+    }
+    catch(error: any){
+        res.status(500).json({message: error.message})
+    }
+    
 }
 
 async function add(req: Request, res:Response){
@@ -115,11 +64,29 @@ async function add(req: Request, res:Response){
 }
 
 async function update(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
+    try{
+        const id = Number.parseInt(req.params.id)
+        const magoToUpdate = await em.findOneOrFail(Magos, { id })
+        em.assign(magoToUpdate, req.body.sanitizedInput)
+        await em.flush()
+        res.status(200).json({ message: 'mago updated', data:magoToUpdate})
+    }
+    catch(error: any){
+        res.status(500).json({message: error.message})
+    }
+    
 }
 
 async function remove(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
+    try{
+        const id = Number.parseInt(req.params.id)
+        const mago = em.getReference(Magos, id)
+        await em.removeAndFlush(mago)
+        res.status(200).send({ message: 'Mago removed'})
+    }
+    catch(error: any){
+        res.status(500).json({message:error.message})
+    }
 }
 
 export{sanitizeMagoInput, findAll, findOne, add, update, remove}

@@ -1,7 +1,3 @@
-/*import { Request, Response, NextFunction } from "express"
-import { MagosRepository } from "./magos.repository.js"
-import { Magos } from "./magos.entity.js"
-*/
 import { orm } from "../shared/db/orm.js";
 import { Magos } from "./magos.entity.js";
 const em = orm.em;
@@ -11,6 +7,7 @@ function sanitizeMagoInput(req, res, next) {
         apellido: req.body.apellido,
         email: req.body.email,
         pass: req.body.pass,
+        profesion: req.body.profesion,
         madera_varita: req.body.madera_varita,
         nucleo_varita: req.body.nucleo_varita,
         largo_varita: req.body.largo_varita,
@@ -28,7 +25,7 @@ function sanitizeMagoInput(req, res, next) {
 }
 async function findAll(req, res) {
     try {
-        const magos = await em.find(Magos, {}, { populate: ['institucion'] });
+        const magos = await em.find(Magos, {}, { populate: ['institucion', 'patentes', 'solicitudes'] });
         res.status(200).json({ message: 'found all magos', data: magos });
     }
     catch (error) {
@@ -36,7 +33,14 @@ async function findAll(req, res) {
     }
 }
 async function findOne(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
+    try {
+        const id = Number.parseInt(req.params.id);
+        const mago = await em.findOneOrFail(Magos, { id }, { populate: ['institucion', 'patentes', 'solicitudes'] });
+        res.status(200).json({ message: 'found mago', data: mago });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 async function add(req, res) {
     try {
@@ -49,10 +53,27 @@ async function add(req, res) {
     }
 }
 async function update(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
+    try {
+        const id = Number.parseInt(req.params.id);
+        const magoToUpdate = await em.findOneOrFail(Magos, { id });
+        em.assign(magoToUpdate, req.body.sanitizedInput);
+        await em.flush();
+        res.status(200).json({ message: 'mago updated', data: magoToUpdate });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 async function remove(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
+    try {
+        const id = Number.parseInt(req.params.id);
+        const mago = em.getReference(Magos, id);
+        await em.removeAndFlush(mago);
+        res.status(200).send({ message: 'Mago removed' });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 export { sanitizeMagoInput, findAll, findOne, add, update, remove };
 //# sourceMappingURL=magos.controller.js.map
