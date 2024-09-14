@@ -1,20 +1,10 @@
-/* import { Router } from "express";
-import { sanitizeMagoInput, findAll, findOne, add, update, remove } from "./magos.controller.js";
-
-export const magoRouter = Router()
-
-magoRouter.get('/',findAll)
-magoRouter.get('/:id', findOne)
-magoRouter.post('/',sanitizeMagoInput, add)
-magoRouter.put('/:id',sanitizeMagoInput, update)
-magoRouter.patch('/:id',sanitizeMagoInput, update)
-magoRouter.delete('/:id', remove) */
 import { Router } from "express";
-import { findAll, findOne, add, update, remove } from "./magos.controller.js";
+import { findAll, findOne, add, update, remove, sanitizeMagoInput } from "./magos.controller.js";
 export const magosRouter = Router();
 magosRouter.get('/', findAll);
 magosRouter.get('/:id', findOne);
-magosRouter.post('/', add);
-magosRouter.put('/:id', update);
+magosRouter.post('/', sanitizeMagoInput, add);
+magosRouter.put('/:id', sanitizeMagoInput, update);
+magosRouter.patch('/:id', sanitizeMagoInput, update);
 magosRouter.delete('/:id', remove);
 //# sourceMappingURL=magos.routes.js.map

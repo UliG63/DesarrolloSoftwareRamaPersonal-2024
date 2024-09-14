@@ -1,23 +1,10 @@
 /*import { Request, Response, NextFunction } from "express"
 import { MagosRepository } from "./magos.repository.js"
 import { Magos } from "./magos.entity.js"
+*/
 
-const repository = new MagosRepository
-function sanitizeMagoInput(req: Request, res: Response, next: NextFunction){
-    
-    req.body.sanitizedInput = {
-        name: req.body.name,
-        apellido: req.body.apellido,
-        varita: req.body.varita,
-    }
 
-    Object.keys(req.body.sanitizedInput).forEach(key=>{
-        if(req.body.sanitizedInput[key]===undefined) delete req.body.sanitizedInput[key]
-    })
-
-    next()
-}
-
+/*
 function findAll( req:Request,res:Response){
     res.json({data:repository.findAll()})
 }
@@ -69,12 +56,46 @@ function remove(req:Request,res:Response){
 
 
 
-export{sanitizeMagoInput, findAll, findOne, add, update, remove}*/
+*/
 
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import { orm } from "../shared/db/orm.js";
+import { Magos } from "./magos.entity.js";
+
+const em = orm.em
+function sanitizeMagoInput(req: Request, res: Response, next: NextFunction)
+{
+    req.body.sanitizedInput = {
+        nombre: req.body.nombre,
+        apellido: req.body.apellido,     
+        email:req.body.email,
+        pass:req.body.pass,
+        madera_varita:req.body.madera_varita,
+        nucleo_varita:req.body.nucleo_varita,
+        largo_varita:req.body.largo_varita,
+        isEmpleado:req.body.isEmpleado,
+        institucion:req.body.institucion,
+        patentes:req.body.patentes,
+        solicitudes:req.body.solicitudes, 
+    }
+
+    Object.keys(req.body.sanitizedInput).forEach((key)=>{
+        if(req.body.sanitizedInput[key] === undefined) {
+            delete req.body.sanitizedInput[key]
+        }
+    })
+    next()
+}
 
 async function findAll(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
+    try {
+        const magos = await em.find(Magos, {},{populate:['institucion']} )
+        res.status(200).json({ message: 'found all magos', data:magos})
+    }
+    catch(error: any){
+        res.status(500).json({message:error.message})
+    }
+
 }
 
 async function findOne(req: Request, res:Response){
@@ -82,7 +103,15 @@ async function findOne(req: Request, res:Response){
 }
 
 async function add(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
+    try{
+        const mago = em.create(Magos, req.body.sanitizedInput)
+        await em.flush()
+        res.status(201).json({ message: 'Mago created', data:mago})
+    }
+    catch(error: any){
+        res.status(500).json({message:error.message})
+    }
+    
 }
 
 async function update(req: Request, res:Response){
@@ -93,4 +122,4 @@ async function remove(req: Request, res:Response){
     res.status(500).json({message:'Not implemented'})
 }
 
-export {findAll, findOne, add, update, remove}
+export{sanitizeMagoInput, findAll, findOne, add, update, remove}

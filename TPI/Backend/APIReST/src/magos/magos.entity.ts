@@ -30,10 +30,6 @@ export class Magos extends BaseEntity{
     institucion!:Rel<Institucion>
     @OneToMany(()=>Patente, patente=>patente.mago,{cascade: [Cascade.ALL]})
     patentes?= new Collection<Patente>(this)
-    /*
-    @OneToMany(()=>Patente, patente=>patente.empleado,{cascade: [Cascade.ALL]})
-    patentes_evaluadas?= new Collection<Patente>(this)
-    */
     @OneToMany(()=>Solicitud, solicitud=>solicitud.mago,{cascade: [Cascade.ALL]})
     solicitudes?= new Collection<Solicitud>(this)
 }

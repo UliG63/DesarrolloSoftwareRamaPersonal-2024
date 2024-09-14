@@ -16,10 +16,6 @@ let Magos = class Magos extends BaseEntity {
     constructor() {
         super(...arguments);
         this.patentes = new Collection(this);
-        /*
-        @OneToMany(()=>Patente, patente=>patente.empleado,{cascade: [Cascade.ALL]})
-        patentes_evaluadas?= new Collection<Patente>(this)
-        */
         this.solicitudes = new Collection(this);
     }
 };
