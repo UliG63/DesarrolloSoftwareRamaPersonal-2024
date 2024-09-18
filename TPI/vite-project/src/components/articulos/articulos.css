@@ -1,0 +1,107 @@
+.articulos {
+    margin: 40px auto;
+    padding: 0 80px;
+    position: relative;
+    width: 75%;
+}
+
+.next-btn, .back-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.next-btn {
+    right: 0;
+}
+
+.back-btn {
+    left: 0;
+}
+
+.slider {
+    overflow: hidden;
+}
+
+.slider ul {
+    display: flex;
+    width: 250%; /*Ancho total de las cards*/
+    transition: transform 0.5s ease;
+}
+
+.slider ul li {
+    list-style: none;
+    width: 50%; /*Cada card ocupa el 50% del ancho para mostrar dos cards simultáneamente */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.slide {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    background-color: #7f4e2b;
+    color: #f9f7f4;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: hidden; /*Los bordes redondeados afecten a la imagen */
+}
+
+.slide img {
+    width: 100%; /*La imagen ocupe todo el ancho de la card */
+    height: auto;
+    border-radius: 10px 10px 0 0; /* Redondea solo los bordes superiores */
+    margin-bottom: 0;
+}
+
+.articulo-info {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.articulo-info h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.articulo-info p {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+@media (max-width: 840px) {
+    .articulos {
+        padding: 0 20px; 
+        width: 100%; 
+    }
+
+    .slider ul {
+        width: 500%; 
+    }
+
+    .slider ul li {
+        width: 100%; /*Cada card ocupa el 100% del ancho para mostrar una card a la vez*/
+    }
+
+    .next-btn, .back-btn {
+        width: 40px;
+    }
+
+    .slide img {
+        border-radius: 10px;
+    }
+
+    .articulo-info h3 {
+        font-size: 16px; 
+    }
+
+    .articulo-info p {
+        font-size: 12px;
+    }
+}

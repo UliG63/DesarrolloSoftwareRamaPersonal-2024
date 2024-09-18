@@ -1,0 +1,179 @@
+/* Estilos generales para el formulario */
+.login-page{
+    height: 100vh; /* Altura del 100% de la ventana */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    margin: 0;
+    background-color: #492f1e; /*no sé si este o #f9f7f4*/
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    height: 90%;
+    max-width: 1200px;
+    background-color: #f9f7f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.image-container-login {
+    flex: 1;  
+}
+  
+.image-container-login img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+form {
+    flex: 1;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f7f4;
+}
+  
+form p {
+    font-size: 14px;
+    color: #201e1c; 
+    margin-bottom: 5px;
+}
+
+form h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+form h4 {
+    font-size: 16px;
+    color: #201e1c; 
+    margin-bottom: 20px;
+    font-weight: normal;
+    text-align: center;
+}
+
+form h6 {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #201e1c; 
+    font-weight: normal;
+    text-align: left;
+}
+
+form span {
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+  
+  /* Estilos para campos de entrada */
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+  
+/* Dos columnas para nombre y apellido */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0px;
+}
+  
+.form-row div {
+    width: 48%;
+}
+  
+.form-row input {
+    width: 100%;
+}
+
+/* Tres columnas para madera, núcleo y largo de la varita */
+.form-row-tres {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0px;
+}
+  
+.form-row-tres div {
+    width: 32%;
+}
+  
+/* Botón */
+.button-login {
+    width: 100%;
+    padding: 10px;
+    background-color: #7f4e2b;
+    color: #f9f7f4;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.button-login:hover {
+    background-color: #663a21;
+}
+  
+.form-group {
+    margin-bottom: 20px;
+}
+  
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+@media(max-width: 840px) {
+    .login-page {
+        padding-top: 20px;
+        background-color: #492f1e;
+        height: auto;
+        padding-bottom: 20px;
+    }
+    
+    .login-container {
+        flex-direction: column; /* Apilar imagen y formulario */
+        height: auto; /* Ajustar la altura automáticamente */
+    }
+
+    .image-container-login {
+        width: 100%; /* Imagen ocupa el ancho completo */
+        margin-bottom: 20px; /* Separación entre imagen y formulario */
+        max-height: 170px;
+        overflow: hidden;
+        align-items: center;
+        display: flex;
+    }
+
+    .image-container-login img {
+        object-fit: cover; /* Recorta la imagen para llenar el contenedor */
+        object-position: center center; /* Centra la imagen dentro del contenedor */
+    }
+
+    form {
+        width: 100%; /* El formulario ocupa el ancho completo */
+    }
+
+    form p{
+        height: 14px;
+    }
+}

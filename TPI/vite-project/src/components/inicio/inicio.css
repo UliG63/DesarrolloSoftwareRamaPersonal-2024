@@ -1,0 +1,40 @@
+.inicio {
+  width: 100%;
+  background-size: cover; /*Imagen cubre todo el contenedor*/
+  color: #f9f7f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-height {
+  min-height: 100vh; /*100% del alto*/
+}
+
+.partial-height {
+  min-height: 60vh; /*60% del alto*/
+}
+
+.inicio-text {
+  text-align: center;
+  width: 75%;
+}
+
+.inicio-text h1 {
+  font-size: 40px;
+}
+
+.inicio-text p {
+  margin: 10px;
+  line-height: 1.4;
+}
+
+@media (max-width: 840px) {
+  .inicio-text {
+    width: 95%;
+  }
+
+  .inicio-text h1 {
+    font-size: 35px;
+  }
+}
