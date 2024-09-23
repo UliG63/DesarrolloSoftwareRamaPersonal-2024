@@ -1,0 +1,129 @@
+.carrera-cards {
+    padding: 0 40px; /* Reducido el padding para que no ocupe tanto espacio */
+    margin: 20px auto;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .carrera-card {
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    height: 350px;
+    width: 50vh;
+    position: relative;
+  }
+  
+  .carrera-card:hover {
+    transform: scale(1.05); /* Añadir un pequeño efecto de hover */
+  }
+  
+  .carrera-card-img {
+    width: 100%;
+    overflow: hidden;
+    max-height: 200px;
+  }
+  
+  .carrera-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegurarse de que la imagen se recorte adecuadamente */
+    border-radius: 5px 5px 0 0;
+  }
+  
+  .carrera-card h2 {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #201e1c;
+    padding: 40px 20px;
+  }
+  
+  .carrera-card p {
+    font-size: 14px;
+    color: #201e1c;
+    margin-bottom: 10px;
+  }
+
+  .info-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    color: #201e43;
+    border-style: double;
+    border-color: #201e43;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.info-button:hover {
+    background-color: #201e43;
+    color: #f5f5f5;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    position: relative;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 700px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.popup-content h3 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #201e1c;
+}
+
+.popup-content p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #201e1c;
+}
+
+.popup-content h6 {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #201e1c;
+    font-weight: bold;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px; 
+    right: 10px;
+    border: none;
+    cursor: pointer;
+}
+

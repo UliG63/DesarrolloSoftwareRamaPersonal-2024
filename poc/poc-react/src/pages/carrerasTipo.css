@@ -1,0 +1,12 @@
+.carreras-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .carrera-card {
+    flex: 1 1 calc(33% - 40px);
+    margin: 10px;
+  }
