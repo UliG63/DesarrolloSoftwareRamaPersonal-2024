@@ -1,0 +1,66 @@
+.informacion-horarios{
+    margin: 100px auto 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 75%;
+}
+
+.informacion-horarios-left{
+    flex-basis: 56%;
+}
+
+
+.informacion-horarios h3{
+    color: #201e1c;
+    font-size: 22px;
+    margin: 0 0 10px;
+    text-align: right;
+}
+
+.informacion-horarios h2{
+    color: #201e43;
+    font-size: 18px;
+    margin: 0 0 10px;
+    
+}
+
+.informacion-horarios p{
+    color: #201e1c;
+    font-size: 16px; 
+    margin: 10px 0 5px;
+    line-height: 1.4;
+    text-align: justify;
+}
+
+@media (max-width: 840px) {
+    .informacion-horarios {
+        margin: 0px auto 80px;
+        flex-direction: column;
+        align-items: center;
+        width: 95%;
+    }
+
+    .informacion-horarios-left,
+    .informacion-horarios-right {
+        flex-basis: 100%;
+        margin-bottom: 20px;
+    }
+
+    .informacion-horarios-left {
+        order: 1; /*Texto aparece antes de la imagen*/
+    }
+
+    .informacion-horarios p{
+        text-align: center;
+        margin: 20px 0 5px;
+    }
+
+    .informacion-horarios h2{
+        text-align: center;
+    }
+
+    .informacion-horarios h3{
+        text-align: center;
+    }
+}
