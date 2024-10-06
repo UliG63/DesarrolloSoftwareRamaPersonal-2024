@@ -15,7 +15,7 @@ Content-Type: application/json
     "nucleo_varita":"Fibra de Corazon de Dragon",
     "largo_varita":"27.3",
     "isEmpleado":false,
-    "institucion": 4,
+    "institucion": 1,
     "patentes":[],
     "solicitudes":[] 
 }
