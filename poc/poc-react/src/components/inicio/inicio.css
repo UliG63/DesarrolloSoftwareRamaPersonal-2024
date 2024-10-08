@@ -1,6 +1,6 @@
 .inicio {
     width: 100%;
-    background-size: cover; /*Imagen cubre todo el contenedor*/
+    background-size: cover;
     color: #f5f5f5;
     display: flex;
     align-items: center;

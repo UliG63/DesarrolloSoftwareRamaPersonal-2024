@@ -2,7 +2,7 @@
   margin: -30px auto 80px;
   display: flex;
   align-items: center;
-  justify-content: center; /* Cambiar a center para centrar el formulario */
+  justify-content: center;
   width: 75%;
 }
 
@@ -11,8 +11,8 @@ form {
   width: 100%;
   color: #333;
   margin: 25px;
-  display: flex; /* Agregar flex para poder centrar el botón */
-  flex-direction: column; /* Organiza los elementos en columna */
+  display: flex;
+  flex-direction: column; 
 }
 
 form h2 {
@@ -58,7 +58,7 @@ form button {
   color: #201e43;
   font-weight: bold;
   transition: background-color 0.3s ease;
-  margin: 20px auto 0; /* Cambiar el margen a auto para centrar horizontalmente */
+  margin: 20px auto 0;
 }
 
 form button:hover {

@@ -76,7 +76,6 @@
   border-radius: 5px;
 }
 
-/* Estilos para el ícono del menú */
 .menu-icon {
   display: none;
   cursor: pointer;
@@ -98,52 +97,50 @@
     width: 100%;
     height: auto;
     justify-content: center;
-    display: none; /* Oculto por defecto */
+    display: none;
     z-index: 9;
     padding: 20px 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   .navbar-links.open {
-    display: flex; /* Mostrar cuando esté abierto */
+    display: flex;
   }
 
   .menu-icon {
-    display: block; /* Mostrar ícono del menú */
+    display: block;
   }
 
-  /* Ajustes para centrar el menú Carreras y la flecha */
   .carreras-menu {
     display: flex;
-    align-items: center; /* Alinear el texto y la flecha horizontalmente */
-    justify-content: center; /* Centrar dentro del navbar */
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
   }
 
   .carreras-menu img {
-    margin-left: 8px; /* Añadir espacio entre el texto y la flecha */
+    margin-left: 8px;
   }
 
-  /* Ajustes para el dropdown */
   .dropdown-menu {
     position: static;
-    padding: 0; /* Remover padding adicional */
-    margin: 0; /* Ajustar margen superior e inferior */
+    padding: 0; 
+    margin: 0; 
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centrar elementos del dropdown */
+    align-items: center;
   }
 
   .dropdown-menu li {
-    padding: 0px 10px; /* Ajustar padding */
-    margin: 0px 0; /* Ajustar el espaciado entre elementos del dropdown */
-    text-align: center; /* Centrar texto dentro de cada elemento */
-    width: 100%; /* Asegurar que los elementos ocupen el ancho completo */
+    padding: 0px 10px;
+    margin: 0px 0;
+    text-align: center;
+    width: 100%;
     
   }
 
   .dropdown-menu li a {
-    font-size: 14px; /* Mantener el tamaño de fuente claro y legible */
+    font-size: 14px;
     color: #363646;
   }
 

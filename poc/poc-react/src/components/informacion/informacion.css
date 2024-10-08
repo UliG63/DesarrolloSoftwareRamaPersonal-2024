@@ -55,11 +55,11 @@
     }
 
     .informacion-right {
-        order: 1; /*Imagen aparece después del texto*/
+        order: 1;
     }
 
     .informacion-left {
-        order: 2; /*Texto aparece antes de la imagen*/
+        order: 2;
     }
 
     .informacion p{

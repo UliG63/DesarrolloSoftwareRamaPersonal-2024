@@ -20,12 +20,12 @@ const CarrerasTipo: React.FC<CarrerasTipoProps> = ({ tipo }) => {
 
   const { carreras } = carrerasContext;
 
-  // Normalizar la comparación ignorando mayúsculas/minúsculas
+  //ignora mayúsculas/minúsculas porque me olvidé cómo los había definido
   const carrerasFiltradas = carreras.filter((carrera) =>
     carrera.tipo.toLowerCase() === tipo.toLowerCase()
   );
 
-  // Definir el subTitle según el tipo de carrera
+  //define el subTitle según el tipo de carrera
   let subTitle = '';
   switch (tipo) {
     case 'Licenciatura':

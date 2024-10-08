@@ -51,14 +51,13 @@ p{
 }
 
 .inicio-menu-item:hover .descripcion {
-    transform: scale(1.05); /* Agranda el contenido */
-    background: rgba(22, 20, 51, 0.9); /* Cambia ligeramente el color de fondo */
+    transform: scale(1.05); 
+    background: rgba(22, 20, 51, 0.9); 
 }
 
 .inicio-menu-item:hover .descripcion img {
-    transform: scale(1.2); /* Agranda el icono */
+    transform: scale(1.2);
 }
-
 
 @media (max-width: 840px){
     .inicio-menu {

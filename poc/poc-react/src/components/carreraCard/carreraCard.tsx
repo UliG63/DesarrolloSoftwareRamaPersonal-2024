@@ -14,7 +14,7 @@ const CarreraCard: React.FC<CarreraCardProps> = ({ nombre, descripcion, horarios
   //hook useState -> gestionar la visibilidad de un popup
   const [showPopup, setShowPopup] = useState(false);
 
-  // handlePopup -> función permite alternar el estado de showPopup con el botón +Info
+  // handlePopup -> función para alternar el estado de showPopup con el botón +Info
   const handlePopup = () => {
     setShowPopup(!showPopup);
   };

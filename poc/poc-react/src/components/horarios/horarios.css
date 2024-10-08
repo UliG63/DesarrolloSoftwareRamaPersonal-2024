@@ -2,27 +2,27 @@
     margin: 100px auto 80px;
     display: flex;
     align-items: center;
-    justify-content: center; /* Alineamos al centro */
+    justify-content: center; 
     width: 72%;
-    text-align: center; /* Asegura que el texto también esté centrado */
+    text-align: center;
 }
 
 .informacion-horarios-left {
-    flex-basis: 100%; /* Ocupa todo el ancho disponible */
+    flex-basis: 100%;
 }
 
 .informacion-horarios h3 {
     color: #201e1c;
     font-size: 25px;
     margin: 0 0 10px;
-    text-align: center; /* Centrar el título */
+    text-align: center;
 }
 
 .informacion-horarios h2 {
     color: #201e43;
     font-size: 18px;
     margin: 20px 0 10px;
-    text-align: left; /* Centrar el subtítulo */
+    text-align: left; 
 }
 
 .informacion-horarios p {
@@ -30,7 +30,7 @@
     font-size: 16px; 
     margin: 10px 0 5px;
     line-height: 1.4;
-    text-align: left; /* Centrar el texto */
+    text-align: left;
 }
 
 @media (max-width: 840px) {
@@ -42,7 +42,7 @@
     }
 
     .informacion-horarios-left {
-        flex-basis: 100%; /* Ocupa todo el ancho */
+        flex-basis: 100%;
         margin-bottom: 20px;
     }
 

@@ -11,17 +11,20 @@ const Navbar: React.FC = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  //dropdownVisible -> gestionar la visibilidad del submenú de carreras
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
+  //menuOpen -> gestionar la visibilidad del menú al hacer responsive
   const toggleMenu = () => {
     setMenuOpen(!menuOpen); 
   };
 
+  //cuando redirige que se cierre el menú
   const closeMenu = () => {
-    setMenuOpen(false); // Cierra el menú completo
-    setDropdownVisible(false); // Cierra también el dropdown si está abierto
+    setMenuOpen(false); //cierra el menú completo
+    setDropdownVisible(false); //cierra también el dropdown si está abierto
   };
 
   return (
@@ -34,7 +37,7 @@ const Navbar: React.FC = () => {
       <div className="menu-icon" onClick={toggleMenu}>
         <img src={menuOpen ? menuCross : menuIcon} alt="Menu icon" />
       </div>
-      {/* Aplicar clase "open" cuando el menú está abierto */}
+      {/*open cuando el menú está abierto*/}
       <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
         <li><Link to="/" onClick={closeMenu}>Inicio</Link></li>
         <li>
