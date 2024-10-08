@@ -7,6 +7,7 @@ import novedad4Img from '../../assets/uniPublica.jpeg';
 import novedad5Img from '../../assets/concurso.jpg';
 import nextImg from '../../assets/next.png';
 import backImg from '../../assets/back.png';
+import cruz from '../../assets/cruzNegra.png'
 
 const Novedades: React.FC = () => {
     const slider = useRef<HTMLUListElement>(null); // Ref para el slider
@@ -117,7 +118,7 @@ const Novedades: React.FC = () => {
                             <div className="slide">
                                 <h3 className="slide-title">{article.title}</h3>
                                 <img src={article.img} alt="" />
-                                <button className="info-btn" onClick={() => openPopup(article.title, article.content)}>Más información</button>
+                                <button className="info-btn" onClick={() => openPopup(article.title, article.content)}>+ Información</button>
                             </div>
                         </li>
                     ))}
@@ -130,7 +131,9 @@ const Novedades: React.FC = () => {
                     <div className='popup-content'>
                         <h3>{popupContent.title}</h3>
                         <p>{popupContent.content}</p>
-                        <button className="close-btn" onClick={closePopup}>Cerrar</button>
+                        <button className="close-button" onClick={closePopup}>
+                            <img src={cruz} alt="" />
+                        </button>
                     </div>
                 </div>
             )}

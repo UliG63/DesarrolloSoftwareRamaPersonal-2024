@@ -1,92 +1,154 @@
-/* Estilos generales del navbar */
 .navbar {
-    background-color: #f5f5f5;
-    width: 100%;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    z-index: 10;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .navbar-logo img {
-    max-height: 40px;
-  }
-  
-  .navbar-links {
-    list-style-type: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .navbar-links li {
-    margin: 0 30px;
-  }
-  
-  .navbar-links a {
-    color: #201e1c;
-    text-decoration: none;
-    font-size: 16px;
-  }
+  background-color: #f5f5f5;
+  width: 100%;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-logo img {
+  max-height: 40px;
+}
+
+.navbar-links {
+  list-style-type: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  margin: 0 30px;
+}
+
+.navbar-links a {
+  color: #201e1c;
+  text-decoration: none;
+  font-size: 16px;
+}
 
 .carreras-menu {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .toggle-icon {
-    width: 16px;
-    height: 16px;
-    margin-left: 10px;
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+}
+
+.navbar-links a:hover {
+  color: #508C9B;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background-color: #f5f5f5;
+  list-style-type: none;
+  padding: 10px 0px;
+  margin-top: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu li {
+  padding: 10px 10px;
+}
+
+.dropdown-menu li a {
+  color: #201e1c;
+  text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+  color: #508C9B;
+}
+
+.dropdown-menu li:hover {
+  background-color: #e3e3e3;
+  border-radius: 5px;
+}
+
+/* Estilos para el ícono del menú */
+.menu-icon {
+  display: none;
+  cursor: pointer;
+}
+
+.menu-icon img {
+  width: 30px;
+  height: 30px;
+}
+
+@media (max-width: 840px) {
+  .navbar-links {
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #f5f5f5;
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    display: none; /* Oculto por defecto */
+    z-index: 9;
+    padding: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
-  .navbar-links a:hover {
-    color: #508C9B;
+  .navbar-links.open {
+    display: flex; /* Mostrar cuando esté abierto */
   }
-  
- 
+
+  .menu-icon {
+    display: block; /* Mostrar ícono del menú */
+  }
+
+  /* Ajustes para centrar el menú Carreras y la flecha */
+  .carreras-menu {
+    display: flex;
+    align-items: center; /* Alinear el texto y la flecha horizontalmente */
+    justify-content: center; /* Centrar dentro del navbar */
+    cursor: pointer;
+  }
+
+  .carreras-menu img {
+    margin-left: 8px; /* Añadir espacio entre el texto y la flecha */
+  }
+
+  /* Ajustes para el dropdown */
   .dropdown-menu {
-    position: absolute;
-    background-color: #f5f5f5;
-    list-style-type: none;
-    padding: 10px 0px;
-    margin-top: 10px;
-    border-radius: 5px;
+    position: static;
+    padding: 0; /* Remover padding adicional */
+    margin: 0; /* Ajustar margen superior e inferior */
     display: flex;
     flex-direction: column;
+    align-items: center; /* Centrar elementos del dropdown */
   }
-  
+
   .dropdown-menu li {
-    padding: 10px 10px;
+    padding: 0px 10px; /* Ajustar padding */
+    margin: 0px 0; /* Ajustar el espaciado entre elementos del dropdown */
+    text-align: center; /* Centrar texto dentro de cada elemento */
+    width: 100%; /* Asegurar que los elementos ocupen el ancho completo */
+    
   }
-  
+
   .dropdown-menu li a {
-    color: #201e1c;
-    text-decoration: none;
+    font-size: 14px; /* Mantener el tamaño de fuente claro y legible */
+    color: #363646;
   }
-  
-  .dropdown-menu li a:hover {
-    color: #508C9B;
+
+  .navbar-links li {
+    margin: 15px 0;
   }
-  
-  .dropdown-menu li:hover {
-    background-color: #e3e3e3;
-    border-radius: 5px;
-  }
-  
-  /* Responsivo */
-  @media (max-width: 768px) {
-    .navbar-links {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .dropdown-menu {
-      left: -15px;
-    }
-  }
-  
+}
+

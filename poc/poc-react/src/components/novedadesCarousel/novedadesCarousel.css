@@ -83,21 +83,32 @@
 
 .articulo-info h3 {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .articulo-info p {
-    font-size: 14px;
-    line-height: 1.4;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: justify;
 }
+
 .info-btn {
-    background-color: #274d9f;
-    border: none;
-    border-radius: 5px;
-    color: white;
+    background-color: #083383;
+    border-style: double;
+    border-color: #f5f5f5;
+    border-radius: 10px;
+    color: #f5f5f5;
     margin: 10px 0;
-    padding: 10px;
+    padding: 5px 10px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.info-btn:hover {
+    background-color: #f5f5f5;
+    color: #201e43;
 }
 
 .popup-overlay {
@@ -149,6 +160,9 @@
 
     .next-btn, .back-btn {
         width: 40px;
+        top: 40%;
+        margin: auto 5px;
+        z-index: 9;
     }
 
     .slide img {

@@ -35,6 +35,12 @@
     }
   
     .inicio-text h1 {
-      font-size: 35px;
+      font-size: 30px;
+      margin-top: 60px;
     }
+
+    .inicio-text p {
+      font-size: 14px;
+    }
+
   }

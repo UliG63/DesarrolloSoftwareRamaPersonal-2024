@@ -10,3 +10,7 @@
     flex: 1 1 calc(33% - 40px);
     margin: 10px;
   }
+
+  @media (max-width: 840px) {
+  
+  }

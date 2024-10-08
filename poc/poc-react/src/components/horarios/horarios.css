@@ -1,66 +1,65 @@
-.informacion-horarios{
+.informacion-horarios {
     margin: 100px auto 80px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 75%;
+    justify-content: center; /* Alineamos al centro */
+    width: 72%;
+    text-align: center; /* Asegura que el texto también esté centrado */
 }
 
-.informacion-horarios-left{
-    flex-basis: 56%;
+.informacion-horarios-left {
+    flex-basis: 100%; /* Ocupa todo el ancho disponible */
 }
 
-
-.informacion-horarios h3{
+.informacion-horarios h3 {
     color: #201e1c;
-    font-size: 22px;
+    font-size: 25px;
     margin: 0 0 10px;
-    text-align: right;
+    text-align: center; /* Centrar el título */
 }
 
-.informacion-horarios h2{
+.informacion-horarios h2 {
     color: #201e43;
     font-size: 18px;
-    margin: 0 0 10px;
-    
+    margin: 20px 0 10px;
+    text-align: left; /* Centrar el subtítulo */
 }
 
-.informacion-horarios p{
+.informacion-horarios p {
     color: #201e1c;
     font-size: 16px; 
     margin: 10px 0 5px;
     line-height: 1.4;
-    text-align: justify;
+    text-align: left; /* Centrar el texto */
 }
 
 @media (max-width: 840px) {
     .informacion-horarios {
-        margin: 0px auto 80px;
+        margin: 0px auto 60px;
         flex-direction: column;
         align-items: center;
         width: 95%;
     }
 
-    .informacion-horarios-left,
-    .informacion-horarios-right {
-        flex-basis: 100%;
+    .informacion-horarios-left {
+        flex-basis: 100%; /* Ocupa todo el ancho */
         margin-bottom: 20px;
     }
 
-    .informacion-horarios-left {
-        order: 1; /*Texto aparece antes de la imagen*/
-    }
-
-    .informacion-horarios p{
+    .informacion-horarios p {
         text-align: center;
         margin: 20px 0 5px;
     }
 
-    .informacion-horarios h2{
+    .informacion-horarios h2, .informacion-horarios h3 {
         text-align: center;
     }
 
-    .informacion-horarios h3{
-        text-align: center;
+    .informacion-horarios h3 {
+        font-size: 22px;
+    }
+
+    .informacion-horarios h2 {
+        font-size: 16px;
     }
 }

@@ -20,6 +20,12 @@
     margin-bottom: 20px; 
 }
 
+.informacion-menu-item p {
+    color: #201e1c;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .descripcion{
     border-radius: 10px;
     position: absolute;
@@ -66,6 +72,20 @@
 
     .informacion-menu-item {
         flex-basis: 100%;
-        margin-bottom: 80px;
+        margin-bottom: 140px;
     }
+
+    .descripcion {
+        flex-direction: column; /* Asegúrate de que los elementos se apilen verticalmente */
+        align-items: center; /* Centra los elementos dentro del contenedor */
+    }
+
+    .informacion-menu-item img {
+        margin-bottom: 10px; /* Espacio entre la imagen y el texto */
+    }
+
+    .descripcion {
+        text-align: center;
+    }
+
   }

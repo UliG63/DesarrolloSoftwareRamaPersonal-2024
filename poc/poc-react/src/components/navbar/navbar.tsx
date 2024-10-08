@@ -4,41 +4,57 @@ import './navbar.css';
 import logo from '../../assets/logo-utn.png';
 import ampliar from '../../assets/ampliar.png';
 import contraer from '../../assets/contraer.png';
+import menuIcon from '../../assets/menuNegro.png';
+import menuCross from '../../assets/cruzNegra.png';
 
 const Navbar: React.FC = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen); 
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false); // Cierra el menú completo
+    setDropdownVisible(false); // Cierra también el dropdown si está abierto
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-logo">
         <Link to="/">
-            <img src={logo} alt="" />
+          <img src={logo} alt="Logo" />
         </Link>
       </div>
-      <ul className="navbar-links">
-        <li><Link to="/">Inicio</Link></li>
+      <div className="menu-icon" onClick={toggleMenu}>
+        <img src={menuOpen ? menuCross : menuIcon} alt="Menu icon" />
+      </div>
+      {/* Aplicar clase "open" cuando el menú está abierto */}
+      <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
+        <li><Link to="/" onClick={closeMenu}>Inicio</Link></li>
         <li>
           <div className="carreras-menu" onClick={toggleDropdown}>
-            Carreras 
+            Carreras
             <img src={dropdownVisible ? contraer : ampliar} alt="Toggle icon" className="toggle-icon" />
           </div>
           {dropdownVisible && (
             <ul className="dropdown-menu">
-              <li><Link to="/ingenierias">Ingenierías</Link></li>
-              <li><Link to="/maestrias">Maestrías</Link></li>
-              <li><Link to="/especializaciones">Especializaciones</Link></li>
-              <li><Link to="/diplomaturas">Diplomaturas</Link></li>
-              <li><Link to="/tecnicaturas">Tecnicaturas</Link></li>
-              <li><Link to="/licenciaturas">Licenciaturas</Link></li>
+              <li><Link to="/ingenierias" onClick={closeMenu}>Ingenierías</Link></li>
+              <li><Link to="/maestrias" onClick={closeMenu}>Maestrías</Link></li>
+              <li><Link to="/especializaciones" onClick={closeMenu}>Especializaciones</Link></li>
+              <li><Link to="/diplomaturas" onClick={closeMenu}>Diplomaturas</Link></li>
+              <li><Link to="/tecnicaturas" onClick={closeMenu}>Tecnicaturas</Link></li>
+              <li><Link to="/licenciaturas" onClick={closeMenu}>Licenciaturas</Link></li>
             </ul>
           )}
         </li>
-        <li><Link to="/novedades">Novedades</Link></li>
-        <li><Link to="/informacion">Información</Link></li>
+        <li><Link to="/novedades" onClick={closeMenu}>Novedades</Link></li>
+        <li><Link to="/informacion" onClick={closeMenu}>Información</Link></li>
       </ul>
     </nav>
   );
