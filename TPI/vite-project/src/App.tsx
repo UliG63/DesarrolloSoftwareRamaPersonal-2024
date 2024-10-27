@@ -1,29 +1,42 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login';
 import HechizosPage from './pages/hechizos';
 import PatentesPage from './pages/patentes';
 import VisualizacionPage from './pages/visualizacion';
 import InicioPage from './pages/inicio';
 import UserPage from './pages/user';
+import { AuthContextProvider, AuthContext } from './context/authContext';
 
-//Temporalmente puse que el default fuera el inicio, mi idea era que sea el login y que el login te redirija al inicio
-//Cambiar en el futuro ^
+// Componente ProtectedRoute que verifica la autenticación
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { currentUser } = useContext(AuthContext); // Obtener el usuario actual
+
+  // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
+
+  return <>{children}</>;
+};
+
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <AuthContextProvider>
+      <Router>
       <div>
         <Routes>
-          <Route path="/" element={<InicioPage />} />
+          <Route path="/" element={<ProtectedRoute><InicioPage /></ProtectedRoute>} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/hechizos" element={<HechizosPage />} />
-          <Route path="/patentes" element={<PatentesPage />} />
-          <Route path="/visualizacion" element={<VisualizacionPage />} />
-          <Route path="/user" element={<UserPage />} />
+          <Route path="/hechizos" element={<ProtectedRoute><HechizosPage /></ProtectedRoute>} />
+          <Route path="/patentes" element={<ProtectedRoute><PatentesPage /></ProtectedRoute>} />
+          <Route path="/visualizacion" element={<ProtectedRoute><VisualizacionPage /></ProtectedRoute>} />
+          <Route path="/user" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
         </Routes>
       </div>
     </Router>
+    </AuthContextProvider>
   );
 };
 

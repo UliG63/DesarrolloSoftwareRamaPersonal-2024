@@ -10,9 +10,19 @@ import { hechizoRouter } from './hechizo/hechizo.routes.js'
 import { patenteRouter } from './patente/patente.routes.js'
 import { solicitudRouter } from './solicitud_visualizacion/solicitud.routes.js'
 import { tipo_hechizoRouter } from './tipo_hechizo/tipo_hechizo.routes.js'
+import { authRouter } from './auth/auth.routes.js'
+import cors from 'cors'
+import cookieParser from "cookie-parser"
+
 const app = express()
 
+//Middleware
 app.use(express.json())
+app.use(cors({
+    origin: 'http://localhost:5173', // Permitir solo solicitudes desde este origen
+    credentials: true, // Permitir el envío de cookies, si es necesario
+}));
+app.use(cookieParser())
 
 app.use((req, res, next)=>{
     RequestContext.create(orm.em, next)
@@ -25,6 +35,7 @@ app.use('/api/hechizo',hechizoRouter)
 app.use('/api/patente',patenteRouter)
 app.use('/api/solicitud_visualizacion',solicitudRouter)
 app.use('/api/tipo_hechizo',tipo_hechizoRouter)
+app.use('/api/auth',authRouter)
 /*
     El siguiente metodo se encarga de devolver un mensaje compatible
     con la API cuando se introduce una URL invalida, y no contenido HTML

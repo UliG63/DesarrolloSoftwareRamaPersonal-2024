@@ -15,7 +15,7 @@ export class Magos extends BaseEntity{
     @Property({nullable:false,unique:true})
     email!:String
     @Property({nullable:false,unique:false})
-    pass!:String
+    pass!:string
     @Property({nullable:true,unique:false})
     profesion?:String
     @Property({nullable:false,unique:false})
