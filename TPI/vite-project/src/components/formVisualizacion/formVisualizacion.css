@@ -9,11 +9,13 @@
     border-style: double;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .plus-visualizacion-button:hover {
-    background-color: #b68c6e;
-    color: #56311b;
+    background-color: #7f4e2b;
+    color: #f9f7f4;
 }
 
 .visualizacion-overlay {
@@ -65,6 +67,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
   
 .button-visualizacion:hover {

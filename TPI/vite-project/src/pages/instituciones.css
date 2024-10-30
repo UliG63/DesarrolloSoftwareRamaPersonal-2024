@@ -1,29 +1,38 @@
-.user-container {
+.instituciones-page {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
-.user-card {
+.instituciones-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Espacio entre tarjetas */
+    margin-top: 50px;
+    width: 80%;
+}
+
+.institucion-card {
     background-color: #ffffff;
     border-radius: 10px;
-    padding: 30px;
-    width: 80%;
-    max-width: 600px;
+    padding: 30px 30px 10px;
+    width: 45%; /* Ajuste para que quepan dos tarjetas por fila */
+    max-width: 500px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
     text-align: left;
     margin-bottom: 20px;
 }
 
-.user-card h3 {
+.institucion-card h3 {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
     color: #333;
 }
 
-.user-card h6 {
+.institucion-card h6 {
     font-size: 18px;
     font-weight: bold;
     margin-top: 20px;
@@ -32,35 +41,19 @@
     padding-bottom: 5px;
 }
 
-.personal-info, .user-varita {
+.institucion-info {
     padding: 15px 0;
 }
 
-.personal-info p, .user-varita p {
+.institucion-info p {
     font-size: 16px;
     margin: 5px 0;
     color: #666;
 }
 
-.logout-button {
-    background-color: #d9534f;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    display: flex;
-  }
-  
-  .logout-button:hover {
-    background-color: #c9302c; 
-  }
-
 .edit-button,
 .save-button,
-.cancel-button,
-.logout-button {
+.cancel-button {
     padding: 10px 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -90,12 +83,6 @@
     border-radius: 5px;
 }
 
-.logout-button {
-    background-color: #d9534f;
-    display: inline-block;
-    border-radius: 5px;
-}
-
 .edit-button:hover {
     background-color: #7f4e2b;
     color: white;
@@ -110,7 +97,7 @@
     background-color: #c9302c;
 }
 
-.user-card input {
+.institucion-card input {
     width: 100%;
     padding: 8px;
     margin: 8px 0;
@@ -121,21 +108,9 @@
     color: #333;
 }
 
-@media (max-width: 600px) {
-    .user-card {
-        width: 90%;
-        padding: 20px;
-    }
-
-    .user-card h3 {
-        font-size: 20px;
-    }
-
-    .user-card h6 {
-        font-size: 16px;
-    }
-
-    .personal-info p, .user-varita p {
-        font-size: 16px;
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .institucion-card {
+        width: 100%; /* En pantallas pequeñas, cada tarjeta ocupa el 100% del ancho */
     }
 }

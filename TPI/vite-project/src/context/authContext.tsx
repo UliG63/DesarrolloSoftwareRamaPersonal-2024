@@ -12,6 +12,7 @@ interface User {
   nucleo_varita: string;
   largo_varita: string;
   institucion: string;
+  isEmpleado: boolean;
 }
 
 interface AuthContextProps {
