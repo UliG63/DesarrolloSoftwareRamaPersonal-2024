@@ -1,9 +1,8 @@
-/* Estilos generales para el formulario */
 .login-page{
-    height: 100vh; /* Altura del 100% de la ventana */
+    height: 100vh; 
     display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
+    justify-content: center;
+    align-items: center;
     margin: 0;
     background-color: #492f1e; /*no sé si este o #f9f7f4*/
 }
@@ -88,7 +87,7 @@ form input {
     font-size: 14px;
 }
   
-/* Dos columnas para nombre y apellido */
+/* dos columnas para nombre y apellido */
 .form-row {
     display: flex;
     justify-content: space-between;
@@ -103,7 +102,7 @@ form input {
     width: 100%;
 }
 
-/* Tres columnas para madera, núcleo y largo de la varita */
+/* tres columnas para madera, núcleo y largo de la varita */
 .form-row-tres {
     display: flex;
     justify-content: space-between;
@@ -114,7 +113,6 @@ form input {
     width: 32%;
 }
   
-/* Botón */
 .button-login {
     width: 100%;
     padding: 10px;
@@ -124,6 +122,7 @@ form input {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
   
 .button-login:hover {
@@ -151,13 +150,13 @@ form input {
     }
     
     .login-container {
-        flex-direction: column; /* Apilar imagen y formulario */
-        height: auto; /* Ajustar la altura automáticamente */
+        flex-direction: column;
+        height: auto;
     }
 
     .image-container-login {
-        width: 100%; /* Imagen ocupa el ancho completo */
-        margin-bottom: 20px; /* Separación entre imagen y formulario */
+        width: 100%;
+        margin-bottom: 20px;
         max-height: 170px;
         overflow: hidden;
         align-items: center;
@@ -165,12 +164,12 @@ form input {
     }
 
     .image-container-login img {
-        object-fit: cover; /* Recorta la imagen para llenar el contenedor */
-        object-position: center center; /* Centra la imagen dentro del contenedor */
+        object-fit: cover;
+        object-position: center center; 
     }
 
     form {
-        width: 100%; /* El formulario ocupa el ancho completo */
+        width: 100%;
     }
 
     form p{

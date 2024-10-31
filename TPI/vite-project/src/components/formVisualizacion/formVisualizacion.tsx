@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import './formVisualizacion.css';
 import cross from '../../assets/cross.png';
 
-//Falta todo lo de bdd
+//falta todo lo de bdd
 
 const FormVisualizacion: React.FC = () => {
-     // Visibilidad de form 
      const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-     // Función para mostrar/ocultar el form
      const togglePopup = () => {
          setIsPopupVisible(!isPopupVisible);
      };

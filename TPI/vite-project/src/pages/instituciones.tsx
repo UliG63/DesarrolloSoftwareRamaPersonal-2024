@@ -3,6 +3,7 @@ import Footer from "../components/footer/footer";
 import './instituciones.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import FormInstitucion from "../components/formInstituciones/formInstituciones";
 
 interface Institucion {
     id: number;
@@ -71,8 +72,8 @@ const InstitucionesPage: React.FC = () => {
     return (
         <>
             <Navbar />
+            <FormInstitucion />
             <div className="instituciones-page">
-                <h1>Instituciones</h1>
                 {error ? (
                     <p>{error}</p>
                 ) : instituciones.length > 0 ? (

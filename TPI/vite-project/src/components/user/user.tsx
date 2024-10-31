@@ -3,9 +3,14 @@ import './user.css';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
 
+// habría que hacer que tenga que ingresar dos veces su nueva contraseña
+
 const User: React.FC = () => {
+  // obtener el usuario actual y la función logout
   const { currentUser, logout } = useContext(AuthContext);  
+  // estado para saber si está en modo edición/visualización
   const [isEditing, setIsEditing] = useState(false);
+  // estado que almacena los datos del usuario para edición
   const [userData, setUserData] = useState({
     nombre: currentUser?.nombre || '',
     apellido: currentUser?.apellido || '',
@@ -14,9 +19,10 @@ const User: React.FC = () => {
     madera_varita: currentUser?.madera_varita || '',
     nucleo_varita: currentUser?.nucleo_varita || '',
     largo_varita: currentUser?.largo_varita || '',
-    pass: ''
+    pass: '' //la contraseña no la muestra
   });
 
+   // actualiza el estado userData con el valor ingresado en los inputs
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
@@ -25,19 +31,22 @@ const User: React.FC = () => {
     }));
   };
 
+  // va cambiando el modo edición entre true y false
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
 
+  // enviar put a la api con el id del usuario actual y la nueva info
   const handleSaveChanges = async () => {
     try {
       await axios.put('http://localhost:3000/api/auth/update', { ...userData, id: currentUser?.id });
-      setIsEditing(false);
+      setIsEditing(false);  // desactiva el modo edición
     } catch (error) {
       console.error("Error al actualizar la información:", error);
     }
   };
 
+   // cerrar sesión al llamar la función logout del contexto de autenticación y redirige al login
   const handleLogout = () => {
     logout();
     window.location.href = '/login';

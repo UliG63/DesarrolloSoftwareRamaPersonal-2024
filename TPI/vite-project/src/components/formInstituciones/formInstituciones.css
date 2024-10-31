@@ -1,0 +1,91 @@
+.plus-institucion-button{
+    margin-top: 80px;
+    margin-left: 10px;
+    padding: 10px;
+    background-color:#f9f7f4;
+    color: #7f4e2b;
+    font-size: 16px;
+    border-color: #7f4e2b;
+    border-style: double;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.plus-institucion-button:hover {
+    background-color: #7f4e2b;
+    color: #f9f7f4;
+}
+
+.institucion-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro con opacidad */
+    z-index: 999; /*Debajo del form*/
+  }
+  
+.form-institucion {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f7f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    z-index: 1000; /*Encima del overlay */
+}
+
+.form-institucion h4 {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.form-institucion textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.button-institucion {
+    width: 100%;
+    padding: 10px;
+    background-color: #7f4e2b;
+    color: #f9f7f4;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+  
+.button-institucion:hover {
+    background-color: #663a21;
+}
+
+.close-institucion {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width: 840px){
+    .form-institucion{
+        width: 90%;
+    }
+}

@@ -15,20 +15,26 @@ import EtiquetasPage from './pages/etiquetas';
 import TipoHechizoPage from './pages/tipoHechizo';
 import { AuthContextProvider, AuthContext } from './context/authContext';
 
-// Componente ProtectedRoute que verifica la autenticación
-const ProtectedRoute: React.FC<{ children: React.ReactNode; isEmpleado?: boolean }> = ({ children, isEmpleado }) => {
-  const { currentUser } = useContext(AuthContext); // Obtener el usuario actual
+// verifica la autenticación, el rol y selecciona la página según el rol
+const ProtectedRoute: React.FC<{ children: React.ReactNode; empleadoPage?: React.ReactNode; isEmpleadoOnly?: boolean }> = ({ children, empleadoPage, isEmpleadoOnly }) => {
+  const { currentUser } = useContext(AuthContext);
 
-  // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
+  // si el usuario no está autenticado, redirige a la página de login
   if (!currentUser) {
     return <Navigate to="/login" />;
   }
 
-  // Si es una ruta exclusiva para empleados y el usuario no es empleado, redirigir
-  if (isEmpleado && !currentUser.isEmpleado) {
+  // si la ruta es exclusiva para empleados y el usuario no es empleado, redirige a la página de inicio
+  if (isEmpleadoOnly && !currentUser.isEmpleado) {
     return <Navigate to="/" />;
   }
 
+  // si el usuario es empleado y se proporciona una página específica para empleados, muestra esa página
+  if (currentUser.isEmpleado && empleadoPage) {
+    return <>{empleadoPage}</>;
+  }
+
+  // de lo contrario, muestra la página general
   return <>{children}</>;
 };
 
@@ -40,19 +46,25 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<ProtectedRoute><InicioPage /></ProtectedRoute>} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/hechizos" element={<ProtectedRoute><HechizosPage /></ProtectedRoute>} />
-            <Route path="/patentes" element={<ProtectedRoute><PatentesPage /></ProtectedRoute>} />
-            <Route path="/visualizacion" element={<ProtectedRoute><VisualizacionPage /></ProtectedRoute>} />
+            <Route
+              path="/hechizos"
+              element={<ProtectedRoute empleadoPage={<HechizosEmpleadoPage />}><HechizosPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/patentes"
+              element={<ProtectedRoute empleadoPage={<PatentesEmpleadoPage />}><PatentesPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/visualizacion"
+              element={<ProtectedRoute empleadoPage={<VisualizacionEmpleadoPage />}><VisualizacionPage /></ProtectedRoute>}
+            />
             <Route path="/user" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
 
             {/* Rutas exclusivas para empleados */}
-            <Route path="/instituciones" element={<ProtectedRoute isEmpleado={true}><InstitucionesPage /></ProtectedRoute>} />
-            <Route path="/magos" element={<ProtectedRoute isEmpleado={true}><MagosPage /></ProtectedRoute>} />
-            <Route path="/etiquetas" element={<ProtectedRoute isEmpleado={true}><EtiquetasPage /></ProtectedRoute>} />
-            <Route path="/tipo_hechizo" element={<ProtectedRoute isEmpleado={true}><TipoHechizoPage /></ProtectedRoute>} />
-            <Route path="/patentesEmpleado" element={<ProtectedRoute isEmpleado={true}><PatentesEmpleadoPage /></ProtectedRoute>} />
-            <Route path="/visualizacionEmpleado" element={<ProtectedRoute isEmpleado={true}><VisualizacionEmpleadoPage /></ProtectedRoute>} />
-            <Route path="/hechizosEmpleado" element={<ProtectedRoute isEmpleado={true}><HechizosEmpleadoPage /></ProtectedRoute>} />
+            <Route path="/instituciones" element={<ProtectedRoute isEmpleadoOnly={true}><InstitucionesPage /></ProtectedRoute>} />
+            <Route path="/magos" element={<ProtectedRoute isEmpleadoOnly={true}><MagosPage /></ProtectedRoute>} />
+            <Route path="/etiquetas" element={<ProtectedRoute isEmpleadoOnly={true}><EtiquetasPage /></ProtectedRoute>} />
+            <Route path="/tipo_hechizo" element={<ProtectedRoute isEmpleadoOnly={true}><TipoHechizoPage /></ProtectedRoute>} />
 
             {/* Redirección para rutas no encontradas */}
             <Route path="*" element={<Navigate to="/" />} />
