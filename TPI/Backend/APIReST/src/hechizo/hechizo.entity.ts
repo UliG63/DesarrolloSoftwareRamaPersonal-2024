@@ -20,6 +20,6 @@ export class Hechizo extends BaseEntity{
     @ManyToOne(()=>Tipo_Hechizo, {nullable:false})
     tipo_hechizo!: Tipo_Hechizo
     @ManyToMany(() => Etiqueta, (etiqueta) => etiqueta.hechizos, {cascade: [Cascade.ALL], owner: true})
-    etiquetas = new Collection<Etiqueta>(this) 
+    etiquetas? = new Collection<Etiqueta>(this) 
 
 }

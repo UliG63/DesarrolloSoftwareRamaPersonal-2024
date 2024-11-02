@@ -11,6 +11,7 @@ import { Entity, OneToMany, Property, Collection, ManyToOne } from "@mikro-orm/c
 import { Hechizo } from "../hechizo/hechizo.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.js";
 import { Magos } from "../magos/magos.entity.js";
+import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js";
 let Patente = class Patente extends BaseEntity {
     constructor() {
         super(...arguments);
@@ -22,17 +23,37 @@ __decorate([
     __metadata("design:type", Date)
 ], Patente.prototype, "fechaCreacion", void 0);
 __decorate([
+    Property({ nullable: true, unique: true }),
+    __metadata("design:type", String)
+], Patente.prototype, "nombre", void 0);
+__decorate([
     Property({ nullable: false, unique: true }),
     __metadata("design:type", String)
 ], Patente.prototype, "descripcion", void 0);
 __decorate([
-    Property({ nullable: true, unique: false }),
-    __metadata("design:type", Boolean)
+    Property({ nullable: false, unique: false }),
+    __metadata("design:type", String)
 ], Patente.prototype, "estado", void 0);
+__decorate([
+    Property({ nullable: true, unique: false }),
+    __metadata("design:type", String)
+], Patente.prototype, "motivo_rechazo", void 0);
+__decorate([
+    Property({ nullable: false, unique: false }),
+    __metadata("design:type", String)
+], Patente.prototype, "instrucciones", void 0);
+__decorate([
+    Property({ nullable: false, unique: false }),
+    __metadata("design:type", Boolean)
+], Patente.prototype, "restringido", void 0);
 __decorate([
     OneToMany(() => Hechizo, hechizo => hechizo.patente),
     __metadata("design:type", Object)
 ], Patente.prototype, "hechizos", void 0);
+__decorate([
+    ManyToOne(() => Tipo_Hechizo, { nullable: false }),
+    __metadata("design:type", Object)
+], Patente.prototype, "tipo_hechizo", void 0);
 __decorate([
     ManyToOne(() => Magos, { nullable: true }),
     __metadata("design:type", Object)

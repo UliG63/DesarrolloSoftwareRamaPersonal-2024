@@ -1,2 +1,30 @@
 ### GET ALL
-GET http:/localhost:3000/api/patente
+GET http://localhost:3000/api/patente/pending
+### crear una nueva patente
+POST http://localhost:3000/api/patente
+Content-Type: application/json
+
+{
+    "fechaCreacion": "2024-11-02",
+    "nombre": "Wingardium Leviosa",
+    "descripcion": "Esto es una prueba",
+    "estado": "pendiente_revision",
+    "motivo_rechazo": null,
+    "instrucciones": "Esto es una prueba",
+    "restringido": false,
+    "hechizo": [],
+    "tipo_hechizo": 10,
+    "empleado": null,
+    "mago": {
+        "nombre": "Hermione",
+        "apellido": "Granger",
+        "email": "hermGrang@Hogwarts.com",
+        "pass": "Crookshanks",
+        "profesion": "Estudiante del Colegio Hogwarts de Magia y Hechicería",
+        "madera_varita": "Vid",
+        "nucleo_varita": "Fibra de Corazon de Dragon",
+        "largo_varita": 27.3,
+        "isEmpleado": false,
+        "institucion": 1
+    }
+}
