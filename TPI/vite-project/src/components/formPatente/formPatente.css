@@ -9,11 +9,13 @@
     border-style: double;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 .plus-patente-button:hover {
-    background-color: #b68c6e;
-    color: #56311b;
+    background-color: #7f4e2b;
+    color: #f9f7f4;
 }
 
 .patente-overlay {
@@ -65,12 +67,12 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
   
 .button-patente:hover {
     background-color: #663a21;
 }
-  
 
 .close-patente {
     position: absolute;

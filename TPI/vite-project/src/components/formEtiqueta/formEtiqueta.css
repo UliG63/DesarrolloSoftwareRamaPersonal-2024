@@ -1,5 +1,5 @@
-.plus-visualizacion-button{
-    margin-top: 20px;
+.plus-etiqueta-button{
+    margin-top: 80px;
     margin-left: 10px;
     padding: 10px;
     background-color:#f9f7f4;
@@ -9,16 +9,16 @@
     border-style: double;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
     transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
-.plus-visualizacion-button:hover {
+.plus-etiqueta-button:hover {
     background-color: #7f4e2b;
     color: #f9f7f4;
 }
 
-.visualizacion-overlay {
+.etiqueta-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -28,7 +28,7 @@
     z-index: 999; /*Debajo del form*/
   }
   
-.form-visualizacion {
+.form-etiqueta {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -42,13 +42,14 @@
     z-index: 1000; /*Encima del overlay */
 }
 
-.form-visualizacion h4 {
+.form-etiqueta h4 {
     text-align: left;
     font-weight: bold;
     margin-bottom: 10px;
+    font-size: 16px;
 }
 
-.form-visualizacion textarea {
+.form-etiqueta textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
@@ -58,7 +59,7 @@
     font-size: 14px;
 }
 
-.button-visualizacion {
+.button-etiqueta {
     width: 100%;
     padding: 10px;
     background-color: #7f4e2b;
@@ -70,23 +71,11 @@
     font-weight: bold;
 }
   
-.button-visualizacion:hover {
+.button-etiqueta:hover {
     background-color: #663a21;
 }
-  
-.form-visualizacion-group {
-    margin-bottom: 20px;
-}
-  
-.form-visualizacion-group input,
-.form-visualizacion-group select {
-    width: 50%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
 
-.close-visualizacion {
+.close-etiqueta {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -96,12 +85,7 @@
 }
 
 @media (max-width: 840px){
-    .form-visualizacion{
+    .form-etiqueta{
         width: 90%;
-    }
-
-    .form-visualizacion-group input,
-    .form-visualizacion-group select {
-    width: 70%;
     }
 }
