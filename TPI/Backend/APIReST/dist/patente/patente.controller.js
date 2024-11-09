@@ -15,6 +15,7 @@ function sanitizePatenteInput(req, res, next) {
         hechizo: req.body.hechizo,
         tipo_hechizo: req.body.tipo_hechizo,
         empleado: req.body.empleado,
+        etiquetas: req.body.etiquetas,
         mago: req.body.mago
     };
     Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -26,7 +27,7 @@ function sanitizePatenteInput(req, res, next) {
 }
 async function findAll(req, res) {
     try {
-        const patentes = await em.find(Patente, {}, { populate: ['hechizos', 'empleado', 'mago'] });
+        const patentes = await em.find(Patente, {}, { populate: ['hechizos', 'empleado', 'mago', 'etiquetas'] });
         res.status(200).json({ message: "Found All Patentes", data: patentes });
     }
     catch (error) {
@@ -35,9 +36,7 @@ async function findAll(req, res) {
 }
 async function findAllPending(req, res) {
     try {
-        const patentesPendientes = await em.find(Patente, {
-            estado: PatenteEstado.PENDIENTE_REVISION
-        });
+        const patentesPendientes = await em.find(Patente, { estado: PatenteEstado.PENDIENTE_REVISION }, { populate: ['hechizos', 'empleado', 'mago', 'etiquetas'] });
         res.status(200).json({ message: "Patentes pendientes de revisión encontradas", data: patentesPendientes });
     }
     catch (error) {
@@ -81,7 +80,7 @@ async function publish(req, res) {
     try {
         // Buscar la patente por su ID
         const id = Number.parseInt(req.params.id);
-        const patente = await em.findOneOrFail(Patente, { id }, { populate: ['hechizos', 'tipo_hechizo', 'empleado', 'mago'] });
+        const patente = await em.findOneOrFail(Patente, { id }, { populate: ['hechizos', 'tipo_hechizo', 'empleado', 'mago', 'etiquetas'] });
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
         }
@@ -97,7 +96,6 @@ async function publish(req, res) {
             descripcion: req.body.sanitizedInput.descripcion,
             instrucciones: req.body.sanitizedInput.instrucciones,
             restringido: req.body.sanitizedInput.restringido,
-            tipo_hechizo: req.body.sanitizedInput.tipo_hechizo,
             patente: patente // Asociar el hechizo con la patente
         };
         const newHechizo = em.create('Hechizo', hechizo);

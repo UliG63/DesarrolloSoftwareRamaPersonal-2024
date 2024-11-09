@@ -7,15 +7,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, OneToMany, Property, Collection, ManyToOne } from "@mikro-orm/core";
+import { Entity, OneToMany, Property, Cascade, Collection, ManyToOne, ManyToMany } from "@mikro-orm/core";
 import { Hechizo } from "../hechizo/hechizo.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.js";
 import { Magos } from "../magos/magos.entity.js";
 import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js";
+import { Etiqueta } from "../etiqueta/etiqueta.entity.js";
 let Patente = class Patente extends BaseEntity {
     constructor() {
         super(...arguments);
         this.hechizos = new Collection(this);
+        this.etiquetas = new Collection(this);
     }
 };
 __decorate([
@@ -43,7 +45,7 @@ __decorate([
     __metadata("design:type", String)
 ], Patente.prototype, "instrucciones", void 0);
 __decorate([
-    Property({ nullable: false, unique: false }),
+    Property({ nullable: true, unique: false }),
     __metadata("design:type", Boolean)
 ], Patente.prototype, "restringido", void 0);
 __decorate([
@@ -51,9 +53,13 @@ __decorate([
     __metadata("design:type", Object)
 ], Patente.prototype, "hechizos", void 0);
 __decorate([
-    ManyToOne(() => Tipo_Hechizo, { nullable: false }),
+    ManyToOne(() => Tipo_Hechizo, { nullable: true }),
     __metadata("design:type", Object)
 ], Patente.prototype, "tipo_hechizo", void 0);
+__decorate([
+    ManyToMany(() => Etiqueta, (etiqueta) => etiqueta.hechizos, { cascade: [Cascade.ALL], owner: true }),
+    __metadata("design:type", Object)
+], Patente.prototype, "etiquetas", void 0);
 __decorate([
     ManyToOne(() => Magos, { nullable: true }),
     __metadata("design:type", Object)

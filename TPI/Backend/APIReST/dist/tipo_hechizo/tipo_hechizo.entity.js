@@ -8,12 +8,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Entity, OneToMany, Property, Cascade, Collection } from "@mikro-orm/core";
-import { Hechizo } from "../hechizo/hechizo.entity.js";
+import { Patente } from "../patente/patente.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.js";
 let Tipo_Hechizo = class Tipo_Hechizo extends BaseEntity {
     constructor() {
         super(...arguments);
-        this.hechizos = new Collection(this);
+        this.patentes = new Collection(this);
     }
 };
 __decorate([
@@ -25,9 +25,9 @@ __decorate([
     __metadata("design:type", String)
 ], Tipo_Hechizo.prototype, "caracteristicas", void 0);
 __decorate([
-    OneToMany(() => Hechizo, hechizo => hechizo.tipo_hechizo, { cascade: [Cascade.ALL] }),
+    OneToMany(() => Patente, patente => patente.tipo_hechizo, { cascade: [Cascade.ALL] }),
     __metadata("design:type", Object)
-], Tipo_Hechizo.prototype, "hechizos", void 0);
+], Tipo_Hechizo.prototype, "patentes", void 0);
 Tipo_Hechizo = __decorate([
     Entity()
 ], Tipo_Hechizo);

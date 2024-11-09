@@ -19,6 +19,7 @@ function sanitizePatenteInput(req: Request, res: Response, next: NextFunction)
         hechizo: req.body.hechizo,
         tipo_hechizo: req.body.tipo_hechizo,
         empleado: req.body.empleado,
+        etiquetas: req.body.etiquetas,
         mago: req.body.mago 
     }
 
@@ -32,7 +33,7 @@ function sanitizePatenteInput(req: Request, res: Response, next: NextFunction)
 
 async function findAll(req: Request, res:Response){
     try {
-        const patentes = await em.find(Patente,{},{populate:['hechizos','empleado','mago']})
+        const patentes = await em.find(Patente,{},{populate:['hechizos','empleado','mago','etiquetas']})
         res.status(200).json({message:"Found All Patentes", data:patentes})
     } catch (error:any) {
         res.status(500).json({message:error.message})
@@ -41,9 +42,7 @@ async function findAll(req: Request, res:Response){
 
 async function findAllPending(req:Request, res:Response) {
     try {
-        const patentesPendientes = await em.find(Patente, {
-            estado: PatenteEstado.PENDIENTE_REVISION
-        });
+        const patentesPendientes = await em.find(Patente, {estado: PatenteEstado.PENDIENTE_REVISION},{populate:['hechizos','empleado','mago','etiquetas']});
         res.status(200).json({ message: "Patentes pendientes de revisión encontradas", data: patentesPendientes });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -95,7 +94,7 @@ async function publish(req:Request, res:Response){
     try {
         // Buscar la patente por su ID
         const id = Number.parseInt(req.params.id)
-        const patente = await em.findOneOrFail(Patente,{ id },{populate:['hechizos','tipo_hechizo','empleado','mago']});
+        const patente = await em.findOneOrFail(Patente,{ id },{populate:['hechizos','tipo_hechizo','empleado','mago','etiquetas']});
 
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
@@ -115,7 +114,6 @@ async function publish(req:Request, res:Response){
             descripcion: req.body.sanitizedInput.descripcion,
             instrucciones: req.body.sanitizedInput.instrucciones,
             restringido: req.body.sanitizedInput.restringido,
-            tipo_hechizo: req.body.sanitizedInput.tipo_hechizo,
             patente: patente // Asociar el hechizo con la patente
         };
 

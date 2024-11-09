@@ -1,5 +1,5 @@
 import { Entity, OneToMany, PrimaryKey, Property, Cascade, Collection } from "@mikro-orm/core"
-import { Hechizo } from "../hechizo/hechizo.entity.js"
+import { Patente } from "../patente/patente.entity.js"
 import { BaseEntity } from "../shared/db/baseEntity.js"
 
 @Entity()
@@ -8,7 +8,7 @@ export class Tipo_Hechizo extends BaseEntity{
     nombre!: string
     @Property({nullable: false, unique: true})
     caracteristicas!: string
-    @OneToMany(()=>Hechizo, hechizo => hechizo.tipo_hechizo, {cascade: [Cascade.ALL]})
-    hechizos = new Collection<Hechizo>(this) 
+    @OneToMany(()=>Patente, patente => patente.tipo_hechizo, {cascade: [Cascade.ALL]})
+    patentes = new Collection<Patente>(this) 
 
 }

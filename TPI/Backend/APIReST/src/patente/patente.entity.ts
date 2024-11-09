@@ -1,8 +1,9 @@
-import { Entity, OneToMany, PrimaryKey, Property, Cascade, Collection, OneToOne, ManyToOne, Rel } from "@mikro-orm/core"
+import { Entity, OneToMany, PrimaryKey, Property, Cascade, Collection, OneToOne, ManyToOne, Rel, ManyToMany } from "@mikro-orm/core"
 import { Hechizo } from "../hechizo/hechizo.entity.js"
 import { BaseEntity } from "../shared/db/baseEntity.js"
 import { Magos } from "../magos/magos.entity.js"
 import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js"
+import { Etiqueta } from "../etiqueta/etiqueta.entity.js"
 
 @Entity()
 export class Patente extends BaseEntity{
@@ -18,12 +19,14 @@ export class Patente extends BaseEntity{
     motivo_rechazo?:string
     @Property({nullable: false, unique: false})
     instrucciones!: string
-    @Property({nullable: false, unique: false})
-    restringido!:boolean
+    @Property({nullable: true, unique: false})
+    restringido?:boolean
     @OneToMany(() => Hechizo, hechizo => hechizo.patente)
     hechizos = new Collection<Hechizo>(this); 
-    @ManyToOne(()=>Tipo_Hechizo,{nullable:false})
-    tipo_hechizo!:Rel<Tipo_Hechizo>
+    @ManyToOne(()=>Tipo_Hechizo,{nullable:true})
+    tipo_hechizo?:Rel<Tipo_Hechizo>
+    @ManyToMany(() => Etiqueta, (etiqueta) => etiqueta.hechizos, {cascade: [Cascade.ALL], owner: true})
+    etiquetas? = new Collection<Etiqueta>(this)
     @ManyToOne(()=>Magos,{nullable:true})
     empleado!: Rel<Magos>
     @ManyToOne(()=>Magos,{nullable:false})

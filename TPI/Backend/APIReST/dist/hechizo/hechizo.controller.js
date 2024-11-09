@@ -1,5 +1,16 @@
+import { orm } from "../shared/db/orm.js";
+import { Hechizo } from "./hechizo.entity.js";
+const em = orm.em;
 async function findAll(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
+    try {
+        const hechizos = await em.find(Hechizo, {}, {
+            populate: ['patente.hechizos', 'patente.empleado', 'patente.mago', 'patente.etiquetas']
+        });
+        res.status(200).json({ message: "Found All Hechizos", data: hechizos });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 async function findOne(req, res) {
     res.status(500).json({ message: 'Not implemented' });

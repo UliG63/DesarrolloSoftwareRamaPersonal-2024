@@ -8,8 +8,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Entity, Property, Collection, ManyToMany } from "@mikro-orm/core";
-import { Hechizo } from "../hechizo/hechizo.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.js";
+import { Patente } from "../patente/patente.entity.js";
 let Etiqueta = class Etiqueta extends BaseEntity {
     constructor() {
         super(...arguments);
@@ -25,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], Etiqueta.prototype, "descripcion", void 0);
 __decorate([
-    ManyToMany(() => Hechizo, (hechizo) => hechizo.etiquetas),
+    ManyToMany(() => Patente, (patente) => patente.etiquetas),
     __metadata("design:type", Object)
 ], Etiqueta.prototype, "hechizos", void 0);
 Etiqueta = __decorate([
