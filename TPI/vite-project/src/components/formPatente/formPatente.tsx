@@ -46,6 +46,7 @@ const FormPatente: React.FC = () => {
             setDescripcion('');
             setInstrucciones('');
             setIsPopupVisible(false);
+            alert('Registro de Patente exitoso');
         } catch (error) {
             setErrorMessage('Hubo un error al dar de alta la patente.');
             console.error(error);

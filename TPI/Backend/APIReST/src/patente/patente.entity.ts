@@ -9,9 +9,9 @@ import { Etiqueta } from "../etiqueta/etiqueta.entity.js"
 export class Patente extends BaseEntity{
     @Property({nullable: false, unique: false})
     fechaCreacion!: Date
-    @Property({nullable: true, unique: true})
+    @Property({nullable: true, unique: false})
     nombre!: string
-    @Property({nullable: false, unique: true})
+    @Property({nullable: false, unique: false})
     descripcion!: string
     @Property({nullable: false, unique: false})
     estado!: string

@@ -49,9 +49,9 @@ async function findOne(req, res) {
 async function add(req, res) {
     try {
         // Obtener los datos del cuerpo de la solicitud
-        const { idmago, ...patenteData } = req.body;
+        const { idMago, ...patenteData } = req.body;
         // Verificar si el mago existe
-        let magoExistente = await em.findOne(Magos, { id: idmago });
+        let magoExistente = await em.findOne(Magos, { id: idMago });
         if (!magoExistente) {
             return res.status(404).json({ message: 'Mago no encontrado' });
         }
@@ -59,6 +59,8 @@ async function add(req, res) {
         const nuevaPatente = em.create(Patente, {
             ...patenteData,
             mago: magoExistente, // Asociar el mago con la patente
+            estado: PatenteEstado.PENDIENTE_REVISION,
+            fechaCreacion: new Date()
         });
         // Guardar en la base de datos
         await em.flush();

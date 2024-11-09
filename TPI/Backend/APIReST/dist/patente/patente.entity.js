@@ -25,11 +25,11 @@ __decorate([
     __metadata("design:type", Date)
 ], Patente.prototype, "fechaCreacion", void 0);
 __decorate([
-    Property({ nullable: true, unique: true }),
+    Property({ nullable: true, unique: false }),
     __metadata("design:type", String)
 ], Patente.prototype, "nombre", void 0);
 __decorate([
-    Property({ nullable: false, unique: true }),
+    Property({ nullable: false, unique: false }),
     __metadata("design:type", String)
 ], Patente.prototype, "descripcion", void 0);
 __decorate([
