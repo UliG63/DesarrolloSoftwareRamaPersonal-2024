@@ -12,3 +12,6 @@ Content-Type: application/json
     "idMago": 2
     
 }
+###cosas
+@idMago = 1
+GET http://localhost:3000/api/patente/{{idMago}}

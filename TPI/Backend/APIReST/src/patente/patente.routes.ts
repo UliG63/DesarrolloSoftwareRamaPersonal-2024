@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { sanitizePatenteInput, findAll, findOne, add, update, remove, publish, reject, findAllPending } from "./patente.controller.js";
+import { sanitizePatenteInput, findAll, findOne, add, update, remove, publish, reject, findAllPending,findByMago } from "./patente.controller.js";
 
 export const patenteRouter = Router()
 
 patenteRouter.post('/', sanitizePatenteInput, add);
 patenteRouter.get('/pending',findAllPending)
+patenteRouter.get('/:idMago',findByMago)
 patenteRouter.get('/',findAll)
 patenteRouter.get('/:id', findOne)
 patenteRouter.put('/:id',sanitizePatenteInput, update)
