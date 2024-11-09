@@ -16,7 +16,7 @@ function sanitizePatenteInput(req, res, next) {
         tipo_hechizo: req.body.tipo_hechizo,
         empleado: req.body.empleado,
         etiquetas: req.body.etiquetas,
-        mago: req.body.mago
+        idMago: req.body.idMago
     };
     Object.keys(req.body.sanitizedInput).forEach((key) => {
         if (req.body.sanitizedInput[key] === undefined) {
@@ -49,11 +49,11 @@ async function findOne(req, res) {
 async function add(req, res) {
     try {
         // Obtener los datos del cuerpo de la solicitud
-        const { mago, ...patenteData } = req.body;
+        const { idmago, ...patenteData } = req.body;
         // Verificar si el mago existe
-        let magoExistente = await em.findOne(Magos, { email: mago.email });
+        let magoExistente = await em.findOne(Magos, { id: idmago });
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrada' });
+            return res.status(404).json({ message: 'Mago no encontrado' });
         }
         // Crear la patente vinculada al mago existente
         const nuevaPatente = em.create(Patente, {

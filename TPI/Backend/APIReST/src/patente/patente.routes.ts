@@ -3,11 +3,11 @@ import { sanitizePatenteInput,findAll, findOne, add, update, remove, publish, re
 
 export const patenteRouter = Router()
 
-patenteRouter.get('/pending',findAllPending)
-patenteRouter.get('/',findAll)
-patenteRouter.get('/:id', findOne)
-patenteRouter.post('/',sanitizePatenteInput, add)
+//patenteRouter.get('/pending',findAllPending)
+//patenteRouter.get('/',findAll)
+//patenteRouter.get('/:id', findOne)
+patenteRouter.post('/', sanitizePatenteInput, add);
 //patenteRouter.put('//:id',sanitizePatenteInput, update)
-patenteRouter.put('/publish/:id',sanitizePatenteInput,publish)
-patenteRouter.put('/reject/:id',sanitizePatenteInput,reject)
-patenteRouter.delete('/:id', remove)
+//patenteRouter.put('/publish/:id',sanitizePatenteInput,publish)
+//patenteRouter.put('/reject/:id',sanitizePatenteInput,reject)
+//patenteRouter.delete('/:id', remove)

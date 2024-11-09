@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './formPatente.css';
 import cross from '../../assets/cross.png';
+import { AuthContext } from '../../context/authContext.tsx';
+import { useContext } from 'react';
+import axios from 'axios';
 
-//Falta todo lo de bdd
 
 const FormPatente: React.FC = () => {
     //Visibilidad de form 
@@ -12,13 +14,44 @@ const FormPatente: React.FC = () => {
     const togglePopup = () => {
         setIsPopupVisible(!isPopupVisible);
     };
-
+    const { currentUser } = useContext(AuthContext);
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [instrucciones, setInstrucciones] = useState('');
-    const [restringido, setRestringido] = useState('false');
-    const [imagen, setImagen] = useState('');
-    
+    const [errorMessage, setErrorMessage] = useState('');
+
+    //const [imagen, setImagen] = useState('');
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+            // Verifica que currentUser tenga idMago
+        if (!currentUser || !currentUser.id) {
+            console.error('Error: No se pudo obtener el id del Mago');
+            return;
+        }
+        const formData = {
+            nombre,
+            descripcion,
+            instrucciones,
+            idMago: currentUser.id
+        };
+        console.log(formData);
+        try {
+            // Enviar los datos a la API
+            const response = await axios.post('http://localhost:3000/api/patente/', formData);
+            
+            console.log('Patente agregada:', response.data);
+
+            // Restablece el formulario y cierra el popup
+            setNombre('');
+            setDescripcion('');
+            setInstrucciones('');
+            setIsPopupVisible(false);
+        } catch (error) {
+            setErrorMessage('Hubo un error al dar de alta la patente.');
+            console.error(error);
+        }
+    };
+
     return(
         <div>
             <button className='plus-patente-button' onClick={togglePopup}>
@@ -27,7 +60,7 @@ const FormPatente: React.FC = () => {
             {isPopupVisible && (
                 <div>
                 <div className='patente-overlay' onClick={togglePopup}></div>
-                <form className='form-patente'>
+                <form className='form-patente' onSubmit={handleSubmit}>
                     <button className='close-patente' onClick={togglePopup}>
                         <img src={cross} alt="" />
                     </button>
@@ -44,24 +77,8 @@ const FormPatente: React.FC = () => {
                         <p>Instrucciones</p>
                         <textarea id="instrucciones" onChange={(e) => setInstrucciones(e.target.value)} value={instrucciones} rows={4} required />
                     </div>
-                    <div className="restringido-group">
-                    <p>Restringido?</p>
-                    <div className="restringido-options">
-                        <label>
-                        <input type="radio" name="restringido" value="true" checked={restringido === 'true'} onChange={(e) => setRestringido(e.target.value)}/>
-                        Sí
-                        </label>
-                        <label>
-                        <input type="radio" name="restringido" value="false" checked={restringido === 'false'} onChange={(e) => setRestringido(e.target.value)}/>
-                        No
-                        </label>
-                    </div>
-                    <div>
-                        <p>Imagen</p>
-                        <input type="file" onChange={(e) => setImagen(e.target.value)} value={imagen} required/>
-                    </div>
-                    </div>
                     <button type="submit" className='button-patente'>Enviar</button>
+                    {errorMessage && <p className="error">{errorMessage}</p>}
                 </form>
                 </div>
             )}
