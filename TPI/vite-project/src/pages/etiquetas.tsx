@@ -4,6 +4,7 @@ import './etiquetas.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormEtiqueta from "../components/formEtiqueta/formEtiqueta";
+import deleteIcon from "../assets/basura.png";
 
 interface Etiqueta {
     id: number;
@@ -12,13 +13,9 @@ interface Etiqueta {
 }
 
 const EtiquetaPage: React.FC = () => {
-    // almacenar la lista de etiquetas
     const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
-     // manejar errores en la carga de etiquetas
     const [error, setError] = useState<string | null>(null);
-    // controlar si se está editando una etiqueta
     const [isEditing, setIsEditing] = useState(false);
-    // almacenar la etiqueta actualmente en edición
     const [currentEtiqueta, setCurrentEtiqueta] = useState<Etiqueta | null>(null);
     const [formData, setFormData] = useState<Etiqueta>({
         id: 0,
@@ -29,9 +26,8 @@ const EtiquetaPage: React.FC = () => {
     useEffect(() => {
         const fetchEtiquetas = async () => {
             try {
-                 // obtener las etiquetas de la api
                 const response = await axios.get('http://localhost:3000/api/etiqueta');
-                setEtiquetas(response.data.data); // almacenar las etiquetas
+                setEtiquetas(response.data.data);
             } catch (err) {
                 setError('Error al cargar las etiquetas.');
                 console.error(err);
@@ -43,8 +39,8 @@ const EtiquetaPage: React.FC = () => {
 
     const handleEditToggle = (etiqueta: Etiqueta) => {
         setIsEditing(true);
-        setCurrentEtiqueta(etiqueta); // establece la etiqueta actual para editar
-        setFormData(etiqueta); // carga los datos de la etiqueta en el formulario
+        setCurrentEtiqueta(etiqueta);
+        setFormData(etiqueta);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -55,21 +51,32 @@ const EtiquetaPage: React.FC = () => {
         }));
     };
 
-     // guardar los cambios de una etiqueta
     const handleSaveChanges = async () => {
         if (currentEtiqueta) {
             try {
                 await axios.put(`http://localhost:3000/api/etiqueta/${currentEtiqueta.id}`, formData);
-                // actualizar la lista de etiquetas en el estado con los cambios
                 setEtiquetas((prev) =>
                     prev.map((etiqueta) =>
                         etiqueta.id === currentEtiqueta.id ? { ...etiqueta, ...formData } : etiqueta
                     )
                 );
-                setIsEditing(false); // desactivar el modo de edición
-                setCurrentEtiqueta(null); // limpiar la etiqueta actual
+                setIsEditing(false);
+                setCurrentEtiqueta(null);
             } catch (error) {
                 console.error("Error al actualizar la información:", error);
+            }
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar esta etiqueta?");
+        if (confirmDelete) {
+            try {
+                await axios.delete(`http://localhost:3000/api/etiqueta/${id}`);
+                setEtiquetas((prev) => prev.filter((etiqueta) => etiqueta.id !== id));
+            } catch (error) {
+                console.error("Error al eliminar la etiqueta:", error);
+                setError("Hubo un error al intentar eliminar la etiqueta.");
             }
         }
     };
@@ -99,6 +106,9 @@ const EtiquetaPage: React.FC = () => {
                                         <div className="etiqueta-info">
                                             <p>Descripción: {etiqueta.descripcion}</p>
                                             <button onClick={() => handleEditToggle(etiqueta)} className='edit-button'>Editar</button>
+                                            <button onClick={() => handleDelete(etiqueta.id)} className="delete-button">
+                                                <img src={deleteIcon} alt="Eliminar" />
+                                            </button>
                                         </div>
                                     </>
                                 )}

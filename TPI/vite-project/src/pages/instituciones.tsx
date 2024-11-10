@@ -4,6 +4,7 @@ import './instituciones.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormInstitucion from "../components/formInstituciones/formInstituciones";
+import deleteIcon from "../assets/basura.png";
 
 interface Institucion {
     id: number;
@@ -69,6 +70,19 @@ const InstitucionesPage: React.FC = () => {
         }
     };
 
+    const handleDelete = async (id: number) => {
+        const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar esta institución?");
+        if (confirmDelete) {
+            try {
+                await axios.delete(`http://localhost:3000/api/institucion/${id}`);
+                // Elimina la institución del estado
+                setInstituciones((prev) => prev.filter((institucion) => institucion.id !== id));
+            } catch (error) {
+                console.error("Error al eliminar la institución:", error);
+            }
+        }
+    };
+
     return (
         <>
             <Navbar />
@@ -96,6 +110,9 @@ const InstitucionesPage: React.FC = () => {
                                             <p>Ciudad: {institucion.ciudad}</p>
                                             <p>País: {institucion.pais}</p>
                                             <button onClick={() => handleEditToggle(institucion)} className='edit-button'>Editar</button>
+                                            <button onClick={() => handleDelete(institucion.id)} className="delete-button">
+                                                <img src={deleteIcon} alt="Eliminar" />
+                                            </button>
                                         </div>
                                     </>
                                 )}

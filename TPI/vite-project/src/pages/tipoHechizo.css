@@ -97,6 +97,25 @@
     background-color: #c9302c;
 }
 
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-top: 7px;
+    margin-left: 10px;
+    transition: transform 0.2s ease;
+}
+
+.delete-button img {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+}
+
+.delete-button img:hover {
+    transform: scale(1.2); /* Aumento suave del tamaño de la imagen */
+}
+
 .tipoHechizo-card input {
     width: 100%;
     padding: 8px;

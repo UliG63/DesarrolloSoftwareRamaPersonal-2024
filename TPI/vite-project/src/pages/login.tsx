@@ -85,7 +85,6 @@ useEffect(() => {
   const handleLogin = async () => {
     try {
       await login(email, pass);
-      alert('Inicio de sesión exitoso');
       navigate('/'); // Redirigir a la página de inicio después de iniciar sesión
     } catch (error) {
       console.error(error);

@@ -4,6 +4,7 @@ import './tipoHechizo.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormTipoHechizo from "../components/formTipoHechizo/formTipoHechizo";
+import deleteIcon from "../assets/basura.png";
 
 interface TipoHechizo {
     id: number;
@@ -67,6 +68,19 @@ const TipoHechizoPage: React.FC = () => {
         }
     };
 
+    const handleDelete = async (id: number) => {
+        const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar este tipo de hechizo?");
+        if (confirmDelete) {
+            try {
+                await axios.delete(`http://localhost:3000/api/tipo_hechizo/${id}`);
+                setTiposHechizo((prev) => prev.filter((tipoHechizo) => tipoHechizo.id !== id));
+            } catch (error) {
+                console.error("Error al eliminar el tipo de hechizo:", error);
+                setError("Hubo un error al intentar eliminar el tipo de hechizo.");
+            }
+        }
+    };
+
     return (
         <>
             <Navbar />
@@ -92,6 +106,9 @@ const TipoHechizoPage: React.FC = () => {
                                         <div className="tipoHechizo-info">
                                             <p>Características: {tipoHechizo.caracteristicas}</p>
                                             <button onClick={() => handleEditToggle(tipoHechizo)} className='edit-button'>Editar</button>
+                                            <button onClick={() => handleDelete(tipoHechizo.id)} className="delete-button">
+                                                <img src={deleteIcon} alt="Eliminar" />
+                                            </button>
                                         </div>
                                     </>
                                 )}

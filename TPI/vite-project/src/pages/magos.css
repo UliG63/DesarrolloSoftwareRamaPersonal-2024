@@ -1,0 +1,52 @@
+.magos-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.magos-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Espacio entre tarjetas */
+    margin-top: 80px;
+    width: 80%;
+}
+
+.mago-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 30px 30px 10px;
+    width: 45%; /* Ajuste para que quepan dos tarjetas por fila */
+    max-width: 500px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.mago-card h3 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.mago-card h6 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #555;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 5px;
+}
+
+.personal-info, .user-varita {
+    padding: 15px 0;
+}
+
+.personal-info p, .user-varita p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #666;
+}
