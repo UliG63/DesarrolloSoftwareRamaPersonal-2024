@@ -2,15 +2,16 @@ import React, { useContext, useState } from 'react';
 import './user.css';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
-
-// habría que hacer que tenga que ingresar dos veces su nueva contraseña
+import { useNavigate } from 'react-router-dom';
 
 const User: React.FC = () => {
-  // obtener el usuario actual y la función logout
-  const { currentUser, logout } = useContext(AuthContext);  
-  // estado para saber si está en modo edición/visualización
+  const { currentUser, logout } = useContext(AuthContext);
+  const navigate = useNavigate(); // Usar useNavigate para la redirección
+
+  // Estado para el modo edición/visualización
   const [isEditing, setIsEditing] = useState(false);
-  // estado que almacena los datos del usuario para edición
+
+  // Estado que almacena los datos del usuario para edición
   const [userData, setUserData] = useState({
     nombre: currentUser?.nombre || '',
     apellido: currentUser?.apellido || '',
@@ -19,10 +20,13 @@ const User: React.FC = () => {
     madera_varita: currentUser?.madera_varita || '',
     nucleo_varita: currentUser?.nucleo_varita || '',
     largo_varita: currentUser?.largo_varita || '',
-    pass: '' //la contraseña no la muestra
+    pass: '', // La contraseña no la muestra
   });
 
-   // actualiza el estado userData con el valor ingresado en los inputs
+  // Estado para la confirmación de la nueva contraseña
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Actualiza el estado userData con el valor ingresado en los inputs
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
@@ -31,25 +35,62 @@ const User: React.FC = () => {
     }));
   };
 
-  // va cambiando el modo edición entre true y false
+  // Actualiza el estado para la confirmación de la contraseña
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === 'pass') {
+      setUserData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    } else {
+      setConfirmPassword(value);
+    }
+  };
+
+  // Cambia entre modo edición y visualización
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
 
-  // enviar put a la api con el id del usuario actual y la nueva info
+  // Guardar cambios del usuario
   const handleSaveChanges = async () => {
+    if (userData.pass !== confirmPassword) {
+      alert('Las contraseñas no coinciden.');
+      return;
+    }
+
     try {
       await axios.put('http://localhost:3000/api/auth/update', { ...userData, id: currentUser?.id });
-      setIsEditing(false);  // desactiva el modo edición
+      setIsEditing(false);  // Desactiva el modo edición
+      alert('Información actualizada con éxito.');
     } catch (error) {
       console.error("Error al actualizar la información:", error);
+      alert("Hubo un error al actualizar la información. Por favor, inténtalo de nuevo.");
     }
   };
 
-   // cerrar sesión al llamar la función logout del contexto de autenticación y redirige al login
+  // Cerrar sesión y redirigir al login
   const handleLogout = () => {
     logout();
-    window.location.href = '/login';
+    navigate('/login'); // Redirigir sin recargar la página
+  };
+
+  // Eliminar cuenta
+  const handleDelete = async (id: number) => {
+    
+    const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar esta cuenta?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3000/api/magos/${id}`);
+        logout();  // Limpia el estado de autenticación
+        alert("Cuenta eliminada con éxito.");
+        navigate('/login');  // Redirige al login
+      } catch (error) {
+        console.error("Error al eliminar la cuenta:", error);
+        alert("Hubo un error al eliminar la cuenta. Intenta nuevamente.");
+      }
+    }
   };
 
   return (
@@ -64,7 +105,8 @@ const User: React.FC = () => {
             <input type="text" name="madera_varita" value={userData.madera_varita} onChange={handleInputChange} placeholder="Madera de la Varita" />
             <input type="text" name="nucleo_varita" value={userData.nucleo_varita} onChange={handleInputChange} placeholder="Núcleo de la Varita" />
             <input type="text" name="largo_varita" value={userData.largo_varita} onChange={handleInputChange} placeholder="Largo de la Varita" />
-            <input type="password" name="pass" value={userData.pass} onChange={handleInputChange} placeholder="Nueva Contraseña" />
+            <input type="password" name="pass" value={userData.pass} onChange={handlePasswordChange} placeholder="Nueva Contraseña" />
+            <input type="password" value={confirmPassword} onChange={handlePasswordChange} placeholder="Confirmar Contraseña" />
             <button onClick={handleSaveChanges} className='save-button'>Guardar</button>
             <button onClick={handleEditToggle} className='cancel-button'>Cancelar</button>
           </>
@@ -86,7 +128,10 @@ const User: React.FC = () => {
           </>
         )}
       </div>
-      <button onClick={handleLogout} className='logout-button'>Logout</button>
+      <div className='red-buttons'>
+        <button onClick={handleLogout} className='logout-button'>Logout</button>
+        <button onClick={() => currentUser && handleDelete(currentUser.id)} className="delete-user"disabled={!currentUser}>Eliminar</button>
+      </div>
     </div>
   );
 };

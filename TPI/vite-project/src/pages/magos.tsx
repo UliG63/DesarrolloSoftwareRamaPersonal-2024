@@ -13,6 +13,9 @@ interface Mago {
     madera_varita: string;
     nucleo_varita: string;
     largo_varita: number;
+    institucion: {
+        nombre: string;
+    };
 }
 
 const MagosPage: React.FC = () => {
@@ -48,7 +51,7 @@ const MagosPage: React.FC = () => {
                                 <div className='personal-info'>
                                     <p>Email: {mago.email}</p>
                                     <p>Profesión: {mago.profesion}</p>
-                                    <p>Institución: </p>
+                                    <p>Institución: {mago.institucion.nombre}</p>
                                 </div>
                                 <h6>Información de la Varita</h6>
                                 <div className='user-varita'>

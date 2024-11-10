@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [state, setState] = useState('Registrarse');
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+  const [confirmPass, setConfirmPass] = useState(''); // Nuevo estado para la confirmación de contraseña
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [profesion, setProfesion] = useState('');
@@ -63,6 +64,12 @@ useEffect(() => {
   };
 
   const handleRegister = async () => {
+    // Verificar que las contraseñas coincidan
+    if (pass !== confirmPass) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+    
     try {
       await register({
         nombre,
@@ -124,6 +131,10 @@ useEffect(() => {
             </div>
             {state === 'Registrarse' && (
               <>
+                <div>
+                  <p>Confirmar Contraseña</p>
+                  <input type="password" onChange={(e) => setConfirmPass(e.target.value)} value={confirmPass} required />
+                </div>
                 <div>
                   <p>Profesión</p>
                   <input type="text" onChange={(e) => setProfesion(e.target.value)} value={profesion} required />
