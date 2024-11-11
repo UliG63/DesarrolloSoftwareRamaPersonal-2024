@@ -2,7 +2,6 @@ import Navbar from "../components/navbar/navbar";
 import Inicio from '../components/inicio/inicio';
 import Footer from "../components/footer/footer";
 import backgroundImg from '../assets/inicio-patentes.jpeg';
-import FormPatente from "../components/formPatente/formPatente";
 import FormPatenteValidacionRechaza from "../components/formPatenteValidacionRechaza/formPatenteValidacionRechaza.tsx";
 import { AuthContext } from "../context/authContext.tsx";
 import { useContext, useEffect } from 'react';
@@ -72,15 +71,16 @@ const PatentesEmpleadoPage: React.FC = () => {
          <div>
             <Navbar />
             <Inicio
-                title="Solicitudes de Patentes"
-                subTitle="Aquí puedes gestionar todas tus solicitudes de patentes de hechizos. En esta sección, podrás ver el estado actual de tus patentes solicitadas, hacer un seguimiento del progreso y revisar cualquier actualización importante. Además, si tienes nuevas ideas para hechizos, puedes solicitar nuevas patentes fácilmente. Explora nuestras opciones y lleva tus invenciones mágicas al siguiente nivel."
+                title="Gestion de solicitudes de Patentes"
+                subTitle="Aquí podrás supervisar, gestionar y aprobar solicitudes de patentes de hechizos únicos creados por los magos de todas las instituciones. Recuerda
+                realizar tus gestiones siempre en conformidad con las normas del Ministerio de Magia."
                 backgroundImage={backgroundImg}
             />
             
-            <FormPatente /> 
+
             <Title 
-                encabezado='TUS PATENTES' 
-                title='Información' 
+                encabezado='' 
+                title='Patentes pendientes' 
                 subTitle='' 
             />
             {/* Mostrar las patentes del usuario en tarjetas */}
@@ -112,7 +112,7 @@ const PatentesEmpleadoPage: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No tienes patentes registradas.</p>
+                    <p>No existen patentes pendientes de revision.</p>
                 )}
             </div>
             {error && <div className="error-message">{error}</div>}  {/* Mostrar el error */}

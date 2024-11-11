@@ -30,8 +30,6 @@ function sanitizePatenteInput(req: Request, res: Response, next: NextFunction)
     })
     next()
 }
-
-
 async function findAll(req: Request, res:Response){
     try {
         const patentes = await em.find(Patente,{},{populate:['hechizos','empleado','mago','etiquetas','tipo_hechizo']})
@@ -144,10 +142,9 @@ async function publish(req:Request, res:Response){
     }
 }
 async function reject(req:Request,res:Response) {
-    try {
+    try {    
         // Buscar la patente por su ID
-        const id = Number.parseInt(req.params.id)
-        const motivo_rechazo = req.params.motivo_rechazo
+        const id = Number.parseInt(req.params.id)    
         const patente = await em.findOneOrFail(Patente,{ id },{populate:['hechizos','tipo_hechizo','empleado','mago','etiquetas']});
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
@@ -156,9 +153,10 @@ async function reject(req:Request,res:Response) {
         if (patente.estado !== PatenteEstado.PENDIENTE_REVISION) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
-        // Actualizar el estado a "rechazada y agregar el motivo de rechazo"
+        // Actualizar el estado a "rechazada, agregar el motivo de rechazo y el empleado que lo rechazo"
         patente.estado = PatenteEstado.RECHAZADA;
         patente.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
+        patente.empleado = req.body.sanitizedInput.empleado;
         // Guardar la actualización de la patente y el nuevo hechizo
         await em.persistAndFlush([patente]);
         res.status(200).json({ message: 'Patente rechazada', data: patente });

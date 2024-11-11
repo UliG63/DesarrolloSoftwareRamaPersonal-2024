@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
     "fechaCreacion": "2024-11-02",
-    "nombre": "Wingardium Leviosa V2.0",
+    "nombre": "Wingardium Leviosa V2.1",
     "descripcion": "Esto es una prueba",
     "instrucciones": "Esto es una prueba",
     "idMago": 2
