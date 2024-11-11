@@ -1,4 +1,7 @@
 ### GET ALL
+GET http://localhost:3000/api/patente/
+
+### GET ALL patentes pendientes.
 GET http://localhost:3000/api/patente/pending
 ### crear una nueva patente
 POST http://localhost:3000/api/patente
@@ -6,7 +9,7 @@ Content-Type: application/json
 
 {
     "fechaCreacion": "2024-11-02",
-    "nombre": "Wingardium Leviosa",
+    "nombre": "Wingardium Leviosa V2.0",
     "descripcion": "Esto es una prueba",
     "instrucciones": "Esto es una prueba",
     "idMago": 2

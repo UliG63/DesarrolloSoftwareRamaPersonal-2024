@@ -1,0 +1,113 @@
+.plus-patente-button{
+    margin-top: 20px;
+    margin-left: 10px;
+    padding: 10px;
+    background-color:#f9f7f4;
+    color: #7f4e2b;
+    font-size: 16px;
+    border-color: #7f4e2b;
+    border-style: double;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.plus-patente-button:hover {
+    background-color: #7f4e2b;
+    color: #f9f7f4;
+}
+
+.patente-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro con opacidad */
+    z-index: 999; /*Debajo del form*/
+  }
+  
+.form-patente {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f7f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    z-index: 1000; /*Encima del overlay */
+}
+
+.form-patente h4 {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.form-patente textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.button-patente {
+    width: 100%;
+    padding: 10px;
+    background-color: #7f4e2b;
+    color: #f9f7f4;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+  
+.button-patente:hover {
+    background-color: #663a21;
+}
+
+.close-patente {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.restringido-group {
+    margin-bottom: 20px;
+  }
+  
+.restringido-options {
+    display: flex;
+    gap: 20px; /*Espacio entre los círculos*/
+    align-items: center;
+
+}
+  
+.restringido-options label {
+    display: flex;
+    align-items: center;
+    gap: 5px; /*Espacio entre el círculo y el texto*/
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+  
+.restringido-options input[type="radio"] {
+    margin: 0; /* Elimina márgenes alrededor del radio button */
+}
+
+@media (max-width: 840px){
+    .form-patente{
+        width: 90%;
+    }
+}
