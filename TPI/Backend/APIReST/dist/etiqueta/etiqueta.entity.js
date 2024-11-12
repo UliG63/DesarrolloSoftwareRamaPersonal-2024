@@ -13,7 +13,7 @@ import { Patente } from "../patente/patente.entity.js";
 let Etiqueta = class Etiqueta extends BaseEntity {
     constructor() {
         super(...arguments);
-        this.hechizos = new Collection(this);
+        this.patentes = new Collection(this);
     }
 };
 __decorate([
@@ -27,7 +27,7 @@ __decorate([
 __decorate([
     ManyToMany(() => Patente, (patente) => patente.etiquetas),
     __metadata("design:type", Object)
-], Etiqueta.prototype, "hechizos", void 0);
+], Etiqueta.prototype, "patentes", void 0);
 Etiqueta = __decorate([
     Entity()
 ], Etiqueta);

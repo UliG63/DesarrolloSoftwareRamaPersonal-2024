@@ -3,6 +3,7 @@ import Inicio from '../components/inicio/inicio';
 import Footer from "../components/footer/footer";
 import backgroundImg from '../assets/inicio-patentes.jpeg';
 import FormPatenteValidacionRechaza from "../components/formPatenteValidacionRechaza/formPatenteValidacionRechaza.tsx";
+import FormPatenteValidacionAcepta from "../components/formPatenteValidacionAcepta/formPatenteValidacionAcepta.tsx";
 import { AuthContext } from "../context/authContext.tsx";
 import { useContext, useEffect } from 'react';
 import axios from 'axios';
@@ -57,6 +58,7 @@ const PatentesEmpleadoPage: React.FC = () => {
         }
     };
 
+    
     useEffect(() => {
         if (currentUser?.id) {
             fetchUserPatentes();
@@ -97,17 +99,11 @@ const PatentesEmpleadoPage: React.FC = () => {
                                 <p>Descripcion: {patente.descripcion}</p>
                                 <p>Instrucciones: {patente.instrucciones}</p>
                                 </div>
-                                <h6>Información de Estado</h6>
-                                <div className='user-varita'>
-                                    <p>Estado: {patente.estado}</p>
-                                    {patente.empleado ? (
-                                        <p>Empleado Revisor: {patente.empleado.nombre} {patente.empleado.apellido}</p>
-                                    ) : (
-                                        <p>Empleado Revisor: No asignado</p>
-                                    )}
-                                    <p>Motivo de rechazo: {patente.motivoRechazo || 'N/A'}</p>
+                                <div className="buttons-container">
+                                    <FormPatenteValidacionRechaza idPatente={patente.id} />
+                                    <FormPatenteValidacionAcepta idPatente={patente.id} />
                                 </div>
-                                <FormPatenteValidacionRechaza idPatente={patente.id}/>
+
                                 
                         </div>
                     ))

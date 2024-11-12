@@ -10,6 +10,6 @@ export class Etiqueta extends BaseEntity{
     @Property({nullable: false, unique: true})
     descripcion!: string
     @ManyToMany(() => Patente, (patente)=>patente.etiquetas)
-    hechizos = new Collection<Hechizo>(this) 
+    patentes = new Collection<Patente>(this) 
 
 }

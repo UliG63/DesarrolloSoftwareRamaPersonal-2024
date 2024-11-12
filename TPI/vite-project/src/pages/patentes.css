@@ -60,3 +60,23 @@
     margin: 5px 0;
     color: #666;
 }
+.buttons-container {
+    display: flex;
+    justify-content: space-between; /* Alinea un botón a la izquierda y otro a la derecha */
+    margin-top: 10px; /* Espacio entre el contenido y los botones */
+}
+
+.buttons-container button {
+    width: auto; /* Deja que el ancho sea dinámico */
+    padding: 10px 20px; /* Ajuste de padding */
+    font-size: 16px; /* Aumenta el tamaño de la fuente */
+    white-space: nowrap; /* Evita el quiebre de línea */
+    text-align: center; /* Asegura el texto centrado */
+    border-radius: 5px; /* Opcional: bordes redondeados */
+}
+
+.patentes-container .patentes-card .close-button {
+    font-size: 12px; /* Ajusta específicamente el tamaño de la 'X' */
+    padding: 5px; /* Asegura que no tenga demasiado espacio */
+    line-height: 1; /* Asegura que no se expanda verticalmente */
+}

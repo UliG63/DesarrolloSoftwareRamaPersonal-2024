@@ -1,8 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import e, { Request, Response, NextFunction } from "express";
 import { orm } from "../shared/db/orm.js";
 import { Patente } from "./patente.entity.js";
 import { PatenteEstado } from "./patente.enum.js";
 import { Magos } from "../magos/magos.entity.js";
+import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js";
+import { Collection, wrap } from "@mikro-orm/core";
+import { Etiqueta } from "../etiqueta/etiqueta.entity.js";
 
 const em = orm.em;
 
@@ -17,9 +20,9 @@ function sanitizePatenteInput(req: Request, res: Response, next: NextFunction)
         instrucciones: req.body.instrucciones,
         restringido: req.body.restringido,
         hechizo: req.body.hechizo,
-        tipo_hechizo: req.body.tipo_hechizo,
+        tipo_hechizo: req.body.TipoHechizo,
         empleado: req.body.empleado,
-        etiquetas: req.body.etiquetas,
+        etiquetas: req.body.Etiquetas,
         idMago: req.body.idMago 
     }
 
@@ -107,8 +110,14 @@ async function remove(req: Request, res:Response){
 async function publish(req:Request, res:Response){
     try {
         // Buscar la patente por su ID
+        console.log('la req:',req.body)
         const id = Number.parseInt(req.params.id)
-        const patente = await em.findOneOrFail(Patente,{ id },{populate:['hechizos','tipo_hechizo','empleado','mago','etiquetas']});
+        const patente = await em.findOneOrFail(Patente,{ id });
+        const idTH = Number.parseInt(req.body.tipoHechizo);
+        const tipo_hechizo = await em.findOneOrFail(Tipo_Hechizo,{ id:idTH });
+        console.log('El tipo de hechizo:',tipo_hechizo)
+        const empleado = await em.findOneOrFail(Magos,{id:req.body.empleado.id});
+        console.log('etiquetas',req.body.Etiquetas);
 
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
@@ -118,27 +127,35 @@ async function publish(req:Request, res:Response){
         if (patente.estado !== PatenteEstado.PENDIENTE_REVISION) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
-
-        // Actualizar el estado a "publicada"
+        console.log('la patente:',patente);
+        // Actualizar el estado
         patente.estado = PatenteEstado.PUBLICADA;
-
-        // Crear el hechizo si la patente ha sido publicada
+        patente.empleado = empleado;
+        patente.restringido = req.body.restringido;
+        patente.tipo_hechizo = tipo_hechizo;
+        console.log('La cantidad de etiuetas:', req.body.Etiquetas.length)
+        for (let i=0 ; i<req.body.Etiquetas.length; i++){
+            const etiqueta = await em.findOneOrFail(Etiqueta, {id: req.body.Etiquetas[i].id})
+            patente.etiquetas?.add(etiqueta)
+        }
+        console.log('La patente actualizada', patente);
+        //Crear el hechizo si la patente ha sido publicada
         const hechizo = {
-            nombre: req.body.sanitizedInput.nombre,
-            descripcion: req.body.sanitizedInput.descripcion,
-            instrucciones: req.body.sanitizedInput.instrucciones,
-            restringido: req.body.sanitizedInput.restringido,
+            nombre: patente.nombre,
+            descripcion: patente.descripcion,
+            instrucciones: patente.instrucciones,
+            restringido: patente.restringido,
             patente: patente // Asociar el hechizo con la patente
         };
 
         const newHechizo = em.create('Hechizo', hechizo);
+        await em.persistAndFlush([patente,newHechizo]);
 
-        // Guardar la actualización de la patente y el nuevo hechizo
-        await em.persistAndFlush([patente, newHechizo]);
 
         res.status(200).json({ message: 'Patente publicada y hechizo creado', data: patente });
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        console.log('we hebben a serius problem:',error);
+        res.status(500).json({ message: 'Hubo un problema al publicar la patente' });
     }
 }
 async function reject(req:Request,res:Response) {
@@ -161,7 +178,7 @@ async function reject(req:Request,res:Response) {
         await em.persistAndFlush([patente]);
         res.status(200).json({ message: 'Patente rechazada', data: patente });
     } catch (error:any) {
-        
+        res.status(500).json({ message: 'Hubo un problema rechazando la patente' });
     }
 }
 

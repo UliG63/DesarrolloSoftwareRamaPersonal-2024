@@ -57,7 +57,7 @@ __decorate([
     __metadata("design:type", Object)
 ], Patente.prototype, "tipo_hechizo", void 0);
 __decorate([
-    ManyToMany(() => Etiqueta, (etiqueta) => etiqueta.hechizos, { cascade: [Cascade.ALL], owner: true }),
+    ManyToMany(() => Etiqueta, (etiqueta) => etiqueta.patentes, { cascade: [Cascade.ALL], owner: true }),
     __metadata("design:type", Object)
 ], Patente.prototype, "etiquetas", void 0);
 __decorate([

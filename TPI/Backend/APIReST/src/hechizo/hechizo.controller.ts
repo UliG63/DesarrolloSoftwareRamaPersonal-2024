@@ -6,9 +6,8 @@ const em = orm.em;
 
 async function findAll(req: Request, res: Response) {
     try {
-        const hechizos = await em.find(Hechizo, {}, {
-            populate: ['patente.hechizos', 'patente.empleado', 'patente.mago', 'patente.etiquetas']
-        });
+        const hechizos = await em.find(Hechizo, {}, {populate: ['*']});
+        console.log(hechizos)
         res.status(200).json({ message: "Found All Hechizos", data: hechizos });
     } catch (error: any) {
         res.status(500).json({ message: error.message });

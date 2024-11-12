@@ -17,7 +17,6 @@
     background-color: #7f4e2b;
     color: #f9f7f4;
 }
-
 .patente-overlay {
     position: fixed;
     top: 0;
@@ -42,13 +41,8 @@
     z-index: 1000; /*Encima del overlay */
 }
 
-.form-patente h4 {
-    text-align: left;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
 
-.form-patente textarea {
+.form-rechazo-patente textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
@@ -56,7 +50,7 @@
     border-radius: 5px;
     box-sizing: border-box;
     font-size: 14px;
-}
+}   
 
 .button-patente {
     width: 100%;
@@ -105,6 +99,62 @@
 .restringido-options input[type="radio"] {
     margin: 0; /* Elimina márgenes alrededor del radio button */
 }
+.etiqueta-seleccionada {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+.etiqueta-seleccionada button {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+/* Aumentar la separación entre los campos */
+.form-rechazo-patente div {
+    margin-bottom: 20px; /* Añade espacio entre cada campo */
+}
+
+/* Aumentar el tamaño del texto de los labels */
+.form-rechazo-patente p {
+    font-size: 16px; /* Aumenta el tamaño del texto */
+    font-weight: bold; /* Hace que el texto sea negrita */
+}
+
+/* Estilo para las etiquetas seleccionadas */
+.etiqueta-seleccionada {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #663a21; /* Color de fondo marrón oscuro */
+    color: white; /* Texto en blanco */
+    border-radius: 5px;
+    font-weight: bold; /* Texto en negrita */
+    font-size: 14px; /* Ajusta el tamaño del texto */
+}
+
+/* Estilo para el botón de eliminar etiqueta (la "x") */
+.etiqueta-seleccionada button {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    color: white; /* Mantener la "x" en blanco */
+    font-weight: bold; /* Negrita */
+    cursor: pointer;
+}
+
+/* Estilo para los selects */
+.form-rechazo-patente select {
+    width: 100%; /* Asegura que el select tome todo el ancho disponible */
+    padding: 8px; /* Añade espacio interno al select */
+    font-size: 16px; /* Tamaño de texto un poco más grande */
+    border: 1px solid #ccc; /* Borde sutil */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
 
 @media (max-width: 840px){
     .form-patente{

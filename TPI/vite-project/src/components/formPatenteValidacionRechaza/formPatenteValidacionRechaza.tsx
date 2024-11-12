@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import axios from 'axios';
 
 interface formValidacionRechazaProps{
-    idPatente: number
+    idPatente: number;
 }
 function FormPatenteValidacionRechaza ({idPatente}: formValidacionRechazaProps) {
 

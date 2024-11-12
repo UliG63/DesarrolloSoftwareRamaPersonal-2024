@@ -25,7 +25,7 @@ export class Patente extends BaseEntity{
     hechizos = new Collection<Hechizo>(this); 
     @ManyToOne(()=>Tipo_Hechizo,{nullable:true})
     tipo_hechizo?:Rel<Tipo_Hechizo>
-    @ManyToMany(() => Etiqueta, (etiqueta) => etiqueta.hechizos, {cascade: [Cascade.ALL], owner: true})
+    @ManyToMany(() => Etiqueta, (etiqueta) => etiqueta.patentes, {cascade: [Cascade.ALL], owner: true})
     etiquetas? = new Collection<Etiqueta>(this)
     @ManyToOne(()=>Magos,{nullable:true})
     empleado!: Rel<Magos>
