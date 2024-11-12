@@ -1,3 +1,58 @@
+.filtro-container {
+    width: 250px; /* Ancho reducido para el contenedor de filtros */
+    max-width: 100%; /* Se asegura que no ocupe más del 100% del espacio disponible */
+    margin: 20px; /* Margen alrededor para evitar que quede pegado a otros elementos */
+    padding: 15px; /* Relleno interno para espaciar los elementos */
+    background-color: #f4f4f4; /* Fondo claro */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destacar */
+    display: flex;
+    flex-direction: column; /* Asegura que los filtros estén en columna */
+    justify-content: flex-start; /* Alinea los elementos al inicio */
+    align-items: flex-start; /* Alinea los elementos al inicio */
+    position: absolute; /* Fija el contenedor en una posición específica */
+    top: 20px; /* Distancia desde el borde superior */
+    left: 20px; /* Distancia desde el borde izquierdo */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+.filtro-item {
+    margin: 8px 0; /* Espaciado entre los filtros */
+}
+
+.filtro-label {
+    margin-right: 10px; /* Espaciado entre la etiqueta y el input */
+    font-weight: bold;
+    color: #201e1c;
+}
+
+.filtro-input, .filtro-select {
+    padding: 5px; /* Relleno dentro del campo */
+    border-radius: 5px; /* Bordes redondeados para inputs */
+    border: 1px solid #ccc; /* Borde sutil */
+    width: 100%; /* Hacer que los inputs ocupen todo el ancho del contenedor */
+    max-width: 200px; /* Limitar el ancho máximo de los campos */
+    box-sizing: border-box; /* Asegura que el padding no haga que el campo sea más ancho */
+}
+
+.filtro-boton {
+    background-color: #3c7d93;
+    color: #ffffff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px; /* Espacio superior para separar el botón */
+    width: auto; /* No expandir el botón a todo el ancho */
+    align-self: flex-start; /* Alinea el botón al inicio */
+}
+
+.filtro-boton:hover {
+    background-color: #285d6b; /* Cambio de color al pasar el cursor */
+}
+
+/* Cards de hechizos */
 .hechizos-cards {
     margin: 40px auto;
     padding: 0 80px;
@@ -9,9 +64,9 @@
 }
 
 .hechizo-card {
-    width: 30%; /*Cada card ocupa el 30% del ancho para mostrar 3 cards por fila*/
+    width: 30%; /* Cada card ocupa el 30% del ancho para mostrar 3 cards por fila */
     box-sizing: border-box;
-    margin-bottom: 20px; /*Espaciado entre filas*/
+    margin-bottom: 20px; /* Espaciado entre filas */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
     background-color: #f9f7f4;
@@ -49,7 +104,7 @@
 }
 
 .hechizo-info p:last-child {
-    margin-bottom: 0; /*Elimina el margen inferior del último párrafo*/
+    margin-bottom: 0; /* Elimina el margen inferior del último párrafo */
 }
 
 .hechizo-tipo {
@@ -58,7 +113,7 @@
 }
 
 .image-container {
-    position: relative; /*El botón dentro del contenedor de la imagen */
+    position: relative; /* El botón dentro del contenedor de la imagen */
     width: 100%;
 }
 
@@ -78,6 +133,7 @@
     border-radius: 50%; 
 }
 
+/* Pop-up de información */
 .pop-up {
     position: fixed;
     top: 50%;
@@ -89,19 +145,19 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     padding: 0px;
-    display: none; /*Oculto por defecto*/
-    z-index: 1000; /*Encima del contenido*/
+    display: none; /* Oculto por defecto */
+    z-index: 1000; /* Encima del contenido */
 }
   
 .pop-up.visible {
-    display: block; /*Mostrar cuando es visible*/
+    display: block; /* Mostrar cuando es visible */
 }
   
 .pop-up-content {
     position: relative;
 }
 
-.pop-up-info{
+.pop-up-info {
     padding: 20px;
     width: 100%;
     box-sizing: border-box;
@@ -139,16 +195,34 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: 999; /*Debajo del pop-up pero encima del contenido*/
-    display: none; /*Oculto por defecto*/
-  }
+    z-index: 999; /* Debajo del pop-up pero encima del contenido */
+    display: none; /* Oculto por defecto */
+}
   
 .overlay.visible {
     display: block;
 }
 
-@media (max-width: 840px){
-    .hechizos-cards{
+/* Etiquetas */
+.hechizo-etiquetas {
+    display: flex;
+    flex-wrap: wrap; /* Para que las etiquetas ocupen nuevas líneas si hay muchas */
+    gap: 8px; /* Espacio entre las etiquetas */
+    margin-top: 8px; /* Espacio entre el tipo de hechizo y las etiquetas */
+}
+  
+.etiqueta-box {
+    background-color: #663a21; /* Color de fondo del recuadro */
+    margin: 5px;
+    padding: 8px 15px; /* Espacio interno */
+    border-radius: 8px; /* Bordes redondeados */
+    font-size: 12px; /* Tamaño del texto */
+    color: #ffffff; /* Color del texto */
+}
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 840px) {
+    .hechizos-cards {
         width: 100%;
     }
     
@@ -156,7 +230,7 @@
         margin-bottom: 0;
         width: 90%;
         padding: 0;
-        flex-direction: column; /*Elementos en columna */
+        flex-direction: column; /* Elementos en columna */
         align-items: center;
     }
 
@@ -164,4 +238,205 @@
         width: 100%; 
         margin-bottom: 40px;
     }
-  }
+
+    .filtro-container {
+        width: 90%; /* Alineación más estrecha para pantallas pequeñas */
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+
+/* Cards de hechizos */
+.hechizos-cards {
+    margin: 40px auto;
+    padding: 0 80px;
+    position: relative;
+    width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.hechizo-card {
+    width: 30%; /* Cada card ocupa el 30% del ancho para mostrar 3 cards por fila */
+    box-sizing: border-box;
+    margin-bottom: 20px; /* Espaciado entre filas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    background-color: #f9f7f4;
+    color: #201e1c;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.hechizo-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 0;
+}
+
+.hechizo-info {
+    padding: 20px; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.hechizo-info h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.hechizo-info p {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.hechizo-info p:last-child {
+    margin-bottom: 0; /* Elimina el margen inferior del último párrafo */
+}
+
+.hechizo-tipo {
+    font-size: 10px; 
+    font-weight: bold; 
+}
+
+.image-container {
+    position: relative; /* El botón dentro del contenedor de la imagen */
+    width: 100%;
+}
+
+.info-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.info-button img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%; 
+}
+
+/* Pop-up de información */
+.pop-up {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 500px;
+    background-color: #f9f7f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    padding: 0px;
+    display: none; /* Oculto por defecto */
+    z-index: 1000; /* Encima del contenido */
+}
+  
+.pop-up.visible {
+    display: block; /* Mostrar cuando es visible */
+}
+  
+.pop-up-content {
+    position: relative;
+}
+
+.pop-up-info {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pop-up-info h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.pop-up-info h4 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.pop-up-info p {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+  
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999; /* Debajo del pop-up pero encima del contenido */
+    display: none; /* Oculto por defecto */
+}
+  
+.overlay.visible {
+    display: block;
+}
+
+/* Etiquetas */
+.hechizo-etiquetas {
+    display: flex;
+    flex-wrap: wrap; /* Para que las etiquetas ocupen nuevas líneas si hay muchas */
+    gap: 8px; /* Espacio entre las etiquetas */
+    margin-top: 8px; /* Espacio entre el tipo de hechizo y las etiquetas */
+}
+  
+.etiqueta-box {
+    background-color: #663a21; /* Color de fondo del recuadro */
+    margin: 5px;
+    padding: 8px 15px; /* Espacio interno */
+    border-radius: 8px; /* Bordes redondeados */
+    font-size: 12px; /* Tamaño del texto */
+    color: #ffffff; /* Color del texto */
+}
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 840px) {
+    .hechizos-cards {
+        width: 100%;
+    }
+    
+    .hechizo-cards {
+        margin-bottom: 0;
+        width: 90%;
+        padding: 0;
+        flex-direction: column; /* Elementos en columna */
+        align-items: center;
+    }
+
+    .hechizo-card {
+        width: 100%; 
+        margin-bottom: 40px;
+    }
+
+    .filtro-container {
+        width: 90%; /* Alineación más estrecha para pantallas pequeñas */
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
