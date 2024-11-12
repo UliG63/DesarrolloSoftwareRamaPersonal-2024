@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import './hechizoCard.css';
 import infoIcon from "../../assets/information.png";
 import cross from "../../assets/crossWhite.png";
+import imgHechizo1 from '../../assets/hechizo1.jpeg'
 import axios from 'axios';
 import { useEffect } from 'react';
 
@@ -48,12 +49,14 @@ const HechizoCard: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchHechizos();
-  },);
+  fetchHechizos();
+}, []);
+
+  /*
   useEffect(() => {
     console.log('Hechizos:', hechizos);
   }, [hechizos]);
-
+*/
 
 
   return (
@@ -61,7 +64,7 @@ const HechizoCard: React.FC = () => {
       {hechizos.map((hechizo) => (
         <div key={hechizo.idHechizo} className='hechizo-card'>
           <div className='image-container'>
-            <img src='../../assets/hechizo2.jpeg' alt={hechizo.nombre} className='hechizo-image' />
+            <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
             {!hechizo.restringido && (
               <button
                 className='info-button'
@@ -86,7 +89,7 @@ const HechizoCard: React.FC = () => {
               <button className='close-button' onClick={() => setIsOpen(null)}>
                 <img src={cross} alt="" />
               </button>
-              <img src='../../assets/hechizo2.jpeg' alt={hechizo.nombre} className='hechizo-image' />
+              <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
               <div className='pop-up-info'>
                 <h2>{hechizo.nombre}</h2>
                 <h4>Descripción</h4>
@@ -103,6 +106,7 @@ const HechizoCard: React.FC = () => {
       ))}
       {error && <div className="error-message">{error}</div>}  {/* Mostrar el error */}
     </div>
+    
   );
 };
 
