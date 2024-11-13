@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Select from 'react-select'; // Importación de react-select
 import axios from 'axios';
 import './hechizoCard.css';
 import infoIcon from "../../assets/information.png";
 import cross from "../../assets/crossWhite.png";
 import imgHechizo1 from '../../assets/hechizo1.jpeg';
+import { AuthContext } from '../../context/authContext.tsx';
 
 interface Hechizo {
   idHechizo: number;
@@ -34,11 +35,12 @@ interface Hechizo {
 }
 
 const HechizoCard: React.FC = () => {
+  const { currentUser } = useContext(AuthContext);
   const [hechizos, setHechizos] = useState<Hechizo[]>([]);
   const [filteredHechizos, setFilteredHechizos] = useState<Hechizo[]>([]);
   const [selectedTipo, setSelectedTipo] = useState<{ label: string; value: string } | null>(null);
   const [selectedEtiqueta, setSelectedEtiqueta] = useState<{ label: string; value: string } | null>(null);
-  const [isOpen, setIsOpen] = useState<number | null>(null);
+  const [isOpen, setIsOpen] = useState<number | null>(null); // Cambiado para almacenar el ID del hechizo abierto
   const [error, setError] = useState<string | null>(null);
 
   const fetchHechizos = async () => {
@@ -56,17 +58,16 @@ const HechizoCard: React.FC = () => {
     fetchHechizos();
   }, []);
 
-  // Crear opciones únicas de tipo de hechizo
+  
+
   const tiposUnicos: string[] = [...new Set(hechizos.map(hechizo => hechizo.patente.tipo_hechizo.nombre))];
   const tiposOptions = [{ label: 'Todos', value: '' }, ...tiposUnicos.map((tipo: string) => ({ label: tipo, value: tipo }))];
 
-  // Crear opciones únicas de etiquetas
   const etiquetasUnicas: string[] = [
     ...new Set(hechizos.flatMap(hechizo => hechizo.patente.etiquetas.map(etiqueta => etiqueta.nombre))),
   ];
   const etiquetasOptions = [{ label: 'Todos', value: '' }, ...etiquetasUnicas.map((etiqueta: string) => ({ label: etiqueta, value: etiqueta }))];
 
-  // Función de filtrado
   const handleFilterChange = () => {
     let filtered = hechizos;
 
@@ -83,7 +84,6 @@ const HechizoCard: React.FC = () => {
     setFilteredHechizos(filtered);
   };
 
-  // Monitorear cambios en los filtros
   useEffect(() => {
     handleFilterChange();
   }, [selectedTipo, selectedEtiqueta]);
@@ -116,10 +116,10 @@ const HechizoCard: React.FC = () => {
           <div key={hechizo.idHechizo} className='hechizo-card'>
             <div className='image-container'>
               <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
-              {!hechizo.restringido && (
+              {(!hechizo.restringido || currentUser?.isEmpleado) && (
                 <button
                   className='info-button'
-                  onClick={() => setIsOpen(hechizo.idHechizo)} // Abre el pop-up para este hechizo
+                  onClick={() => setIsOpen(isOpen === hechizo.idHechizo ? null : hechizo.idHechizo)} // Establece el hechizo actual como abierto
                 >
                   <img src={infoIcon} alt="Información" />
                 </button>
@@ -132,35 +132,39 @@ const HechizoCard: React.FC = () => {
             </div>
 
             {/* Pop-up con la información del hechizo */}
-            <div className={`overlay ${isOpen === hechizo.idHechizo ? 'visible' : ''}`}></div>
-            <div className={`pop-up ${isOpen === hechizo.idHechizo ? 'visible' : ''}`}>
-              <div className='pop-up-content'>
-                <button className='close-button' onClick={() => setIsOpen(null)}>
-                  <img src={cross} alt="Cerrar" />
-                </button>
-                <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
-                <div className='pop-up-info'>
-                  <h2>{hechizo.nombre}</h2>
-                  <h4>Descripción</h4>
-                  <p>{hechizo.descripcion}</p>
-                  <h4>Instrucciones</h4>
-                  <p>{hechizo.instrucciones}</p>
-                  <h4>Tipo Hechizo</h4>
-                  <p>{hechizo.patente.tipo_hechizo.nombre}</p>
+            {isOpen === hechizo.idHechizo && ( // Solo muestra el popup si isOpen coincide con el hechizo actual
+              <>
+                <div className={`overlay visible`}></div>
+                <div className={`pop-up visible`}>
+                  <div className='pop-up-content'>
+                    <button className='close-button' onClick={() => setIsOpen(null)}>
+                      <img src={cross} alt="Cerrar" />
+                    </button>
+                    <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
+                    <div className='pop-up-info'>
+                      <h2>{hechizo.nombre}</h2>
+                      <h4>Descripción</h4>
+                      <p>{hechizo.descripcion}</p>
+                      <h4>Instrucciones</h4>
+                      <p>{hechizo.instrucciones}</p>
+                      <h4>Tipo Hechizo</h4>
+                      <p>{hechizo.patente.tipo_hechizo.nombre}</p>
 
-                  <h4>Etiquetas</h4>
-                  <div className='hechizo-etiquetas'>
-                    {hechizo.patente.etiquetas.map(etiqueta => (
-                      <span key={etiqueta.nombre} className='etiqueta-box'>
-                        {etiqueta.nombre}
-                      </span>
-                    ))}
+                      <h4>Etiquetas</h4>
+                      <div className='hechizo-etiquetas'>
+                        {hechizo.patente.etiquetas.map(etiqueta => (
+                          <span key={etiqueta.nombre} className='etiqueta-box'>
+                            {etiqueta.nombre}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p>Patentado por: {hechizo.patente.mago.nombre} {hechizo.patente.mago.apellido}</p>
+                    </div>
                   </div>
-
-                  <p>Patentado por: {hechizo.patente.mago.nombre} {hechizo.patente.mago.apellido}</p>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         ))}
         {error && <div className="error-message">{error}</div>} {/* Mostrar el error si ocurre */}
@@ -168,5 +172,6 @@ const HechizoCard: React.FC = () => {
     </div>
   );
 };
+
 
 export default HechizoCard;
