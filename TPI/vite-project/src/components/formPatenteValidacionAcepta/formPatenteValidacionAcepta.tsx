@@ -111,7 +111,7 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
 
     return (
         <div>
-            <button className='rechazar-patente-button' onClick={togglePopup}>
+            <button className='publicar-patente-button' onClick={togglePopup}>
                 Publicar
             </button>
             {isPopupVisible && (
@@ -143,7 +143,7 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
                         {/* Etiquetas */}
                         <div>
                             <p>Etiquetas</p>
-                            <div>
+                        
                                 {selectedEtiquetas.map(etiqueta => (
                                     <span className='etiqueta-seleccionada' key={etiqueta.id}>
                                         {etiqueta.nombre}
@@ -152,7 +152,6 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
                                         </button>
                                     </span>
                                 ))}
-                            </div>
                             <select onChange={handleSelectEtiqueta} value="">
                                 <option value="" disabled>Seleccionar etiqueta</option>
                                 {Etiqueta.map(etiqueta => (
@@ -172,7 +171,7 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
                             </select>
                         </div>
 
-                        <button type="submit" className='button-rechazar-patente'>Publicar</button>
+                        <button type="submit" className='button-rechazo-patente'>Publicar</button>
                         {errorMessage && <p className="error">{errorMessage}</p>}
                     </form>
                 </div>

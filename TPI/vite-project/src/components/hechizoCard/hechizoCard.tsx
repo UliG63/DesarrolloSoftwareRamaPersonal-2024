@@ -91,7 +91,6 @@ const HechizoCard: React.FC = () => {
   return (
     <div className='hechizos-cards-container'>
       {/* Contenedor para los filtros */}
-      <h4>Opciones de Filtro</h4>
       <div className='filtros-container'>
         <Select
           className="select-dropdown"

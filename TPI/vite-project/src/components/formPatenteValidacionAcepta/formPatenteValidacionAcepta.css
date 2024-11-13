@@ -1,33 +1,14 @@
-.plus-patente-button{
-    margin-top: 20px;
-    margin-left: 10px;
-    padding: 10px;
-    background-color:#f9f7f4;
-    color: #7f4e2b;
-    font-size: 16px;
-    border-color: #7f4e2b;
-    border-style: double;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-weight: bold;
-}
-
-.plus-patente-button:hover {
-    background-color: #7f4e2b;
-    color: #f9f7f4;
-}
 .patente-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro con opacidad */
-    z-index: 999; /*Debajo del form*/
-  }
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+}
   
-.form-patente {
+.form-rechazo-patente {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -38,22 +19,72 @@
     background-color: #f9f7f4;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    z-index: 1000; /*Encima del overlay */
+    z-index: 1000;
+} 
+
+.close-rechazo-patente {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
+.form-rechazo-patente div {
+    margin-bottom: 20px;
+}
 
-.form-rechazo-patente textarea {
+.form-rechazo-patente p {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.form-rechazo-patente h4 {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.etiqueta-seleccionada {
+    padding: 5px 5px;
+    margin: 2px;
+    display: inline-block;
+    line-height: 1;
+    cursor: pointer;
+    background-color: white;
+    color: #7f4e2b;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 12px;
+    text-decoration: none;
+    border: #7f4e2b 1px solid;
+    margin-bottom: 10px;
+}
+
+.etiqueta-seleccionada button {
+    margin-left: 2px;
+    padding: 0;
+    background: none;
+    border: none;
+    color: #7f4e2b;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-rechazo-patente select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box;
     font-size: 14px;
-}   
+}
 
-.button-patente {
-    width: 100%;
+.button-rechazo-patente {
     padding: 10px;
     background-color: #7f4e2b;
     color: #f9f7f4;
@@ -63,101 +94,28 @@
     cursor: pointer;
     font-weight: bold;
 }
-  
-.button-patente:hover {
+
+.button-rechazo-patente:hover {
     background-color: #663a21;
 }
 
-.close-patente {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
+.publicar-patente-button {
+    background-color: #5cb85c;
     border: none;
-    cursor: pointer;
-}
-
-.restringido-group {
-    margin-bottom: 20px;
-  }
-  
-.restringido-options {
-    display: flex;
-    gap: 20px; /*Espacio entre los círculos*/
-    align-items: center;
-
-}
-  
-.restringido-options label {
-    display: flex;
-    align-items: center;
-    gap: 5px; /*Espacio entre el círculo y el texto*/
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-  
-.restringido-options input[type="radio"] {
-    margin: 0; /* Elimina márgenes alrededor del radio button */
-}
-.etiqueta-seleccionada {
-    display: inline-block;
-    margin: 5px;
-    padding: 5px;
-    background-color: #e0e0e0;
+    color: #f9f7f4;
     border-radius: 5px;
-}
-
-.etiqueta-seleccionada button {
-    margin-left: 10px;
-    background: none;
-    border: none;
+    padding: 10px 20px;
     cursor: pointer;
-}
-/* Aumentar la separación entre los campos */
-.form-rechazo-patente div {
-    margin-bottom: 20px; /* Añade espacio entre cada campo */
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
 }
 
-/* Aumentar el tamaño del texto de los labels */
-.form-rechazo-patente p {
-    font-size: 16px; /* Aumenta el tamaño del texto */
-    font-weight: bold; /* Hace que el texto sea negrita */
+.publicar-patente-button:hover {
+    background-color: #4cae4c;
 }
 
-/* Estilo para las etiquetas seleccionadas */
-.etiqueta-seleccionada {
-    display: inline-block;
-    margin: 5px;
-    padding: 5px 10px;
-    background-color: #663a21; /* Color de fondo marrón oscuro */
-    color: white; /* Texto en blanco */
-    border-radius: 5px;
-    font-weight: bold; /* Texto en negrita */
-    font-size: 14px; /* Ajusta el tamaño del texto */
-}
-
-/* Estilo para el botón de eliminar etiqueta (la "x") */
-.etiqueta-seleccionada button {
-    margin-left: 10px;
-    background: none;
-    border: none;
-    color: white; /* Mantener la "x" en blanco */
-    font-weight: bold; /* Negrita */
-    cursor: pointer;
-}
-
-/* Estilo para los selects */
-.form-rechazo-patente select {
-    width: 100%; /* Asegura que el select tome todo el ancho disponible */
-    padding: 8px; /* Añade espacio interno al select */
-    font-size: 16px; /* Tamaño de texto un poco más grande */
-    border: 1px solid #ccc; /* Borde sutil */
-    border-radius: 4px; /* Bordes redondeados */
-}
-
-
-@media (max-width: 840px){
-    .form-patente{
+@media (max-width: 840px) {
+    .form-rechazo-patente {
         width: 90%;
     }
 }

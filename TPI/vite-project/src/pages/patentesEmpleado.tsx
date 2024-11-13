@@ -82,7 +82,7 @@ const PatentesEmpleadoPage: React.FC = () => {
 
             <Title 
                 encabezado='' 
-                title='Patentes pendientes' 
+                title='Patentes Pendientes' 
                 subTitle='' 
             />
             {/* Mostrar las patentes del usuario en tarjetas */}
