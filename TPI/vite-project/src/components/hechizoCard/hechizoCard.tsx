@@ -8,7 +8,7 @@ import imgHechizo1 from '../../assets/hechizo1.jpeg';
 import { AuthContext } from '../../context/authContext.tsx';
 
 interface Hechizo {
-  idHechizo: number;
+  id: number;
   nombre: string;
   descripcion: string;
   instrucciones: string;
@@ -113,13 +113,16 @@ const HechizoCard: React.FC = () => {
       {/* Listado de hechizos */}
       <div className='hechizos-cards' id='hechizos-cards'>
         {filteredHechizos.map((hechizo) => (
-          <div key={hechizo.idHechizo} className='hechizo-card'>
+          <div key={hechizo.id} className='hechizo-card'>
             <div className='image-container'>
               <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
               {(!hechizo.restringido || currentUser?.isEmpleado) && (
                 <button
                   className='info-button'
-                  onClick={() => setIsOpen(isOpen === hechizo.idHechizo ? null : hechizo.idHechizo)} // Establece el hechizo actual como abierto
+                  onClick={() => {
+                    console.log('Hechizo seleccionado:', hechizo.id)
+                    setIsOpen(isOpen === hechizo.id ? null : hechizo.id)}
+                  } // Establece el hechizo actual como abierto
                 >
                   <img src={infoIcon} alt="Información" />
                 </button>
@@ -132,7 +135,7 @@ const HechizoCard: React.FC = () => {
             </div>
 
             {/* Pop-up con la información del hechizo */}
-            {isOpen === hechizo.idHechizo && ( // Solo muestra el popup si isOpen coincide con el hechizo actual
+            {isOpen === hechizo.id && ( // Solo muestra el popup si isOpen coincide con el hechizo actual
               <>
                 <div className={`overlay visible`}></div>
                 <div className={`pop-up visible`}>

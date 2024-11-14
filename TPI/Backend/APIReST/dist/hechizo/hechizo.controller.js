@@ -13,7 +13,14 @@ async function findAll(req, res) {
     }
 }
 async function findOne(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
+    try {
+        const id = Number.parseInt(req.params.id);
+        const hechizo = await em.findOneOrFail(Hechizo, { id });
+        res.status(200).json({ message: 'found hechizo', data: hechizo });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 async function add(req, res) {
     res.status(500).json({ message: 'Not implemented' });
