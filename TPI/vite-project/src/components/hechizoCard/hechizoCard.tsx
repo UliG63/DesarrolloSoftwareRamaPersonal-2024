@@ -3,6 +3,7 @@ import Select from 'react-select'; // Importación de react-select
 import axios from 'axios';
 import './hechizoCard.css';
 import infoIcon from "../../assets/information.png";
+import warningCon from "../../assets/icons8-error-50.png"
 import cross from "../../assets/crossWhite.png";
 import imgHechizo1 from '../../assets/hechizo1.jpeg';
 import { AuthContext } from '../../context/authContext.tsx';
@@ -19,6 +20,7 @@ interface Hechizo {
       caracteristicas: string;
     };
     mago: {
+      id: number;
       nombre: string;
       apellido: string;
       email: string;
@@ -116,16 +118,23 @@ const HechizoCard: React.FC = () => {
           <div key={hechizo.id} className='hechizo-card'>
             <div className='image-container'>
               <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
-              {(!hechizo.restringido || currentUser?.isEmpleado) && (
+              {(!hechizo.restringido || currentUser?.isEmpleado || currentUser?.id===hechizo.patente.mago.id) ? (
                 <button
                   className='info-button'
                   onClick={() => {
                     console.log('Hechizo seleccionado:', hechizo.id)
-                    setIsOpen(isOpen === hechizo.id ? null : hechizo.id)}
-                  } // Establece el hechizo actual como abierto
+                    setIsOpen(isOpen === hechizo.id ? null : hechizo.id)
+                  }} // Establece el hechizo actual como abierto
                 >
                   <img src={infoIcon} alt="Información" />
                 </button>
+              ) : (
+                <div className='tooltip-container'>
+                  <button className='warning-button'>
+                    <img src={warningCon} alt="Información restringida" />
+                  </button>
+                  <span className='tooltip-text'>Este hechizo se considera peligroso y el acceso a su informacion se ha restringido por cuestiones de seguridad</span>
+              </div>
               )}
             </div>
             <div className='hechizo-info'>
