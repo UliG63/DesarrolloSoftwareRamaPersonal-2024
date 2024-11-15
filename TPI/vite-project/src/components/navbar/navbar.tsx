@@ -20,7 +20,9 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className='container'>
-      <img src={logo} alt="Logo" className='logo' />
+      <Link to="/">
+        <img src={logo} alt="Logo" className='logo' />
+      </Link>
       <div className='menu-icon' onClick={toggleMenu}>
         <img src={menuOpen ? menuCross : menuIcon} alt="Menu Icon"/>
       </div>
