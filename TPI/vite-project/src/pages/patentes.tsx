@@ -16,7 +16,7 @@ interface Patente {
     nombre: string;
     descripcion: string;
     estado: string;
-    motivoRechazo: string | null; // Puede ser null
+    motivo_rechazo: string | null; // Puede ser null
     instrucciones: string;
     empleado: {
         nombre: string;
@@ -64,6 +64,19 @@ const PatentesPage: React.FC = () => {
         console.log('Patentes cargadas:', Patente);
     }, [Patente]);
 
+    const getEstadoClass = (estado: string) => {
+        switch (estado) {
+            case 'publicada':
+                return 'estado-verde';
+            case 'rechazada':
+                return 'estado-rojo';
+            case 'pendiente_revision':
+                return 'estado-amarillo';
+            default:
+                return '';
+        }
+    };
+
     return (
         <div>
             <Navbar />
@@ -79,40 +92,45 @@ const PatentesPage: React.FC = () => {
                 title='Información' 
                 subTitle='' 
             />
-            {/* Mostrar las patentes del usuario en tarjetas */}
             <div className="patentes-container">
                 {Patente.length > 0 ? (
                     Patente.map((patente) => (
                         <div key={patente.id} className="patentes-card">
-                             <h3>{patente.nombre}</h3>
-                                <h6>Información General</h6>
-                                <div className='personal-info'>
+                            <h3>{patente.nombre}</h3>
+                            <h6>Información General</h6>
+                            <div className='personal-info'>
                                 <p>Usuario: {patente.mago.nombre} {patente.mago.apellido}</p>
                                 <p>ID Patente: {patente.id}</p>
                                 <p>Fecha: {new Date(patente.fechaCreacion).toLocaleDateString()}</p>
                                 <p>Descripcion: {patente.descripcion}</p>
                                 <p>Instrucciones: {patente.instrucciones}</p>
-                                </div>
-                                <h6>Información de Estado</h6>
-                                <div className='user-varita'>
-                                    <p>Estado: {patente.estado}</p>
-                                    {patente.empleado ? (
-                                        <p>Empleado Revisor: {patente.empleado.nombre} {patente.empleado.apellido}</p>
-                                    ) : (
-                                        <p>Empleado Revisor: No asignado</p>
-                                    )}
-                                    <p>Motivo de rechazo: {patente.motivoRechazo || 'N/A'}</p>
-                                </div>
+                            </div>
+                            <h6>Información de Estado</h6>
+                            <div className='user-varita'>
+                                <p>
+                                    <span>Estado: </span>
+                                    <span className={getEstadoClass(patente.estado)}>
+                                        {patente.estado}
+                                    </span>
+                                </p>
+                                {patente.empleado ? (
+                                    <p>Empleado Revisor: {patente.empleado.nombre} {patente.empleado.apellido}</p>
+                                ) : (
+                                    <p>Empleado Revisor: No asignado</p>
+                                )}
+                                <p>Motivo de rechazo: {patente.motivo_rechazo || 'N/A'}</p>
+                            </div>
                         </div>
                     ))
                 ) : (
                     <p>No tienes patentes registradas.</p>
                 )}
             </div>
-            {error && <div className="error-message">{error}</div>}  {/* Mostrar el error */}
+            {error && <div className="error-message">{error}</div>}
             <Footer />
         </div>
     );
 };
 
 export default PatentesPage;
+

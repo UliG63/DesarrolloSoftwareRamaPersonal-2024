@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Select from 'react-select'; // Importación de react-select
+import Select from 'react-select';
 import axios from 'axios';
 import './hechizoCard.css';
 import infoIcon from "../../assets/information.png";
-import warningCon from "../../assets/icons8-error-50.png"
+import warningCon from "../../assets/icons8-error-50.png";
 import cross from "../../assets/crossWhite.png";
 import imgHechizo1 from '../../assets/hechizo1.jpeg';
 import { AuthContext } from '../../context/authContext.tsx';
@@ -42,17 +42,22 @@ const HechizoCard: React.FC = () => {
   const [filteredHechizos, setFilteredHechizos] = useState<Hechizo[]>([]);
   const [selectedTipo, setSelectedTipo] = useState<{ label: string; value: string } | null>(null);
   const [selectedEtiqueta, setSelectedEtiqueta] = useState<{ label: string; value: string } | null>(null);
-  const [isOpen, setIsOpen] = useState<number | null>(null); // Cambiado para almacenar el ID del hechizo abierto
+  const [isOpen, setIsOpen] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchHechizos = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/hechizo`);
-      setHechizos(response.data.data);
-      setFilteredHechizos(response.data.data); // Inicialmente todos los hechizos
+      //manejo por si no hay hechizos cargados o si no se puede recuperar de la API
+      const data = response.data.data || []; 
+      setHechizos(data);
+      setFilteredHechizos(data);
+      setError(null);
     } catch (error) {
       setError('Error al cargar los hechizos');
       console.error(error);
+      setHechizos([]);
+      setFilteredHechizos([]);
     }
   };
 
@@ -60,13 +65,11 @@ const HechizoCard: React.FC = () => {
     fetchHechizos();
   }, []);
 
-  
-
-  const tiposUnicos: string[] = [...new Set(hechizos.map(hechizo => hechizo.patente.tipo_hechizo.nombre))];
+  const tiposUnicos: string[] = [...new Set(hechizos.map(hechizo => hechizo.patente?.tipo_hechizo?.nombre || ''))];
   const tiposOptions = [{ label: 'Todos', value: '' }, ...tiposUnicos.map((tipo: string) => ({ label: tipo, value: tipo }))];
 
   const etiquetasUnicas: string[] = [
-    ...new Set(hechizos.flatMap(hechizo => hechizo.patente.etiquetas.map(etiqueta => etiqueta.nombre))),
+    ...new Set(hechizos.flatMap(hechizo => hechizo.patente?.etiquetas?.map(etiqueta => etiqueta.nombre) || [])),
   ];
   const etiquetasOptions = [{ label: 'Todos', value: '' }, ...etiquetasUnicas.map((etiqueta: string) => ({ label: etiqueta, value: etiqueta }))];
 
@@ -74,12 +77,12 @@ const HechizoCard: React.FC = () => {
     let filtered = hechizos;
 
     if (selectedTipo && selectedTipo.value !== '') {
-      filtered = filtered.filter(hechizo => hechizo.patente.tipo_hechizo.nombre === selectedTipo.value);
+      filtered = filtered.filter(hechizo => hechizo.patente?.tipo_hechizo?.nombre === selectedTipo.value);
     }
 
     if (selectedEtiqueta && selectedEtiqueta.value !== '') {
       filtered = filtered.filter(hechizo =>
-        hechizo.patente.etiquetas.some(etiqueta => etiqueta.nombre === selectedEtiqueta.value)
+        hechizo.patente?.etiquetas?.some(etiqueta => etiqueta.nombre === selectedEtiqueta.value)
       );
     }
 
@@ -92,7 +95,6 @@ const HechizoCard: React.FC = () => {
 
   return (
     <div className='hechizos-cards-container'>
-      {/* Contenedor para los filtros */}
       <div className='filtros-container'>
         <Select
           className="select-dropdown"
@@ -112,78 +114,73 @@ const HechizoCard: React.FC = () => {
         />
       </div>
 
-      {/* Listado de hechizos */}
       <div className='hechizos-cards' id='hechizos-cards'>
-        {filteredHechizos.map((hechizo) => (
-          <div key={hechizo.id} className='hechizo-card'>
-            <div className='image-container'>
-              <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
-              {(!hechizo.restringido || currentUser?.isEmpleado || currentUser?.id===hechizo.patente.mago.id) ? (
-                <button
-                  className='info-button'
-                  onClick={() => {
-                    console.log('Hechizo seleccionado:', hechizo.id)
-                    setIsOpen(isOpen === hechizo.id ? null : hechizo.id)
-                  }} // Establece el hechizo actual como abierto
-                >
-                  <img src={infoIcon} alt="Información" />
-                </button>
-              ) : (
-                <div className='tooltip-container'>
-                  <button className='warning-button'>
-                    <img src={warningCon} alt="Información restringida" />
+        {error && <div className="error-message">{error}</div>} {/* Mostrar error */}
+        {!error && filteredHechizos.length === 0 && (
+          <div className="empty-message">No se encontraron hechizos disponibles.</div>
+        )}
+        {!error &&
+          filteredHechizos.map((hechizo) => (
+            <div key={hechizo.id} className='hechizo-card'>
+              <div className='image-container'>
+                <img src={imgHechizo1} alt={hechizo.nombre || 'Hechizo'} className='hechizo-image' />
+                {(!hechizo.restringido || currentUser?.isEmpleado || currentUser?.id === hechizo.patente?.mago?.id) ? (
+                  <button
+                    className='info-button'
+                    onClick={() => setIsOpen(isOpen === hechizo.id ? null : hechizo.id)}
+                  >
+                    <img src={infoIcon} alt="Información" />
                   </button>
-                  <span className='tooltip-text'>Este hechizo se considera peligroso y el acceso a su informacion se ha restringido por cuestiones de seguridad</span>
-              </div>
-              )}
-            </div>
-            <div className='hechizo-info'>
-              <h2 className='hechizo-name'>{hechizo.nombre}</h2>
-              <p className='hechizo-description'>{hechizo.descripcion}</p>
-              <p className='hechizo-tipo'>{hechizo.patente.tipo_hechizo.nombre}</p>
-            </div>
-
-            {/* Pop-up con la información del hechizo */}
-            {isOpen === hechizo.id && ( // Solo muestra el popup si isOpen coincide con el hechizo actual
-              <>
-                <div className={`overlay visible`}></div>
-                <div className={`pop-up visible`}>
-                  <div className='pop-up-content'>
-                    <button className='close-button' onClick={() => setIsOpen(null)}>
-                      <img src={cross} alt="Cerrar" />
+                ) : (
+                  <div className='tooltip-container'>
+                    <button className='warning-button'>
+                      <img src={warningCon} alt="Información restringida" />
                     </button>
-                    <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
-                    <div className='pop-up-info'>
-                      <h2>{hechizo.nombre}</h2>
-                      <h4>Descripción</h4>
-                      <p>{hechizo.descripcion}</p>
-                      <h4>Instrucciones</h4>
-                      <p>{hechizo.instrucciones}</p>
-                      <h4>Tipo Hechizo</h4>
-                      <p>{hechizo.patente.tipo_hechizo.nombre}</p>
-
-                      <h4>Etiquetas</h4>
-                      <div className='hechizo-etiquetas'>
-                        {hechizo.patente.etiquetas.map(etiqueta => (
-                          <span key={etiqueta.nombre} className='etiqueta-box'>
-                            {etiqueta.nombre}
-                          </span>
-                        ))}
+                    <span className='tooltip-text'>Este hechizo se considera peligroso y el acceso a su información está restringido.</span>
+                  </div>
+                )}
+              </div>
+              <div className='hechizo-info'>
+                <h2 className='hechizo-name'>{hechizo.nombre}</h2>
+                <p className='hechizo-description'>{hechizo.descripcion}</p>
+                <p className='hechizo-tipo'>{hechizo.patente?.tipo_hechizo?.nombre}</p>
+              </div>
+              {isOpen === hechizo.id && (
+                <>
+                  <div className={`overlay visible`}></div>
+                  <div className={`pop-up visible`}>
+                    <div className='pop-up-content'>
+                      <button className='close-button' onClick={() => setIsOpen(null)}>
+                        <img src={cross} alt="Cerrar" />
+                      </button>
+                      <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
+                      <div className='pop-up-info'>
+                        <h2>{hechizo.nombre}</h2>
+                        <h4>Descripción</h4>
+                        <p>{hechizo.descripcion}</p>
+                        <h4>Instrucciones</h4>
+                        <p>{hechizo.instrucciones}</p>
+                        <h4>Tipo Hechizo</h4>
+                        <p>{hechizo.patente?.tipo_hechizo?.nombre}</p>
+                        <h4>Etiquetas</h4>
+                        <div className='hechizo-etiquetas'>
+                          {hechizo.patente?.etiquetas?.map(etiqueta => (
+                            <span key={etiqueta.nombre} className='etiqueta-box'>
+                              {etiqueta.nombre}
+                            </span>
+                          ))}
+                        </div>
+                        <p>Patentado por: {hechizo.patente?.mago?.nombre} {hechizo.patente?.mago?.apellido}</p>
                       </div>
-
-                      <p>Patentado por: {hechizo.patente.mago.nombre} {hechizo.patente.mago.apellido}</p>
                     </div>
                   </div>
-                </div>
-              </>
-            )}
-          </div>
-        ))}
-        {error && <div className="error-message">{error}</div>} {/* Mostrar el error si ocurre */}
+                </>
+              )}
+            </div>
+          ))}
       </div>
     </div>
   );
 };
-
 
 export default HechizoCard;

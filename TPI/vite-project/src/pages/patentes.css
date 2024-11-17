@@ -80,3 +80,18 @@
     padding: 5px; /* Asegura que no tenga demasiado espacio */
     line-height: 1; /* Asegura que no se expanda verticalmente */
 }
+
+.estado-verde {
+    color: green;
+    font-weight: bold;
+}
+
+.estado-rojo {
+    color: red;
+    font-weight: bold;
+}
+
+.estado-amarillo {
+    color: orange;
+    font-weight: bold;
+}
