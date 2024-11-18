@@ -128,9 +128,12 @@
     color: #333;
 }
 
-/* Ajustes responsivos */
 @media (max-width: 768px) {
+    .instituciones-container {
+        width: 90%;
+    }
+    
     .institucion-card {
-        width: 100%; /* En pantallas pequeñas, cada tarjeta ocupa el 100% del ancho */
+        width: 100%;
     }
 }

@@ -152,6 +152,7 @@ form input {
     .login-container {
         flex-direction: column;
         height: auto;
+        width: 95%;
     }
 
     .image-container-login {

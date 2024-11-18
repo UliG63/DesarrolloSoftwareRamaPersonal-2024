@@ -140,7 +140,11 @@
 }
 
 @media (max-width: 768px) {
-    .etiqueta-card {
+    .etiqueta-container{
         width: 100%;
+    }
+    
+    .etiqueta-card {
+        width: 90%;
     }
 }

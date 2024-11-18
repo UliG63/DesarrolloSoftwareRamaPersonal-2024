@@ -95,3 +95,24 @@
     color: orange;
     font-weight: bold;
 }
+
+@media (max-width: 840px) {
+    .patentes-container {
+        margin-bottom: 0;
+        width: 90%;
+        padding: 0;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 5%;
+    }
+
+    .patentes-card {
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+    .inicio-text h1 {
+        font-size: 30px;
+    }
+
+}

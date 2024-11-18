@@ -4,10 +4,11 @@ import Title from "../components/tilte/title";
 import Footer from "../components/footer/footer";
 import backgroundImg from '../assets/inicio-hechizos2.jpeg';
 import HechizoCard from "../components/hechizoCard/hechizoCard";
+import './hechizos.css';
 
 export default function HechizosPage() {
     return (
-        <div>
+        <div className="hechizos-container">
             <Navbar />
             <Inicio
                 title="Hechizos"

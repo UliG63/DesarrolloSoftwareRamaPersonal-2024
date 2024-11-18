@@ -31,4 +31,8 @@
         width: 95%;
         margin: 10px auto;
     }
+
+    .title h2 {
+        font-size: 26px;
+    }
 }

@@ -140,7 +140,11 @@
 }
 
 @media (max-width: 768px) {
+    .tipoHechizo-container{
+        width: 100%;
+    }
+    
     .tipoHechizo-card {
-        width: 100%; 
+        width: 90%; 
     }
 }

@@ -60,4 +60,13 @@
         flex-basis: 100%;
         margin-bottom: 80px;
     }
+
+    .descripcion{
+        opacity: 1;
+    }
+
+
+    .descripcion p{
+        margin-bottom: 200px;
+    }
   }
