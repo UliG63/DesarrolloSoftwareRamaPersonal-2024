@@ -6,12 +6,12 @@ import { useNavigate } from 'react-router-dom';
 
 const User: React.FC = () => {
   const { currentUser, logout } = useContext(AuthContext);
-  const navigate = useNavigate(); // Usar useNavigate para la redirección
+  const navigate = useNavigate(); //useNavigate para la redirección
 
-  // Estado para el modo edición/visualización
+  //modo edición/visualización
   const [isEditing, setIsEditing] = useState(false);
 
-  // Estado que almacena los datos del usuario para edición
+  //almacena los datos del usuario para edición
   const [userData, setUserData] = useState({
     nombre: currentUser?.nombre || '',
     apellido: currentUser?.apellido || '',
@@ -20,13 +20,13 @@ const User: React.FC = () => {
     madera_varita: currentUser?.madera_varita || '',
     nucleo_varita: currentUser?.nucleo_varita || '',
     largo_varita: currentUser?.largo_varita || '',
-    pass: '', // La contraseña no la muestra
+    pass: '', //la contraseña no la muestra
   });
 
-  // Estado para la confirmación de la nueva contraseña
+  //confirmación de la nueva contraseña
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Actualiza el estado userData con el valor ingresado en los inputs
+  //atualiza el estado userData con el valor ingresado en los inputs
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
@@ -35,7 +35,7 @@ const User: React.FC = () => {
     }));
   };
 
-  // Actualiza el estado para la confirmación de la contraseña
+  // actualiza el estado para la confirmación de la contraseña
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === 'pass') {
@@ -48,12 +48,25 @@ const User: React.FC = () => {
     }
   };
 
-  // Cambia entre modo edición y visualización
+  //cambiar entre modo edición y visualización
   const handleEditToggle = () => {
+    if (isEditing) {
+      //si cancelo la edición, restablecer los datos a los valores originales
+      setUserData({
+        nombre: currentUser?.nombre || '',
+        apellido: currentUser?.apellido || '',
+        email: currentUser?.email || '',
+        profesion: currentUser?.profesion || '',
+        madera_varita: currentUser?.madera_varita || '',
+        nucleo_varita: currentUser?.nucleo_varita || '',
+        largo_varita: currentUser?.largo_varita || '',
+        pass: '',
+      });
+    }
     setIsEditing(!isEditing);
   };
 
-  // Guardar cambios del usuario
+  //guardar cambios del usuario
   const handleSaveChanges = async () => {
     if (userData.pass !== confirmPassword) {
       alert('Las contraseñas no coinciden.');
@@ -62,7 +75,13 @@ const User: React.FC = () => {
 
     try {
       await axios.put('http://localhost:3000/api/auth/update', { ...userData, id: currentUser?.id });
-      setIsEditing(false);  // Desactiva el modo edición
+    //actualizar el currentUser del contexto con los nuevos datos
+    const updatedUser = { ...currentUser, ...userData };
+    setUserData(updatedUser); 
+    setIsEditing(false);  //desactivar el modo edición
+
+    //guardar los cambios en el localStorage para que persistan al recargar la página
+    localStorage.setItem('user', JSON.stringify(updatedUser));
       alert('Información actualizada con éxito.');
     } catch (error) {
       console.error("Error al actualizar la información:", error);
@@ -70,22 +89,22 @@ const User: React.FC = () => {
     }
   };
 
-  // Cerrar sesión y redirigir al login
+  //cerrar sesión y redirigir al login
   const handleLogout = () => {
     logout();
-    navigate('/login'); // Redirigir sin recargar la página
+    navigate('/login'); //redirigir sin recargar la página
   };
 
-  // Eliminar cuenta
+  //eliminar cuenta
   const handleDelete = async (id: number) => {
     
     const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar esta cuenta?");
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:3000/api/magos/${id}`);
-        logout();  // Limpia el estado de autenticación
+        logout();  //limpia el estado de autenticación
         alert("Cuenta eliminada con éxito.");
-        navigate('/login');  // Redirige al login
+        navigate('/login'); 
       } catch (error) {
         console.error("Error al eliminar la cuenta:", error);
         alert("Hubo un error al eliminar la cuenta. Intenta nuevamente.");

@@ -1,8 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
-// podríamos cambiar los alert para hacer popups más lindos, si sobra tiempo...
-
 interface User {
   id: number;
   nombre: string;
@@ -21,6 +19,7 @@ interface AuthContextProps {
   login: (email: string, pass: string) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
+  updateUser: (data: User) => Promise<void>; // Función para actualizar el usuario
 }
 
 interface RegisterData {
@@ -37,14 +36,14 @@ interface RegisterData {
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-    currentUser: null,
-    login: async () => {},
-    register: async () => {},
-    logout: () => {}
-  });
+  currentUser: null,
+  login: async () => {},
+  register: async () => {},
+  logout: () => {},
+  updateUser: async () => {}, // Método vacío inicialmente
+});
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-   // estado para almacenar el usuario autenticado (spoiler, lo usamos mucho)
   const [currentUser, setCurrentUser] = useState<User | null>(
     JSON.parse(localStorage.getItem('user') as string) || null
   );
@@ -56,24 +55,37 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     document.cookie = `accessToken=${response.data.accessToken}; path=/`; // guarda el token de acceso en una cookie
   };
 
-   // envía los datos del usuario al backend para crear una cuenta
+  // envía los datos del usuario al backend para crear una cuenta
   const register = async (data: RegisterData) => {
     const response = await axios.post('http://localhost:3000/api/auth/register', data);
     alert(response.data.message || 'Registro exitoso'); // esto notificar al usuario, podríamos cambiarlo y hacerlo más aesthetic
   };
 
   const logout = () => {
-    setCurrentUser(null); // limpiaa el usuario actual
+    setCurrentUser(null); // limpia al usuario actual
     localStorage.removeItem('user'); // eliminar el usuario del almacenamiento local
     document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/"; // eliminar el token de acceso
   };
 
+  // Actualiza los datos del usuario en el contexto y en el localStorage
+  const updateUser = async (data: User) => {
+    try {
+      const response = await axios.put('http://localhost:3000/api/auth/update', data);
+      setCurrentUser(response.data); // actualiza el estado con los nuevos datos del usuario
+      localStorage.setItem('user', JSON.stringify(response.data)); // guarda los datos actualizados en el localStorage
+      alert('Información actualizada con éxito');
+    } catch (error) {
+      console.error("Error al actualizar la información:", error);
+      alert('Hubo un error al actualizar la información. Por favor, inténtalo de nuevo.');
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(currentUser));
+    localStorage.setItem('user', JSON.stringify(currentUser)); // guarda los datos en localStorage al cambiar el estado
   }, [currentUser]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, register, logout }}>
+    <AuthContext.Provider value={{ currentUser, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

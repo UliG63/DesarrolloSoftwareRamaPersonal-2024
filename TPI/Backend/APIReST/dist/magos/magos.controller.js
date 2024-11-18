@@ -56,6 +56,10 @@ async function update(req, res) {
     try {
         const id = Number.parseInt(req.params.id);
         const magoToUpdate = await em.findOneOrFail(Magos, { id });
+        const existingEmail = await em.findOne(Magos, { email: req.body.sanitizedInput.email });
+        if (existingEmail && existingEmail.id !== id) {
+            return res.status(400).json({ message: 'El correo electrónico ya está en uso.' });
+        }
         em.assign(magoToUpdate, req.body.sanitizedInput);
         await em.flush();
         res.status(200).json({ message: 'mago updated', data: magoToUpdate });
