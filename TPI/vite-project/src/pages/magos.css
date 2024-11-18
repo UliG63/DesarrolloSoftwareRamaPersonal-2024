@@ -50,3 +50,13 @@
     margin: 5px 0;
     color: #666;
 }
+
+@media (max-width: 768px) {
+    .magos-container{
+        width: 100%;
+    }
+    
+    .mago-card {
+        width: 90%;
+    }
+}
