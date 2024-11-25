@@ -1,0 +1,94 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+
+.container{
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+@media (min-width: 768px){
+  .container{
+    flex-direction: row;
+  }
+}
+.container-left{
+  width: 20%;
+  background-color: transparent;
+  padding: 1rem;
+  background-image: url("media/images/vertical_banner.jpg");
+}
+
+.container-right{
+  width: 100%;
+  background-color: transparent; 
+  padding: 1rem;
+  border-left-color:brown;
+  border-left-style: solid;
+  border-left-width: 1px;
+  background-image: url("media/images/hp_wall.jpg");
+  background-size: auto 100%;
+}
+
+/* Botones de menu lateral izquierdo*/
+.menu-item{
+  display: block;
+  margin-bottom: 1rem;
+  border: 1px solid;
+  border-color: #5B2837;
+  background-color:#C19148;
+  text-align: center;
+  text-decoration: none;
+  color: #5B2837;
+}
+a.menu-item.visited{
+  color: #5B2837;
+}
+
+
+/*Creacion de cuenta*/
+h2{
+  margin-top: 0;
+}
+
+.form-control{
+  display: block;
+  margin: 0.5rem 0;
+  opacity: 0.5;
+
+}
+
+.error{
+  color: red;
+  display: none;
+}
+
+.show-error{
+  display: block;
+
+}
+
+/* Estilos aplicados a los elementos de la pagina de
+generar_nombre_aleatorio*/
+#get-user {
+  display:block;
+  margin: 0 auto;
+}
+
+#user-name {
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+
+#crear-cuenta-submit{
+  color: wheat;
+  background-color: #5B2837;
+  border-color: #5B2837;
+}
+.fieldset-auto-width {
+  display: inline-block;
+  border-color: #5B2837; 
+  }
