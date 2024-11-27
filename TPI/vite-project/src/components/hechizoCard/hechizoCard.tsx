@@ -7,6 +7,8 @@ import warningCon from "../../assets/icons8-error-50.png";
 import cross from "../../assets/crossWhite.png";
 import imgHechizo1 from '../../assets/hechizo1.jpeg';
 import { AuthContext } from '../../context/authContext.tsx';
+import ModalMessage from '../modalMessage/modalMessage';
+import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
 interface Hechizo {
   id: number;
@@ -44,7 +46,17 @@ const HechizoCard: React.FC = () => {
   const [selectedEtiqueta, setSelectedEtiqueta] = useState<{ label: string; value: string } | null>(null);
   const [isOpen, setIsOpen] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+  const [recargaPagina, setRecargaPagina] = useState(false)
+  const [modalMessage, setModalMessage] = useState('');
 
+  if (!currentUser) {
+    setTipoError(ErrorTipo.HARD_ERROR);
+    setRecargaPagina(false);
+    setModalMessage('No se pudo recuperar el usuario loggeado.');
+    setShowModal(true);
+  }
   const fetchHechizos = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/hechizo`);
@@ -54,10 +66,13 @@ const HechizoCard: React.FC = () => {
       setFilteredHechizos(data);
       setError(null);
     } catch (error) {
-      setError('Error al cargar los hechizos');
-      console.error(error);
+      setError('No se pudieron recuperar los hechizos');
       setHechizos([]);
       setFilteredHechizos([]);
+      setTipoError(ErrorTipo.HARD_ERROR);
+      setRecargaPagina(false);
+      setModalMessage('No se pudieron recuperar los hechizos');
+      setShowModal(true);
     }
   };
 
@@ -179,6 +194,13 @@ const HechizoCard: React.FC = () => {
             </div>
           ))}
       </div>
+      {showModal && (
+        <ModalMessage
+            errorType={tipoError}
+            message={modalMessage}
+            reloadOnClose={recargaPagina} 
+        />
+      )}
     </div>
   );
 };

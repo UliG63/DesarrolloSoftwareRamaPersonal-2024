@@ -10,6 +10,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import './patentes.css';
 import Title from "../components/tilte/title.tsx";
+import ModalMessage from "../components/modalMessage/modalMessage.tsx";
+import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
 
 interface Patente {
@@ -42,19 +44,23 @@ interface Patente {
 
 const PatentesEmpleadoPage: React.FC = () => {
 
-
-    const [error, setError] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
     const [Patente, setPatentes] = useState<Patente[]>([]);
     const { currentUser } = useContext(AuthContext);
 
     const fetchUserPatentes = async () => {
         try {
             const response = await axios.get(`http://localhost:3000/api/patente/pending`);
-            console.log('Patentes pendientes de revisión recibidas:', response.data);
             setPatentes(response.data.data);
         } catch (error) {
-            setError('Error al cargar las patentes pendientes de revisión');
             console.error(error);
+            setTipoError(ErrorTipo.HARD_ERROR);
+            setRecargaPagina(false);
+            setModalMessage('No se pudieron recuperar las patentes pendientes.\n'+error);
+            setShowModal(true);
         }
     };
 
@@ -110,8 +116,14 @@ const PatentesEmpleadoPage: React.FC = () => {
                 ) : (
                     <p>No existen patentes pendientes de revision.</p>
                 )}
+                {showModal && (
+                    <ModalMessage
+                        errorType={tipoError}
+                        message={modalMessage}
+                        reloadOnClose={recargaPagina} 
+                    />
+                )}
             </div>
-            {error && <div className="error-message">{error}</div>}  {/* Mostrar el error */}
             <Footer />
         </div>
     );

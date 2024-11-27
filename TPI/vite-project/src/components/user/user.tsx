@@ -3,11 +3,16 @@ import './user.css';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ModalMessage from '../modalMessage/modalMessage';
+import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
 const User: React.FC = () => {
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate(); //useNavigate para la redirección
-
+  const [showModal, setShowModal] = useState(false);
+  const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+  const [recargaPagina, setRecargaPagina] = useState(false)
+  const [modalMessage, setModalMessage] = useState('');
   //modo edición/visualización
   const [isEditing, setIsEditing] = useState(false);
 
@@ -82,10 +87,15 @@ const User: React.FC = () => {
 
     //guardar los cambios en el localStorage para que persistan al recargar la página
     localStorage.setItem('user', JSON.stringify(updatedUser));
-      alert('Información actualizada con éxito.');
+      setTipoError(ErrorTipo.SUCCESS);
+      setRecargaPagina(true);
+      setModalMessage('Informacion actualizada con exito');
+      setShowModal(true);
     } catch (error) {
-      console.error("Error al actualizar la información:", error);
-      alert("Hubo un error al actualizar la información. Por favor, inténtalo de nuevo.");
+      setTipoError(ErrorTipo.SOFT_ERROR);
+      setRecargaPagina(true);
+      setModalMessage('Hubo un error al actualizar la información. Por favor, inténtalo de nuevo.\n'+error);
+      setShowModal(true);
     }
   };
 
@@ -103,11 +113,16 @@ const User: React.FC = () => {
       try {
         await axios.delete(`http://localhost:3000/api/magos/${id}`);
         logout();  //limpia el estado de autenticación
-        alert("Cuenta eliminada con éxito.");
+        setTipoError(ErrorTipo.SUCCESS);
+        setRecargaPagina(true);
+        setModalMessage('Cuenta eliminada con éxito.');
+        setShowModal(true);
         navigate('/login'); 
       } catch (error) {
-        console.error("Error al eliminar la cuenta:", error);
-        alert("Hubo un error al eliminar la cuenta. Intenta nuevamente.");
+        setTipoError(ErrorTipo.SOFT_ERROR);
+        setRecargaPagina(true);
+        setModalMessage('Hubo un error al eliminar la cuenta. Intenta nuevamente.\n'+error);
+        setShowModal(true);
       }
     }
   };
@@ -151,6 +166,13 @@ const User: React.FC = () => {
         <button onClick={handleLogout} className='logout-button'>Logout</button>
         <button onClick={() => currentUser && handleDelete(currentUser.id)} className="delete-user"disabled={!currentUser}>Eliminar</button>
       </div>
+      {showModal && (
+          <ModalMessage
+              errorType={tipoError}
+              message={modalMessage}
+              reloadOnClose={recargaPagina} 
+          />
+      )}
     </div>
   );
 };

@@ -1,31 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './formPatente.css';
 import cross from '../../assets/cross.png';
 import { AuthContext } from '../../context/authContext.tsx';
-import { useContext } from 'react';
 import axios from 'axios';
-
+import ModalMessage from '../modalMessage/modalMessage';
+import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
 const FormPatente: React.FC = () => {
-    //Visibilidad de form 
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-
-    //Función para mostrar/ocultar el form
-    const togglePopup = () => {
-        setIsPopupVisible(!isPopupVisible);
-    };
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
     const { currentUser } = useContext(AuthContext);
+
+    if (!currentUser) {
+        setTipoError(ErrorTipo.HARD_ERROR);
+        setRecargaPagina(false);
+        setModalMessage('No se pudo recuperar el usuario loggeado.');
+        setShowModal(true);
+    }
+
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [instrucciones, setInstrucciones] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
 
-    //const [imagen, setImagen] = useState('');
+    const togglePopup = () => {
+        setIsPopupVisible(!isPopupVisible);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-            // Verifica que currentUser tenga idMago
         if (!currentUser || !currentUser.id) {
-            console.error('Error: No se pudo obtener el id del Mago');
+            setTipoError(ErrorTipo.HARD_ERROR);
+            setRecargaPagina(false);
+            setModalMessage('No se puede recuperar el usuario loggeado');
+            setShowModal(true);
             return;
         }
         const formData = {
@@ -34,56 +44,64 @@ const FormPatente: React.FC = () => {
             instrucciones,
             idMago: currentUser.id
         };
-        console.log(formData);
         try {
-            // Enviar los datos a la API
             const response = await axios.post('http://localhost:3000/api/patente/', formData);
-            
-            console.log('Patente agregada:', response.data);
-
-            // Restablece el formulario y cierra el popup
             setNombre('');
             setDescripcion('');
             setInstrucciones('');
             setIsPopupVisible(false);
-            alert('Registro de Patente exitoso');
+            
+            setTipoError(ErrorTipo.SUCCESS);
+            setRecargaPagina(true);
+            setModalMessage('Registro de Patente exitoso.\n'+response.data);
+            setShowModal(true);
         } catch (error) {
-            setErrorMessage('Hubo un error al dar de alta la patente.');
-            console.error(error);
+            setTipoError(ErrorTipo.SOFT_ERROR);
+            setRecargaPagina(true);
+            setModalMessage('Hubo un error al dar de alta la patente.\n'+error);
+            setShowModal(true);
         }
     };
 
-    return(
+    return (
         <div>
             <button className='plus-patente-button' onClick={togglePopup}>
                 + Patente
             </button>
             {isPopupVisible && (
                 <div>
-                <div className='patente-overlay' onClick={togglePopup}></div>
-                <form className='form-patente' onSubmit={handleSubmit}>
-                    <button className='close-patente' onClick={togglePopup}>
-                        <img src={cross} alt="" />
-                    </button>
-                    <h4>Solicitud de Patente</h4>
-                    <div>
-                        <p>Nombre</p>
-                        <input type="text" onChange={(e) => setNombre(e.target.value)} value={nombre} required/>
-                    </div>
-                    <div>
-                        <p>Descripción</p>
-                        <textarea id="descripcion" onChange={(e) => setDescripcion(e.target.value)} value={descripcion} rows={4} required />
-                    </div>
-                    <div>
-                        <p>Instrucciones</p>
-                        <textarea id="instrucciones" onChange={(e) => setInstrucciones(e.target.value)} value={instrucciones} rows={4} required />
-                    </div>
-                    <button type="submit" className='button-patente'>Enviar</button>
-                    {errorMessage && <p className="error">{errorMessage}</p>}
-                </form>
+                    <div className='patente-overlay' onClick={togglePopup}></div>
+                    <form className='form-patente' onSubmit={handleSubmit}>
+                        <button className='close-patente' onClick={togglePopup}>
+                            <img src={cross} alt="" />
+                        </button>
+                        <h4>Solicitud de Patente</h4>
+                        <div>
+                            <p>Nombre</p>
+                            <input type="text" onChange={(e) => setNombre(e.target.value)} value={nombre} required />
+                        </div>
+                        <div>
+                            <p>Descripción</p>
+                            <textarea id="descripcion" onChange={(e) => setDescripcion(e.target.value)} value={descripcion} rows={4} required />
+                        </div>
+                        <div>
+                            <p>Instrucciones</p>
+                            <textarea id="instrucciones" onChange={(e) => setInstrucciones(e.target.value)} value={instrucciones} rows={4} required />
+                        </div>
+                        <button type="submit" className='button-patente'>Enviar</button>
+                    </form>
                 </div>
+            )}
+            {showModal && (
+                <ModalMessage
+                    errorType={tipoError}
+                    message={modalMessage}
+                    reloadOnClose={recargaPagina} 
+                />
             )}
         </div>
     );
-}
+};
+
 export default FormPatente;
+

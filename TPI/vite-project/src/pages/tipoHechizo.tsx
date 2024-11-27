@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormTipoHechizo from "../components/formTipoHechizo/formTipoHechizo";
 import deleteIcon from "../assets/basura.png";
+import ModalMessage from "../components/modalMessage/modalMessage.tsx";
+import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
 interface TipoHechizo {
     id: number;
@@ -13,6 +15,10 @@ interface TipoHechizo {
 }
 
 const TipoHechizoPage: React.FC = () => {
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
     const [tiposHechizo, setTiposHechizo] = useState<TipoHechizo[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -30,7 +36,10 @@ const TipoHechizoPage: React.FC = () => {
                 setTiposHechizo(response.data.data);
             } catch (err) {
                 setError('Error al cargar los tipos de hechizo.');
-                console.error(err);
+                setTipoError(ErrorTipo.HARD_ERROR);
+                setRecargaPagina(false);
+                setModalMessage('No se pudieron recuperar los tipo de hechizo\n'+err);
+                setShowModal(true);
             }
         };
 
@@ -62,8 +71,16 @@ const TipoHechizoPage: React.FC = () => {
                 );
                 setIsEditing(false);
                 setCurrentTipoHechizo(null);
+                setTipoError(ErrorTipo.SUCCESS);
+                setRecargaPagina(true);
+                setModalMessage('Datos modificados con exito');
+                setShowModal(true);
             } catch (error) {
                 console.error("Error al actualizar la información:", error);
+                setTipoError(ErrorTipo.SOFT_ERROR);
+                setRecargaPagina(true);
+                setModalMessage('Error al actualizar la información:\n'+error);
+                setShowModal(true);
             }
         }
     };
@@ -74,9 +91,16 @@ const TipoHechizoPage: React.FC = () => {
             try {
                 await axios.delete(`http://localhost:3000/api/tipo_hechizo/${id}`);
                 setTiposHechizo((prev) => prev.filter((tipoHechizo) => tipoHechizo.id !== id));
+                setTipoError(ErrorTipo.SUCCESS);
+                setRecargaPagina(true);
+                setModalMessage('Tipo Hechizo eliminada con exito.');
+                setShowModal(true);
             } catch (error) {
-                console.error("Error al eliminar el tipo de hechizo:", error);
                 setError("Hubo un error al intentar eliminar el tipo de hechizo.");
+                setTipoError(ErrorTipo.SOFT_ERROR);
+                setRecargaPagina(true);
+                setModalMessage('Error al eliminar la etiqueta:\n'+error);
+                setShowModal(true);
             }
         }
     };
@@ -117,6 +141,13 @@ const TipoHechizoPage: React.FC = () => {
                     </div>
                 ) : (
                     <p>No se encontraron tipos de hechizo.</p>
+                )}
+                {showModal && (
+                    <ModalMessage
+                        errorType={tipoError}
+                        message={modalMessage}
+                        reloadOnClose={recargaPagina} 
+                    />
                 )}
             </div>
             <Footer />

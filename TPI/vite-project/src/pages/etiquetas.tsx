@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormEtiqueta from "../components/formEtiqueta/formEtiqueta";
 import deleteIcon from "../assets/basura.png";
+import ModalMessage from "../components/modalMessage/modalMessage.tsx";
+import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
 interface Etiqueta {
     id: number;
@@ -13,6 +15,10 @@ interface Etiqueta {
 }
 
 const EtiquetaPage: React.FC = () => {
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
     const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -29,8 +35,11 @@ const EtiquetaPage: React.FC = () => {
                 const response = await axios.get('http://localhost:3000/api/etiqueta');
                 setEtiquetas(response.data.data);
             } catch (err) {
-                setError('Error al cargar las etiquetas.');
-                console.error(err);
+                setError('No se pudieron recuperar las etiquetas.');
+                setTipoError(ErrorTipo.HARD_ERROR);
+                setRecargaPagina(false);
+                setModalMessage('No se pudieron recuperar las etiquetas.\n'+err);
+                setShowModal(true);
             }
         };
 
@@ -62,8 +71,16 @@ const EtiquetaPage: React.FC = () => {
                 );
                 setIsEditing(false);
                 setCurrentEtiqueta(null);
+                setTipoError(ErrorTipo.SUCCESS);
+                setRecargaPagina(true);
+                setModalMessage('Datos modificados con exito');
+                setShowModal(true);
             } catch (error) {
-                console.error("Error al actualizar la información:", error);
+                setError("Hubo un error al intentar modificar la etiqueta.");
+                setTipoError(ErrorTipo.SOFT_ERROR);
+                setRecargaPagina(true);
+                setModalMessage('Error al actualizar la información:\n'+error);
+                setShowModal(true);
             }
         }
     };
@@ -74,9 +91,16 @@ const EtiquetaPage: React.FC = () => {
             try {
                 await axios.delete(`http://localhost:3000/api/etiqueta/${id}`);
                 setEtiquetas((prev) => prev.filter((etiqueta) => etiqueta.id !== id));
+                setTipoError(ErrorTipo.SUCCESS);
+                setRecargaPagina(true);
+                setModalMessage('Etiqueta eliminada con exito.');
+                setShowModal(true);
             } catch (error) {
-                console.error("Error al eliminar la etiqueta:", error);
                 setError("Hubo un error al intentar eliminar la etiqueta.");
+                setTipoError(ErrorTipo.SOFT_ERROR);
+                setRecargaPagina(true);
+                setModalMessage('Error al eliminar la etiqueta:\n'+error);
+                setShowModal(true);
             }
         }
     };
@@ -117,6 +141,13 @@ const EtiquetaPage: React.FC = () => {
                     </div>
                 ) : (
                     <p>No se encontraron etiquetas.</p>
+                )}
+                {showModal && (
+                    <ModalMessage
+                        errorType={tipoError}
+                        message={modalMessage}
+                        reloadOnClose={recargaPagina} 
+                    />
                 )}
             </div>
             <Footer />

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './formInstituciones.css';
 import cross from '../../assets/cross.png';
+import ModalMessage from '../modalMessage/modalMessage';
+import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
 const FormInstitucion: React.FC = () => {
     // Visibilidad de form 
@@ -15,7 +17,10 @@ const FormInstitucion: React.FC = () => {
     const [nombre, setNombre] = useState('');
     const [pais, setPais] = useState('');
     const [ciudad, setCiudad] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
 
     // Función para manejar el envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
@@ -28,17 +33,21 @@ const FormInstitucion: React.FC = () => {
                 pais,
                 ciudad
             });
-            
-            console.log('Institución agregada:', response.data);
-
             // Restablece el formulario y cierra el popup
             setNombre('');
             setPais('');
             setCiudad('');
             setIsPopupVisible(false);
+
+            setTipoError(ErrorTipo.SUCCESS);
+            setRecargaPagina(true);
+            setModalMessage('Registro de Institucion Exitoso.\n'+response.data);
+            setShowModal(true);
         } catch (error) {
-            setErrorMessage('Hubo un error al agregar la institución.');
-            console.error(error);
+            setTipoError(ErrorTipo.SOFT_ERROR);
+            setRecargaPagina(true);
+            setModalMessage('Hubo un error al dar de alta la Institucion.\n'+error);
+            setShowModal(true);
         }
     };
 
@@ -68,9 +77,15 @@ const FormInstitucion: React.FC = () => {
                             <input type="text" onChange={(e) => setCiudad(e.target.value)} value={ciudad} required />
                         </div>
                         <button type="submit" className='button-institucion'>Agregar</button>
-                        {errorMessage && <p className="error">{errorMessage}</p>}
                     </form>
                 </div>
+            )}
+            {showModal && (
+                <ModalMessage
+                    errorType={tipoError}
+                    message={modalMessage}
+                    reloadOnClose={recargaPagina} 
+                />
             )}
         </div>
     );

@@ -3,6 +3,8 @@ import Footer from "../components/footer/footer";
 import './magos.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ModalMessage from "../components/modalMessage/modalMessage.tsx";
+import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
 interface Mago {
     id: number;
@@ -21,6 +23,10 @@ interface Mago {
 const MagosPage: React.FC = () => {
     const [magos, setMagos] = useState<Mago[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
 
     useEffect(() => {
         const fetchMagos = async () => {
@@ -29,7 +35,11 @@ const MagosPage: React.FC = () => {
                 setMagos(response.data.data);
             } catch (err) {
                 setError('Error al cargar los magos');
-                console.error(err);
+                setTipoError(ErrorTipo.HARD_ERROR);
+                setRecargaPagina(false);
+                setModalMessage('Error al cargas los magos\n'+err);
+                setShowModal(true);
+                
             }
         };
 
@@ -64,6 +74,13 @@ const MagosPage: React.FC = () => {
                     </div>
                 ) : (
                     <p>No se encontraron magos</p>
+                )}
+                {showModal && (
+                    <ModalMessage
+                        errorType={tipoError}
+                        message={modalMessage}
+                        reloadOnClose={recargaPagina} 
+                    />
                 )}
             </div>
             <Footer />

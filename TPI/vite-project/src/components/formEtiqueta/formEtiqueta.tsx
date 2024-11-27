@@ -2,10 +2,17 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './formEtiqueta.css';
 import cross from '../../assets/cross.png';
+import ModalMessage from '../modalMessage/modalMessage.tsx';
+import { ErrorTipo } from '../modalMessage/error.enum.tsx';
+
 
 const FormEtiqueta: React.FC = () => {
     // manejo de la visibilidad de form 
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
 
     // mostrar/ocultar el form
     const togglePopup = () => {
@@ -14,7 +21,6 @@ const FormEtiqueta: React.FC = () => {
 
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
 
     // manejar el envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
@@ -26,16 +32,20 @@ const FormEtiqueta: React.FC = () => {
                 nombre,
                 descripcion,
             });
-            
-            console.log('Etiqueta agregada:', response.data);
-
             // restablecer el formulario y cerrar el popup
             setNombre('');
             setDescripcion('');
             setIsPopupVisible(false);
+
+            setTipoError(ErrorTipo.SUCCESS);
+            setRecargaPagina(true);
+            setModalMessage('Etiqueta registrada. \n'+response.data.nombre);
+            setShowModal(true);
         } catch (error) {
-            setErrorMessage('Hubo un error al agregar la etiqueta.');
-            console.error(error);
+            setTipoError(ErrorTipo.SOFT_ERROR);
+            setRecargaPagina(true);
+            setModalMessage('Hubo un error al dar de alta la etiqueta.\n'+error);
+            setShowModal(true);
         }
     };
 
@@ -61,9 +71,15 @@ const FormEtiqueta: React.FC = () => {
                             <textarea id="descripcion" onChange={(e) => setDescripcion(e.target.value)} value={descripcion} rows={4} required />
                         </div>
                         <button type="submit" className='button-etiqueta'>Agregar</button>
-                        {errorMessage && <p className="error">{errorMessage}</p>}
                     </form>
                 </div>
+            )}
+            {showModal && (
+                <ModalMessage
+                    errorType={tipoError}
+                    message={modalMessage}
+                    reloadOnClose={recargaPagina} // Recargar la página al cerrar
+                />
             )}
         </div>
     );

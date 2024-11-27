@@ -8,7 +8,6 @@ async function findAll(req: Request, res: Response) {
     try {
         const hechizos = await em.find(Hechizo, {}, {populate:['nombre' , 'descripcion', 'instrucciones', 'restringido', 'patente',
                                                                 'patente.tipo_hechizo','patente.mago', 'patente.etiquetas']});
-        console.log(hechizos)
         res.status(200).json({ message: "Found All Hechizos", data: hechizos });
     } catch (error: any) {
         res.status(500).json({ message: error.message });

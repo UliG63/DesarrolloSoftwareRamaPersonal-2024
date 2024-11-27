@@ -7,7 +7,6 @@ const em = orm.em;
 async function findAll(req: Request, res: Response) {
     try {
         const tipos_hechizo = await em.find(Tipo_Hechizo, {});
-        console.log('Tipos de hechizo encontrados:', tipos_hechizo);
         res.status(200).json({ message: 'find all tipos de hechizo', data: tipos_hechizo });
     } catch (error: any) {
         res.status(500).json({ message: error.message });

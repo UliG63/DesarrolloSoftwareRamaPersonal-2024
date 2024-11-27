@@ -3,6 +3,8 @@ import './formPatenteValidacionAcepta.css';
 import cross from '../../assets/cross.png';
 import { AuthContext } from '../../context/authContext.tsx';
 import axios from 'axios';
+import ModalMessage from '../modalMessage/modalMessage';
+import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
 interface Etiqueta {
     id: number;
@@ -24,12 +26,15 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
 
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const { currentUser } = useContext(AuthContext);
-    const [errorMessage, setErrorMessage] = useState('');
     const [TipoHechizo, setTipoHechizo] = useState<TipoHechizo[]>([]);
     const [Etiqueta, setEtiqueta] = useState<Etiqueta[]>([]);
     const [selectedEtiquetas, setSelectedEtiquetas] = useState<Etiqueta[]>([]); // Etiquetas seleccionadas
     const [restringido, setRestringido] = useState<boolean>(false); // Para manejar restringido (Sí/No)
     const [selectedTipoHechizo, setSelectedTipoHechizo] = useState<number | null>(null); // Estado para tipo de hechizo seleccionado
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
 
     // Mostrar/ocultar formulario
     const togglePopup = () => {
@@ -47,7 +52,10 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
             const response = await axios.get(`http://localhost:3000/api/tipo_hechizo`);
             setTipoHechizo(response.data.data);
         } catch (error) {
-            console.error('Error al cargar los tipos de hechizo', error);
+            setTipoError(ErrorTipo.HARD_ERROR);
+            setRecargaPagina(false);
+            setModalMessage('Error al cargar los tipos de hechizo.\n'+error);
+            setShowModal(true);
         }
     };
 
@@ -56,7 +64,10 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
             const response = await axios.get(`http://localhost:3000/api/etiqueta`);
             setEtiqueta(response.data.data);
         } catch (error) {
-            console.error('Error al cargar las etiquetas', error);
+            setTipoError(ErrorTipo.HARD_ERROR);
+            setRecargaPagina(false);
+            setModalMessage('Error al cargar las etiquetas.\n'+error);
+            setShowModal(true);
         }
     };
 
@@ -86,7 +97,10 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
         e.preventDefault();
 
         if (!currentUser || !currentUser.id) {
-            console.error('Error: No se pudo obtener el id del empleado actual');
+            setTipoError(ErrorTipo.HARD_ERROR);
+            setRecargaPagina(false);
+            setModalMessage('No se pudo recuperar el usuario loggeado.');
+            setShowModal(true);
             return;
         }
 
@@ -100,12 +114,16 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
 
         try {
             const response = await axios.put(`http://localhost:3000/api/patente/publish/${idPatente}`, formData);
-            console.log('Patente publicada:', response.data);
             setIsPopupVisible(false);
-            alert('Patente publicada correctamente');
+            setTipoError(ErrorTipo.SUCCESS);
+            setRecargaPagina(true);
+            setModalMessage('Patente publicada correctamente. \n'+response.data.id);
+            setShowModal(true);
         } catch (error) {
-            setErrorMessage('Hubo un error al publicar la patente.');
-            console.error(error);
+            setTipoError(ErrorTipo.SOFT_ERROR);
+            setRecargaPagina(true);
+            setModalMessage('Hubo un error al publicar la patente.\n'+error);
+            setShowModal(true);
         }
     };
 
@@ -172,9 +190,15 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
                         </div>
 
                         <button type="submit" className='button-rechazo-patente'>Publicar</button>
-                        {errorMessage && <p className="error">{errorMessage}</p>}
                     </form>
                 </div>
+            )}
+             {showModal && (
+                <ModalMessage
+                    errorType={tipoError}
+                    message={modalMessage}
+                    reloadOnClose={recargaPagina} // Recargar la página al cerrar
+                />
             )}
         </div>
     );

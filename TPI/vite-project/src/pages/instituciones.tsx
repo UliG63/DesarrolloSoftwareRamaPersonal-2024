@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormInstitucion from "../components/formInstituciones/formInstituciones";
 import deleteIcon from "../assets/basura.png";
+import ModalMessage from "../components/modalMessage/modalMessage.tsx";
+import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
 interface Institucion {
     id: number;
@@ -14,6 +16,10 @@ interface Institucion {
 }
 
 const InstitucionesPage: React.FC = () => {
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
     const [instituciones, setInstituciones] = useState<Institucion[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -33,6 +39,10 @@ const InstitucionesPage: React.FC = () => {
             } catch (err) {
                 setError('Error al cargar las instituciones');
                 console.error(err);
+                setTipoError(ErrorTipo.HARD_ERROR);
+                setRecargaPagina(false);
+                setModalMessage('No se pudieron recuperar las etiquetas.\n'+err);
+                setShowModal(true);
             }
         };
 
@@ -64,8 +74,16 @@ const InstitucionesPage: React.FC = () => {
                 );
                 setIsEditing(false);
                 setCurrentInstitucion(null);
+                setTipoError(ErrorTipo.SUCCESS);
+                setRecargaPagina(true);
+                setModalMessage('Datos modificados con exito');
+                setShowModal(true);
             } catch (error) {
-                console.error("Error al actualizar la información:", error);
+                setError("Hubo un error al intentar modificar la Intitucion.");
+                setTipoError(ErrorTipo.SOFT_ERROR);
+                setRecargaPagina(true);
+                setModalMessage('Error al actualizar la información:\n'+error);
+                setShowModal(true);
             }
         }
     };
@@ -77,8 +95,16 @@ const InstitucionesPage: React.FC = () => {
                 await axios.delete(`http://localhost:3000/api/institucion/${id}`);
                 // Elimina la institución del estado
                 setInstituciones((prev) => prev.filter((institucion) => institucion.id !== id));
+                setTipoError(ErrorTipo.SUCCESS);
+                setRecargaPagina(true);
+                setModalMessage('Institucion eliminada con exito.');
+                setShowModal(true);
             } catch (error) {
-                console.error("Error al eliminar la institución:", error);
+                setError("Hubo un error al intentar eliminar la Institucion.");
+                setTipoError(ErrorTipo.SOFT_ERROR);
+                setRecargaPagina(true);
+                setModalMessage('Error al eliminar la institucion:\n'+error);
+                setShowModal(true);
             }
         }
     };
@@ -121,6 +147,13 @@ const InstitucionesPage: React.FC = () => {
                     </div>
                 ) : (
                     <p>No se encontraron instituciones</p>
+                )}
+                {showModal && (
+                    <ModalMessage
+                        errorType={tipoError}
+                        message={modalMessage}
+                        reloadOnClose={recargaPagina} 
+                    />
                 )}
             </div>
             <Footer />

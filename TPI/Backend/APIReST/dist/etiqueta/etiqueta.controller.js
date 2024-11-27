@@ -4,7 +4,6 @@ const em = orm.em;
 async function findAll(req, res) {
     try {
         const etiquetas = await em.find(Etiqueta, {});
-        console.log('Etiquetas encontradas:', etiquetas);
         res.status(200).json({ message: 'find all etiquetas', data: etiquetas });
     }
     catch (error) {

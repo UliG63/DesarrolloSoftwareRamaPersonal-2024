@@ -4,6 +4,8 @@ import loginImage from '../assets/login.jpg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/authContext';
+import ModalMessage from "../components/modalMessage/modalMessage.tsx";
+import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
 // Definir la interfaz para Institucion
 interface Institucion {
@@ -14,6 +16,10 @@ interface Institucion {
 }
 
 export default function LoginPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+  const [recargaPagina, setRecargaPagina] = useState(false)
+  const [modalMessage, setModalMessage] = useState('');
   const { login, register, currentUser } = useContext(AuthContext)!;
   const navigate = useNavigate();
   const [state, setState] = useState('Registrarse');
@@ -37,10 +43,16 @@ export default function LoginPage() {
         if (Array.isArray(response.data.data)) {
           setInstituciones(response.data.data);
         } else {
-          console.error('La respuesta no contiene un arreglo en data', response.data);
+          setTipoError(ErrorTipo.SOFT_ERROR);
+          setRecargaPagina(true);
+          setModalMessage('La respuesta no contiene un arreglo en data\n'+response.data);
+          setShowModal(true);
         }
       } catch (error) {
-        console.error('Error al obtener instituciones:', error);
+        setTipoError(ErrorTipo.HARD_ERROR);
+        setRecargaPagina(false);
+        setModalMessage('No se pudieron recuperar las Instituciones.\n'+error);
+        setShowModal(true);
       }
     };
   
@@ -84,8 +96,10 @@ useEffect(() => {
         isEmpleado: false,
       });
     } catch (error) {
-      console.error(error);
-      alert('Error en el registro');
+      setTipoError(ErrorTipo.SOFT_ERROR);
+      setRecargaPagina(true);
+      setModalMessage('Error en el registro\n'+error);
+      setShowModal(true);
     }
   };
 
@@ -94,8 +108,10 @@ useEffect(() => {
       await login(email, pass);
       navigate('/'); // Redirigir a la página de inicio después de iniciar sesión
     } catch (error) {
-      console.error(error);
-      alert('Error en el inicio de sesión');
+      setTipoError(ErrorTipo.SOFT_ERROR);
+      setRecargaPagina(true);
+      setModalMessage('Error en el inicio de sesion\n'+error);
+      setShowModal(true);
     }
   };
 
@@ -173,6 +189,13 @@ useEffect(() => {
           </div>
         </form>
       </div>
+        {showModal && (
+            <ModalMessage
+                errorType={tipoError}
+                message={modalMessage}
+                reloadOnClose={recargaPagina} 
+            />
+        )}
     </div>
   );
 }

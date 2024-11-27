@@ -96,14 +96,11 @@ async function remove(req, res) {
 async function publish(req, res) {
     try {
         // Buscar la patente por su ID
-        console.log('la req:', req.body);
         const id = Number.parseInt(req.params.id);
         const patente = await em.findOneOrFail(Patente, { id });
         const idTH = Number.parseInt(req.body.tipoHechizo);
         const tipo_hechizo = await em.findOneOrFail(Tipo_Hechizo, { id: idTH });
-        console.log('El tipo de hechizo:', tipo_hechizo);
         const empleado = await em.findOneOrFail(Magos, { id: req.body.empleado.id });
-        console.log('etiquetas', req.body.Etiquetas);
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
         }
@@ -111,18 +108,15 @@ async function publish(req, res) {
         if (patente.estado !== PatenteEstado.PENDIENTE_REVISION) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
-        console.log('la patente:', patente);
         // Actualizar el estado
         patente.estado = PatenteEstado.PUBLICADA;
         patente.empleado = empleado;
         patente.restringido = req.body.restringido;
         patente.tipo_hechizo = tipo_hechizo;
-        console.log('La cantidad de etiuetas:', req.body.Etiquetas.length);
         for (let i = 0; i < req.body.Etiquetas.length; i++) {
             const etiqueta = await em.findOneOrFail(Etiqueta, { id: req.body.Etiquetas[i].id });
             patente.etiquetas?.add(etiqueta);
         }
-        console.log('La patente actualizada', patente);
         //Crear el hechizo si la patente ha sido publicada
         const hechizo = {
             nombre: patente.nombre,
@@ -136,7 +130,6 @@ async function publish(req, res) {
         res.status(200).json({ message: 'Patente publicada y hechizo creado', data: patente });
     }
     catch (error) {
-        console.log('we hebben a serius problem:', error);
         res.status(500).json({ message: 'Hubo un problema al publicar la patente' });
     }
 }

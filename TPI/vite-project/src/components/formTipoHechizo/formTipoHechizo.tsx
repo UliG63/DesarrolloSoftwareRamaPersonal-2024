@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './formTipoHechizo.css';
 import cross from '../../assets/cross.png';
+import ModalMessage from '../modalMessage/modalMessage';
+import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
 const FormTipoHechizo: React.FC = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -12,7 +14,10 @@ const FormTipoHechizo: React.FC = () => {
 
     const [nombre, setNombre] = useState('');
     const [caracteristicas, setCaracteristicas] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [modalMessage, setModalMessage] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,14 +28,18 @@ const FormTipoHechizo: React.FC = () => {
                 caracteristicas,
             });
             
-            console.log('Tipo Hechizo agregado:', response.data);
-
             setNombre('');
             setCaracteristicas('');
             setIsPopupVisible(false);
+            setTipoError(ErrorTipo.SUCCESS);
+            setRecargaPagina(true);
+            setModalMessage('Tipo Hechizo agregado correctamente.\n' + response.data);
+            setShowModal(true);
         } catch (error) {
-            setErrorMessage('Hubo un error al agregar el tipo hechizo.');
-            console.error(error);
+            setTipoError(ErrorTipo.SOFT_ERROR);
+            setRecargaPagina(true);
+            setModalMessage('Hubo un error al registrar el Tipo Hechizo.\n'+error);
+            setShowModal(true);
         }
     };
 
@@ -56,9 +65,15 @@ const FormTipoHechizo: React.FC = () => {
                             <textarea id="caracteristicas" onChange={(e) => setCaracteristicas(e.target.value)} value={caracteristicas} rows={4} required />
                         </div>
                         <button type="submit" className='button-tipoHechizo'>Agregar</button>
-                        {errorMessage && <p className="error">{errorMessage}</p>}
                     </form>
                 </div>
+            )}
+            {showModal && (
+                <ModalMessage
+                    errorType={tipoError}
+                    message={modalMessage}
+                    reloadOnClose={recargaPagina} 
+                />
             )}
         </div>
     );
