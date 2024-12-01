@@ -166,7 +166,7 @@ async function publish(req:Request, res:Response){
 }
 async function reject(req: Request, res: Response) {
     try {
-        // Buscar la patente por su ID
+        // Busca la patente por su ID
         const id = Number.parseInt(req.params.id);
         const patente = await em.findOneOrFail(Patente, { id }, { populate: ['hechizos', 'tipo_hechizo', 'empleado', 'mago', 'etiquetas'] });
 
@@ -174,18 +174,17 @@ async function reject(req: Request, res: Response) {
             return res.status(404).json({ message: 'Patente no encontrada' });
         }
 
-        // Verificar que el estado actual sea "pendiente_revision"
+        // Verifica que el estado actual sea "pendiente_revision"
         if (patente.estado !== PatenteEstado.PENDIENTE_REVISION) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
 
-        // Obtener la ruta de la imagen de la patente
-        const imageName = patente.imagen;  // Asumiendo que 'imagen' es el nombre del archivo
+        const imageName = patente.imagen; 
         if (imageName) {
-            // Construir la ruta correcta al archivo en 'uploads' desde la raíz del proyecto
+            // Construye la ruta correcta al archivo en 'uploads' desde la raíz del proyecto
             const imagePath = path.join(rootPath, imageName);
 
-            // Verificar si el archivo existe y eliminarlo
+            // Verifica si el archivo existe y eliminarlo
             await new Promise<void>((resolve, reject) => {
                 fs.unlink(imagePath, (err) => {
                     if (err) {
@@ -197,21 +196,19 @@ async function reject(req: Request, res: Response) {
                     }
                 });
             });
-            patente.imagen = null;
         }
 
 
 
-        // Actualizar el estado de la patente a "rechazada", agregar el motivo y el empleado que la rechazó
+        // Actualiza el estado de la patente a "rechazada", agrega el motivo y el empleado que la rechazó, deslinkea la imagen
         patente.estado = PatenteEstado.RECHAZADA;
         patente.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
         patente.empleado = req.body.sanitizedInput.empleado;
-        patente.imagen='';
+        patente.imagen=null;
 
-        // Guardar la actualización de la patente
+        // Actualiza en BD
         await em.persistAndFlush([patente]);
 
-        // Enviar la respuesta final después de todos los pasos
         res.status(200).json({ message: 'Patente rechazada', data: patente });
 
     } catch (error: any) {
