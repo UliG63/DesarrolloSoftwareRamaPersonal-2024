@@ -1,9 +1,10 @@
 import { Router } from "express";
+import { upload } from "../shared/multerConfig.js";
 import { sanitizePatenteInput, findAll, findOne, add, update, remove, publish, reject, findAllPending,findByMago } from "./patente.controller.js";
 
 export const patenteRouter = Router()
 
-patenteRouter.post('/', sanitizePatenteInput, add);
+patenteRouter.post('/',upload.single('imagen'), sanitizePatenteInput, add);
 patenteRouter.get('/pending',findAllPending)
 patenteRouter.get('/:idMago',findByMago)
 patenteRouter.get('/',findAll)

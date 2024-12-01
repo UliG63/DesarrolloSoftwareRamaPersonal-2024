@@ -6,8 +6,18 @@ import { Magos } from "../magos/magos.entity.js";
 import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js";
 import { Collection, wrap } from "@mikro-orm/core";
 import { Etiqueta } from "../etiqueta/etiqueta.entity.js";
+import path from "path";
+import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from "url";
 
-const em = orm.em;
+
+const em = orm.em.fork();
+
+//Obtengo el dirname para el manejo de imagenes
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootPath = path.resolve(__dirname, '..', '..', 'public', 'uploads');
 
 function sanitizePatenteInput(req: Request, res: Response, next: NextFunction)
 {
@@ -80,12 +90,15 @@ async function add(req: Request, res:Response){
             return res.status(404).json({ message: 'Mago no encontrado' });
         }
 
+        const imagen = req.file ? req.file.filename : null;
+
         // Crear la patente vinculada al mago existente
         const nuevaPatente = em.create(Patente, {
             ...patenteData,
             mago: magoExistente, // Asociar el mago con la patente
             estado: PatenteEstado.PENDIENTE_REVISION,
-            fechaCreacion: new Date()
+            fechaCreacion: new Date(),
+            imagen,
         });
 
         // Guardar en la base de datos
@@ -151,26 +164,58 @@ async function publish(req:Request, res:Response){
         res.status(500).json({ message: 'Hubo un problema al publicar la patente' });
     }
 }
-async function reject(req:Request,res:Response) {
-    try {    
+async function reject(req: Request, res: Response) {
+    try {
         // Buscar la patente por su ID
-        const id = Number.parseInt(req.params.id)    
-        const patente = await em.findOneOrFail(Patente,{ id },{populate:['hechizos','tipo_hechizo','empleado','mago','etiquetas']});
+        const id = Number.parseInt(req.params.id);
+        const patente = await em.findOneOrFail(Patente, { id }, { populate: ['hechizos', 'tipo_hechizo', 'empleado', 'mago', 'etiquetas'] });
+
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
         }
+
         // Verificar que el estado actual sea "pendiente_revision"
         if (patente.estado !== PatenteEstado.PENDIENTE_REVISION) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
-        // Actualizar el estado a "rechazada, agregar el motivo de rechazo y el empleado que lo rechazo"
+
+        // Obtener la ruta de la imagen de la patente
+        const imageName = patente.imagen;  // Asumiendo que 'imagen' es el nombre del archivo
+        if (imageName) {
+            // Construir la ruta correcta al archivo en 'uploads' desde la raíz del proyecto
+            const imagePath = path.join(rootPath, imageName);
+
+            // Verificar si el archivo existe y eliminarlo
+            await new Promise<void>((resolve, reject) => {
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.error('Error al eliminar la imagen:', err);
+                        reject(new Error('Error al eliminar la imagen'));
+                    } else {
+                        console.log('Imagen eliminada con éxito:', imagePath);
+                        resolve();
+                    }
+                });
+            });
+            patente.imagen = null;
+        }
+
+
+
+        // Actualizar el estado de la patente a "rechazada", agregar el motivo y el empleado que la rechazó
         patente.estado = PatenteEstado.RECHAZADA;
         patente.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
         patente.empleado = req.body.sanitizedInput.empleado;
-        // Guardar la actualización de la patente y el nuevo hechizo
+        patente.imagen='';
+
+        // Guardar la actualización de la patente
         await em.persistAndFlush([patente]);
+
+        // Enviar la respuesta final después de todos los pasos
         res.status(200).json({ message: 'Patente rechazada', data: patente });
-    } catch (error:any) {
+
+    } catch (error: any) {
+        console.error('Error rejecting patente:', error);
         res.status(500).json({ message: 'Hubo un problema rechazando la patente' });
     }
 }

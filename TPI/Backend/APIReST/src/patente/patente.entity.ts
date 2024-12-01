@@ -21,6 +21,8 @@ export class Patente extends BaseEntity{
     instrucciones!: string
     @Property({nullable: true, unique: false})
     restringido?:boolean
+    @Property({nullable:true, unique:false})
+    imagen?:string | null
     @OneToMany(() => Hechizo, hechizo => hechizo.patente)
     hechizos = new Collection<Hechizo>(this); 
     @ManyToOne(()=>Tipo_Hechizo,{nullable:true})

@@ -17,6 +17,7 @@ interface Hechizo {
   instrucciones: string;
   restringido: boolean;
   patente: {
+    imagen: string;
     tipo_hechizo: {
       nombre: string;
       caracteristicas: string;
@@ -108,6 +109,12 @@ const HechizoCard: React.FC = () => {
     handleFilterChange();
   }, [selectedTipo, selectedEtiqueta]);
 
+  const getImageSrc = (hechizo: Hechizo) => {
+    // Verifica si la patente tiene una imagen y si no, retorna la imagen por defecto
+    const imageURL =  hechizo.patente?.imagen ? `http://localhost:3000/uploads/${hechizo.patente.imagen}` : imgHechizo1;
+    return imageURL
+  };
+
   return (
     <div className='hechizos-cards-container'>
       <div className='filtros-container'>
@@ -138,7 +145,7 @@ const HechizoCard: React.FC = () => {
           filteredHechizos.map((hechizo) => (
             <div key={hechizo.id} className='hechizo-card'>
               <div className='image-container'>
-                <img src={imgHechizo1} alt={hechizo.nombre || 'Hechizo'} className='hechizo-image' />
+                <img src={getImageSrc(hechizo)} alt={hechizo.nombre || 'Hechizo'} className='hechizo-image' />
                 {(!hechizo.restringido || currentUser?.isEmpleado || currentUser?.id === hechizo.patente?.mago?.id) ? (
                   <button
                     className='info-button'
@@ -168,7 +175,7 @@ const HechizoCard: React.FC = () => {
                       <button className='close-button' onClick={() => setIsOpen(null)}>
                         <img src={cross} alt="Cerrar" />
                       </button>
-                      <img src={imgHechizo1} alt={hechizo.nombre} className='hechizo-image' />
+                      <img src={getImageSrc(hechizo)} alt={hechizo.nombre} className='hechizo-image' />
                       <div className='pop-up-info'>
                         <h2>{hechizo.nombre}</h2>
                         <h4>Descripción</h4>

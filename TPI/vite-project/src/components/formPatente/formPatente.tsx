@@ -24,6 +24,7 @@ const FormPatente: React.FC = () => {
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [instrucciones, setInstrucciones] = useState('');
+    const [imagen, setImagen] = useState<File | null>(null);
 
     const togglePopup = () => {
         setIsPopupVisible(!isPopupVisible);
@@ -38,17 +39,27 @@ const FormPatente: React.FC = () => {
             setShowModal(true);
             return;
         }
-        const formData = {
-            nombre,
-            descripcion,
-            instrucciones,
-            idMago: currentUser.id
-        };
+        if (!imagen) {
+            setTipoError(ErrorTipo.SOFT_ERROR);
+            setRecargaPagina(false);
+            setModalMessage('Debe adjuntar una imagen.');
+            setShowModal(true);
+            return;
+        }
+        const formData = new FormData();
+        formData.append('nombre',nombre);
+        formData.append('descripcion', descripcion);
+        formData.append('instrucciones', instrucciones);
+        formData.append('idMago', currentUser.id.toString());
+        formData.append('imagen', imagen);
         try {
-            const response = await axios.post('http://localhost:3000/api/patente/', formData);
+            const response = await axios.post('http://localhost:3000/api/patente/', formData,{
+                headers:{'Content-Type':'multipart/form-data'}
+            });
             setNombre('');
             setDescripcion('');
             setInstrucciones('');
+            setImagen(null)
             setIsPopupVisible(false);
             
             setTipoError(ErrorTipo.SUCCESS);
@@ -71,7 +82,7 @@ const FormPatente: React.FC = () => {
             {isPopupVisible && (
                 <div>
                     <div className='patente-overlay' onClick={togglePopup}></div>
-                    <form className='form-patente' onSubmit={handleSubmit}>
+                    <form className='form-patente'  onSubmit={handleSubmit}>
                         <button className='close-patente' onClick={togglePopup}>
                             <img src={cross} alt="" />
                         </button>
@@ -87,6 +98,15 @@ const FormPatente: React.FC = () => {
                         <div>
                             <p>Instrucciones</p>
                             <textarea id="instrucciones" onChange={(e) => setInstrucciones(e.target.value)} value={instrucciones} rows={4} required />
+                        </div>
+                        <div>
+                            <p>Imagen</p>
+                            <input type="file" onChange={(e) => {
+                                                                    if (e.target.files && e.target.files[0]) {
+                                                                        setImagen(e.target.files[0]);
+                                                                    }
+                                                                }}
+                            id="foto" name="foto" accept="image/*" required/>                        
                         </div>
                         <button type="submit" className='button-patente'>Enviar</button>
                     </form>

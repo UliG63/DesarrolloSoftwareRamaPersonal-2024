@@ -4,7 +4,14 @@ import { PatenteEstado } from "./patente.enum.js";
 import { Magos } from "../magos/magos.entity.js";
 import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js";
 import { Etiqueta } from "../etiqueta/etiqueta.entity.js";
-const em = orm.em;
+import path from "path";
+import fs from 'fs';
+import { fileURLToPath } from "url";
+const em = orm.em.fork();
+//Obtengo el dirname para el manejo de imagenes
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootPath = path.resolve(__dirname, '..', '..', 'public', 'uploads');
 function sanitizePatenteInput(req, res, next) {
     req.body.sanitizedInput = {
         fechaCreacion: req.body.fechaCreacion,
@@ -70,12 +77,14 @@ async function add(req, res) {
         if (!magoExistente) {
             return res.status(404).json({ message: 'Mago no encontrado' });
         }
+        const imagen = req.file ? req.file.filename : null;
         // Crear la patente vinculada al mago existente
         const nuevaPatente = em.create(Patente, {
             ...patenteData,
             mago: magoExistente, // Asociar el mago con la patente
             estado: PatenteEstado.PENDIENTE_REVISION,
-            fechaCreacion: new Date()
+            fechaCreacion: new Date(),
+            imagen,
         });
         // Guardar en la base de datos
         await em.flush();
@@ -145,15 +154,38 @@ async function reject(req, res) {
         if (patente.estado !== PatenteEstado.PENDIENTE_REVISION) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
-        // Actualizar el estado a "rechazada, agregar el motivo de rechazo y el empleado que lo rechazo"
+        // Obtener la ruta de la imagen de la patente
+        const imageName = patente.imagen; // Asumiendo que 'imagen' es el nombre del archivo
+        if (imageName) {
+            // Construir la ruta correcta al archivo en 'uploads' desde la raíz del proyecto
+            const imagePath = path.join(rootPath, imageName);
+            // Verificar si el archivo existe y eliminarlo
+            await new Promise((resolve, reject) => {
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.error('Error al eliminar la imagen:', err);
+                        reject(new Error('Error al eliminar la imagen'));
+                    }
+                    else {
+                        console.log('Imagen eliminada con éxito:', imagePath);
+                        resolve();
+                    }
+                });
+            });
+            patente.imagen = null;
+        }
+        // Actualizar el estado de la patente a "rechazada", agregar el motivo y el empleado que la rechazó
         patente.estado = PatenteEstado.RECHAZADA;
         patente.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
         patente.empleado = req.body.sanitizedInput.empleado;
-        // Guardar la actualización de la patente y el nuevo hechizo
+        patente.imagen = '';
+        // Guardar la actualización de la patente
         await em.persistAndFlush([patente]);
+        // Enviar la respuesta final después de todos los pasos
         res.status(200).json({ message: 'Patente rechazada', data: patente });
     }
     catch (error) {
+        console.error('Error rejecting patente:', error);
         res.status(500).json({ message: 'Hubo un problema rechazando la patente' });
     }
 }

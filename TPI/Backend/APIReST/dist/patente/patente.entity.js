@@ -49,6 +49,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Patente.prototype, "restringido", void 0);
 __decorate([
+    Property({ nullable: true, unique: false }),
+    __metadata("design:type", Object)
+], Patente.prototype, "imagen", void 0);
+__decorate([
     OneToMany(() => Hechizo, hechizo => hechizo.patente),
     __metadata("design:type", Object)
 ], Patente.prototype, "hechizos", void 0);
