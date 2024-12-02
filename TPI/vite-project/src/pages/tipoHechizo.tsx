@@ -7,6 +7,7 @@ import FormTipoHechizo from "../components/formTipoHechizo/formTipoHechizo";
 import deleteIcon from "../assets/basura.png";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
+import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
 
 interface TipoHechizo {
     id: number;
@@ -19,6 +20,8 @@ const TipoHechizoPage: React.FC = () => {
     const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
     const [recargaPagina, setRecargaPagina] = useState(false)
     const [modalMessage, setModalMessage] = useState('');
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [tiposHechizo, setTiposHechizo] = useState<TipoHechizo[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -85,15 +88,18 @@ const TipoHechizoPage: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: number) => {
-        const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar este tipo de hechizo?");
-        if (confirmDelete) {
+    const promptDelete = (id: number) => {
+        setItemToDelete(id);
+        setShowConfirmationModal(true);
+    };
+    const handleDelete = async () => {
+        if (itemToDelete!== null) {
             try {
-                await axios.delete(`http://localhost:3000/api/tipo_hechizo/${id}`);
-                setTiposHechizo((prev) => prev.filter((tipoHechizo) => tipoHechizo.id !== id));
+                await axios.delete(`http://localhost:3000/api/tipo_hechizo/${itemToDelete}`);
+                setTiposHechizo((prev) => prev.filter((tipoHechizo) => tipoHechizo.id !== itemToDelete));
                 setTipoError(ErrorTipo.SUCCESS);
                 setRecargaPagina(true);
-                setModalMessage('Tipo Hechizo eliminada con exito.');
+                setModalMessage('Tipo Hechizo eliminado con exito.');
                 setShowModal(true);
             } catch (error) {
                 setError("Hubo un error al intentar eliminar el tipo de hechizo.");
@@ -101,7 +107,11 @@ const TipoHechizoPage: React.FC = () => {
                 setRecargaPagina(true);
                 setModalMessage('Error al eliminar la etiqueta:\n'+error);
                 setShowModal(true);
+            } finally {
+                setShowConfirmationModal(false);
+                setItemToDelete(null);
             }
+            
         }
     };
 
@@ -130,7 +140,7 @@ const TipoHechizoPage: React.FC = () => {
                                         <div className="tipoHechizo-info">
                                             <p>Características: {tipoHechizo.caracteristicas}</p>
                                             <button onClick={() => handleEditToggle(tipoHechizo)} className='edit-button'>Editar</button>
-                                            <button onClick={() => handleDelete(tipoHechizo.id)} className="delete-button">
+                                            <button onClick={() => promptDelete(tipoHechizo.id)} className="delete-button">
                                                 <img src={deleteIcon} alt="Eliminar" />
                                             </button>
                                         </div>
@@ -141,6 +151,16 @@ const TipoHechizoPage: React.FC = () => {
                     </div>
                 ) : (
                     <p>No se encontraron tipos de hechizo.</p>
+                )}
+                {showConfirmationModal && (
+                    <ConfirmationModal
+                        message="¿Estás seguro de que quieres eliminar este Tipo de Hechizo?"
+                        onConfirm={handleDelete}
+                        onCancel={() => {
+                            setShowConfirmationModal(false);
+                            setItemToDelete(null);
+                        }}
+                    />
                 )}
                 {showModal && (
                     <ModalMessage

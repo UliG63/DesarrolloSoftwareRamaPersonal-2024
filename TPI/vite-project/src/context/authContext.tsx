@@ -57,8 +57,8 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   // envía los datos del usuario al backend para crear una cuenta
   const register = async (data: RegisterData) => {
-    const response = await axios.post('http://localhost:3000/api/auth/register', data);
-    alert(response.data.message || 'Registro exitoso'); // esto notificar al usuario, podríamos cambiarlo y hacerlo más aesthetic
+    await axios.post('http://localhost:3000/api/auth/register', data);
+    //alert(response.data.message || 'Registro exitoso'); // esto notificar al usuario, podríamos cambiarlo y hacerlo más aesthetic
   };
 
   const logout = () => {

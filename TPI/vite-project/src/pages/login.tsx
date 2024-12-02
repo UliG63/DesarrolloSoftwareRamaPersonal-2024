@@ -78,29 +78,35 @@ useEffect(() => {
   const handleRegister = async () => {
     // Verificar que las contraseñas coincidan
     if (pass !== confirmPass) {
-      alert('Las contraseñas no coinciden');
+      setTipoError(ErrorTipo.SOFT_ERROR);
+      setRecargaPagina(false);
+      setModalMessage('Las contraseñas no coinciden');
+      setShowModal(true);
       return;
     }
-    
     try {
       await register({
-        nombre,
-        apellido,
-        email,
-        pass,
-        profesion,
-        madera_varita: maderaVarita,
-        nucleo_varita: nucleoVarita,
-        largo_varita: largoVarita,
-        institucion,
-        isEmpleado: false,
+          nombre,
+          apellido,
+          email,
+          pass,
+          profesion,
+          madera_varita: maderaVarita,
+          nucleo_varita: nucleoVarita,
+          largo_varita: largoVarita,
+          institucion,
+          isEmpleado: false,
       });
-    } catch (error) {
+      setTipoError(ErrorTipo.SUCCESS);
+      setRecargaPagina(false);
+      setModalMessage('Registro exitoso');
+      setShowModal(true);
+  } catch (error) {
       setTipoError(ErrorTipo.SOFT_ERROR);
       setRecargaPagina(true);
-      setModalMessage('Error en el registro\n'+error);
+      setModalMessage('Error en el registro\n' + error);
       setShowModal(true);
-    }
+  }
   };
 
   const handleLogin = async () => {

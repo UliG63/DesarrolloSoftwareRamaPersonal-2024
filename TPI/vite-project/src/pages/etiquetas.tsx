@@ -7,6 +7,7 @@ import FormEtiqueta from "../components/formEtiqueta/formEtiqueta";
 import deleteIcon from "../assets/basura.png";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
+import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
 
 interface Etiqueta {
     id: number;
@@ -19,6 +20,8 @@ const EtiquetaPage: React.FC = () => {
     const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
     const [recargaPagina, setRecargaPagina] = useState(false)
     const [modalMessage, setModalMessage] = useState('');
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -85,22 +88,28 @@ const EtiquetaPage: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: number) => {
-        const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar esta etiqueta?");
-        if (confirmDelete) {
+    const promptDelete = (id: number) => {
+        setItemToDelete(id);
+        setShowConfirmationModal(true);
+    };
+    const handleDelete = async () => {
+        if (itemToDelete !== null) {
             try {
-                await axios.delete(`http://localhost:3000/api/etiqueta/${id}`);
-                setEtiquetas((prev) => prev.filter((etiqueta) => etiqueta.id !== id));
+                await axios.delete(`http://localhost:3000/api/etiqueta/${itemToDelete}`);
+                setEtiquetas((prev) => prev.filter((etiqueta) => etiqueta.id !== itemToDelete));
                 setTipoError(ErrorTipo.SUCCESS);
                 setRecargaPagina(true);
-                setModalMessage('Etiqueta eliminada con exito.');
+                setModalMessage('Etiqueta eliminada con éxito.');
                 setShowModal(true);
             } catch (error) {
                 setError("Hubo un error al intentar eliminar la etiqueta.");
                 setTipoError(ErrorTipo.SOFT_ERROR);
                 setRecargaPagina(true);
-                setModalMessage('Error al eliminar la etiqueta:\n'+error);
+                setModalMessage('Error al eliminar la etiqueta:\n' + error);
                 setShowModal(true);
+            } finally {
+                setShowConfirmationModal(false);
+                setItemToDelete(null);
             }
         }
     };
@@ -130,7 +139,7 @@ const EtiquetaPage: React.FC = () => {
                                         <div className="etiqueta-info">
                                             <p>Descripción: {etiqueta.descripcion}</p>
                                             <button onClick={() => handleEditToggle(etiqueta)} className='edit-button'>Editar</button>
-                                            <button onClick={() => handleDelete(etiqueta.id)} className="delete-button">
+                                            <button onClick={() => promptDelete(etiqueta.id)} className="delete-button">
                                                 <img src={deleteIcon} alt="Eliminar" />
                                             </button>
                                         </div>
@@ -141,6 +150,16 @@ const EtiquetaPage: React.FC = () => {
                     </div>
                 ) : (
                     <p>No se encontraron etiquetas.</p>
+                )}
+                {showConfirmationModal && (
+                    <ConfirmationModal
+                        message="¿Estás seguro de que querés eliminar esta etiqueta?"
+                        onConfirm={handleDelete}
+                        onCancel={() => {
+                            setShowConfirmationModal(false);
+                            setItemToDelete(null);
+                        }}
+                    />
                 )}
                 {showModal && (
                     <ModalMessage

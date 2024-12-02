@@ -7,6 +7,7 @@ import FormInstitucion from "../components/formInstituciones/formInstituciones";
 import deleteIcon from "../assets/basura.png";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
+import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
 
 interface Institucion {
     id: number;
@@ -20,6 +21,8 @@ const InstitucionesPage: React.FC = () => {
     const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
     const [recargaPagina, setRecargaPagina] = useState(false)
     const [modalMessage, setModalMessage] = useState('');
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [instituciones, setInstituciones] = useState<Institucion[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -88,13 +91,17 @@ const InstitucionesPage: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: number) => {
-        const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar esta institución?");
-        if (confirmDelete) {
+    const promptDelete = (id: number) => {
+        setItemToDelete(id);
+        setShowConfirmationModal(true);
+    };
+
+    const handleDelete = async () => {
+        if (itemToDelete!==null) {
             try {
-                await axios.delete(`http://localhost:3000/api/institucion/${id}`);
+                await axios.delete(`http://localhost:3000/api/institucion/${itemToDelete}`);
                 // Elimina la institución del estado
-                setInstituciones((prev) => prev.filter((institucion) => institucion.id !== id));
+                setInstituciones((prev) => prev.filter((institucion) => institucion.id !== itemToDelete));
                 setTipoError(ErrorTipo.SUCCESS);
                 setRecargaPagina(true);
                 setModalMessage('Institucion eliminada con exito.');
@@ -105,6 +112,9 @@ const InstitucionesPage: React.FC = () => {
                 setRecargaPagina(true);
                 setModalMessage('Error al eliminar la institucion:\n'+error);
                 setShowModal(true);
+            } finally {
+                setShowConfirmationModal(false);
+                setItemToDelete(null);
             }
         }
     };
@@ -136,7 +146,7 @@ const InstitucionesPage: React.FC = () => {
                                             <p>Ciudad: {institucion.ciudad}</p>
                                             <p>País: {institucion.pais}</p>
                                             <button onClick={() => handleEditToggle(institucion)} className='edit-button'>Editar</button>
-                                            <button onClick={() => handleDelete(institucion.id)} className="delete-button">
+                                            <button onClick={() => promptDelete(institucion.id)} className="delete-button">
                                                 <img src={deleteIcon} alt="Eliminar" />
                                             </button>
                                         </div>
@@ -147,6 +157,16 @@ const InstitucionesPage: React.FC = () => {
                     </div>
                 ) : (
                     <p>No se encontraron instituciones</p>
+                )}
+                {showConfirmationModal && (
+                    <ConfirmationModal
+                        message="¿Estás seguro de que querés eliminar esta etiqueta?"
+                        onConfirm={handleDelete}
+                        onCancel={() => {
+                            setShowConfirmationModal(false);
+                            setItemToDelete(null);
+                        }}
+                    />
                 )}
                 {showModal && (
                     <ModalMessage

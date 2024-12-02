@@ -5,12 +5,15 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
+import ConfirmationModal from '../confirmationModal/confirmationModal.tsx';
 
 const User: React.FC = () => {
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate(); //useNavigate para la redirección
   const [showModal, setShowModal] = useState(false);
   const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [recargaPagina, setRecargaPagina] = useState(false)
   const [modalMessage, setModalMessage] = useState('');
   //modo edición/visualización
@@ -106,24 +109,29 @@ const User: React.FC = () => {
   };
 
   //eliminar cuenta
-  const handleDelete = async (id: number) => {
-    
-    const confirmDelete = window.confirm("¿Estás seguro de que querés eliminar esta cuenta?");
-    if (confirmDelete) {
+  const promptDelete = (id: number) => {
+    setItemToDelete(id);
+    setShowConfirmationModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (itemToDelete!==null) {
       try {
-        await axios.delete(`http://localhost:3000/api/magos/${id}`);
-        logout();  //limpia el estado de autenticación
+        await axios.delete(`http://localhost:3000/api/magos/${itemToDelete}`);
         setTipoError(ErrorTipo.SUCCESS);
         setRecargaPagina(true);
         setModalMessage('Cuenta eliminada con éxito.');
         setShowModal(true);
-        navigate('/login'); 
+        logout();
       } catch (error) {
         setTipoError(ErrorTipo.SOFT_ERROR);
         setRecargaPagina(true);
         setModalMessage('Hubo un error al eliminar la cuenta. Intenta nuevamente.\n'+error);
         setShowModal(true);
-      }
+      } finally {
+        setShowConfirmationModal(false);
+        setItemToDelete(null);
+    }
     }
   };
 
@@ -164,8 +172,18 @@ const User: React.FC = () => {
       </div>
       <div className='red-buttons'>
         <button onClick={handleLogout} className='logout-button'>Logout</button>
-        <button onClick={() => currentUser && handleDelete(currentUser.id)} className="delete-user"disabled={!currentUser}>Eliminar</button>
+        <button onClick={() => currentUser && promptDelete(currentUser.id)} className="delete-user"disabled={!currentUser}>Eliminar</button>
       </div>
+      {showConfirmationModal && (
+          <ConfirmationModal
+              message="¿Estás seguro de que querés eliminar tu cuenta?"
+              onConfirm={handleDelete}
+              onCancel={() => {
+                  setShowConfirmationModal(false);
+                  setItemToDelete(null);
+              }}
+          />
+      )}
       {showModal && (
           <ModalMessage
               errorType={tipoError}

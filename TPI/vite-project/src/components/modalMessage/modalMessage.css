@@ -71,5 +71,28 @@
 .modal-button:hover {
     background-color: #834417;
 }
+/*Por favor no eliminar de aqui hacia abajo. El modal de confimacion utiliza el mismo css, con la particularidad de tener 2 botones, con lo cual hay que diferenciar estilos*/
+.modal-button.confirm {
+    background-color: #7f4e2b;
+}
+
+.modal-button.confirm:hover {
+    background-color: #834417;
+}
+
+.modal-button.cancel {
+    background-color: #808080;
+}
+
+.modal-button.cancel:hover {
+    background-color: #696969;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px; /* Espacio entre botones */
+    justify-content: center; /* Centrar botones en el contenedor */
+    margin-top: 20px; /* Separar botones del mensaje */
+}
 
 
