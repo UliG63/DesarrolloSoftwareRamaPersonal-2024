@@ -1,16 +1,16 @@
+import React, { useState, useContext, useEffect } from 'react';
 import Navbar from "../components/navbar/navbar";
 import Inicio from '../components/inicio/inicio';
 import Footer from "../components/footer/footer";
 import backgroundImg from '../assets/inicio-patentes.jpeg';
 import FormPatente from "../components/formPatente/formPatente";
 import { AuthContext } from "../context/authContext.tsx";
-import { useContext, useEffect } from 'react';
 import axios from 'axios';
-import React, { useState } from 'react';
 import './patentes.css';
 import Title from "../components/tilte/title.tsx";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
+import Select from 'react-select';
 
 interface Patente {
     id: number;
@@ -18,7 +18,7 @@ interface Patente {
     nombre: string;
     descripcion: string;
     estado: string;
-    motivo_rechazo: string | null; // Puede ser null
+    motivo_rechazo: string | null;
     instrucciones: string;
     empleado: {
         nombre: string;
@@ -28,7 +28,7 @@ interface Patente {
         madera_varita: string;
         nucleo_varita: string;
         largo_varita: number;
-    } | null;  // Puede ser null
+    } | null;
     mago: {
         nombre: string;
         apellido: string;
@@ -43,21 +43,23 @@ interface Patente {
 const PatentesPage: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
-    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [recargaPagina, setRecargaPagina] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [Patente, setPatentes] = useState<Patente[]>([]);
     const { currentUser } = useContext(AuthContext);
+    const [selectedFilter, setSelectedFilter] = useState<{ label: string; value: string } | null>({ label: 'Todas', value: '' });
+    const [filteredPatentes, setFilteredPatentes] = useState<Patente[]>([]);
 
     const fetchUserPatentes = async () => {
         try {
             const response = await axios.get(`http://localhost:3000/api/patente/${currentUser?.id}`);
             setPatentes(response.data.data);
+            setFilteredPatentes(response.data.data); // Inicializa las patentes filtradas con todas las patentes
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
             setRecargaPagina(false);
-            setModalMessage('No se pudieron recuperar las Patentes del Usuario\n'+error);
+            setModalMessage('No se pudieron recuperar las Patentes del Usuario\n' + error);
             setShowModal(true);
-
         }
     };
 
@@ -67,9 +69,20 @@ const PatentesPage: React.FC = () => {
         }
     }, [currentUser]);
 
+    const filterBy: string[] = ['publicada', 'rechazada', 'pendiente_revision'];
+    const filterOptions = [{ label: 'Todas', value: '' }, ...filterBy.map((filtro: string) => ({ label: filtro, value: filtro }))];
+
+    const handleFilterChange = () => {
+        let filtered = Patente;
+        if (selectedFilter && selectedFilter.value !== '') {
+            filtered = Patente.filter(patente => patente.estado === selectedFilter.value);
+        }
+        setFilteredPatentes(filtered);
+    };
+
     useEffect(() => {
-        console.log('Patentes cargadas:', Patente);
-    }, [Patente]);
+        handleFilterChange();
+    }, [selectedFilter]);
 
     const getEstadoClass = (estado: string) => {
         switch (estado) {
@@ -89,23 +102,28 @@ const PatentesPage: React.FC = () => {
             <Navbar />
             <Inicio
                 title="Solicitudes de Patentes"
-                subTitle="Aquí puedes gestionar todas tus solicitudes de patentes de hechizos. En esta sección, podrás ver el estado actual de tus patentes solicitadas, hacer un seguimiento del progreso y revisar cualquier actualización importante. Además, si tienes nuevas ideas para hechizos, puedes solicitar nuevas patentes fácilmente."
+                subTitle="Aquí puedes gestionar todas tus solicitudes de patentes de hechizos."
                 backgroundImage={backgroundImg}
             />
-            
-            <FormPatente /> 
-            <Title 
-                encabezado='TUS PATENTES' 
-                title='Información' 
-                subTitle='' 
-            />
+            <FormPatente />
+            <Title encabezado="TUS PATENTES" title="Información" subTitle="" />
+            <div className="filtros-container">
+                <Select
+                    className="select-dropdown"
+                    options={filterOptions}
+                    value={selectedFilter}
+                    onChange={setSelectedFilter}
+                    placeholder="Filtrar por estado"
+                    isClearable
+                />
+            </div>
             <div className="patentes-container">
-                {Patente.length > 0 ? (
-                    Patente.map((patente) => (
+                {filteredPatentes.length > 0 ? (
+                    filteredPatentes.map((patente) => (
                         <div key={patente.id} className="patentes-card">
                             <h3>{patente.nombre}</h3>
                             <h6>Información General</h6>
-                            <div className='personal-info'>
+                            <div className="personal-info">
                                 <p>Usuario: {patente.mago.nombre} {patente.mago.apellido}</p>
                                 <p>ID Patente: {patente.id}</p>
                                 <p>Fecha: {new Date(patente.fechaCreacion).toLocaleDateString()}</p>
@@ -113,12 +131,10 @@ const PatentesPage: React.FC = () => {
                                 <p>Instrucciones: {patente.instrucciones}</p>
                             </div>
                             <h6>Información de Estado</h6>
-                            <div className='user-varita'>
+                            <div className="user-varita">
                                 <p>
                                     <span>Estado: </span>
-                                    <span className={getEstadoClass(patente.estado)}>
-                                        {patente.estado}
-                                    </span>
+                                    <span className={getEstadoClass(patente.estado)}>{patente.estado}</span>
                                 </p>
                                 {patente.empleado ? (
                                     <p>Empleado Revisor: {patente.empleado.nombre} {patente.empleado.apellido}</p>
@@ -130,13 +146,13 @@ const PatentesPage: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No tienes patentes registradas.</p>
+                    <p>No hay patentes {selectedFilter?.label || 'registradas'}.</p>
                 )}
                 {showModal && (
                     <ModalMessage
                         errorType={tipoError}
                         message={modalMessage}
-                        reloadOnClose={recargaPagina} 
+                        reloadOnClose={recargaPagina}
                     />
                 )}
             </div>
@@ -146,4 +162,5 @@ const PatentesPage: React.FC = () => {
 };
 
 export default PatentesPage;
+
 

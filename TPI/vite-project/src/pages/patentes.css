@@ -96,6 +96,25 @@
     font-weight: bold;
 }
 
+.filtros-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    border-radius: 8px;
+    gap: 10px;
+}
+
+.select-dropdown {
+    width: 100%;
+    max-width: 260px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 @media (max-width: 840px) {
     .patentes-container {
         margin-bottom: 0;
@@ -113,6 +132,12 @@
 
     .inicio-text h1 {
         font-size: 30px;
+    }
+
+    .filtro-container {
+        width: 90%;
+        flex-direction: column;
+        align-items: flex-start;
     }
 
 }
