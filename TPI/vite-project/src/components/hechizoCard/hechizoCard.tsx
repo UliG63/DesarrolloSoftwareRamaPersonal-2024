@@ -3,6 +3,7 @@ import Select from 'react-select';
 import axios from 'axios';
 import './hechizoCard.css';
 import infoIcon from "../../assets/information.png";
+import searchIcon from "../../assets/icons8-búsqueda-50.png";
 import warningCon from "../../assets/icons8-error-50.png";
 import cross from "../../assets/crossWhite.png";
 import imgHechizo1 from '../../assets/hechizo1.jpeg';
@@ -81,6 +82,28 @@ const HechizoCard: React.FC = () => {
     fetchHechizos();
   }, []);
 
+  //Logica de Busqueda
+  const handleSearch = () => {
+    const searchInput = document.querySelector("input[type='search']") as HTMLInputElement;
+    const query = searchInput?.value.toLowerCase();
+    if (query && query !== '') {
+      const filteredResults = hechizos.filter(hechizo =>
+        hechizo.nombre.toLowerCase().includes(query) || hechizo.descripcion.toLowerCase().includes(query)
+      );
+      setFilteredHechizos(filteredResults);
+    } else {
+      setFilteredHechizos(hechizos); // Si no hay búsqueda, mostrar todos los hechizos
+    }
+  };
+
+  // Manejar la búsqueda cuando presionamos "Enter"
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch(); // Llama a handleSearch cuando se presiona Enter
+    }
+  };
+
+  //Logica de Filtrado
   const tiposUnicos: string[] = [...new Set(hechizos.map(hechizo => hechizo.patente?.tipo_hechizo?.nombre || ''))];
   const tiposOptions = [{ label: 'Todos', value: '' }, ...tiposUnicos.map((tipo: string) => ({ label: tipo, value: tipo }))];
 
@@ -90,8 +113,7 @@ const HechizoCard: React.FC = () => {
   const etiquetasOptions = [{ label: 'Todos', value: '' }, ...etiquetasUnicas.map((etiqueta: string) => ({ label: etiqueta, value: etiqueta }))];
 
   const handleFilterChange = () => {
-    let filtered = hechizos;
-
+    let filtered = filteredHechizos
     if (selectedTipo && selectedTipo.value !== '') {
       filtered = filtered.filter(hechizo => hechizo.patente?.tipo_hechizo?.nombre === selectedTipo.value);
     }
@@ -117,6 +139,12 @@ const HechizoCard: React.FC = () => {
 
   return (
     <div className='hechizos-cards-container'>
+      <div className="search-container">
+        <input type="search" placeholder="Buscar por nombre, descripción..."  onKeyDown={handleKeyPress}/>
+        <button className="search-icon" onClick={handleSearch}>
+          <img src={searchIcon} alt="Buscar" />
+        </button>
+    </div>
       <div className='filtros-container'>
         <Select
           className="select-dropdown"
@@ -139,7 +167,7 @@ const HechizoCard: React.FC = () => {
       <div className='hechizos-cards' id='hechizos-cards'>
         {error && <div className="error-message">{error}</div>} {/* Mostrar error */}
         {!error && filteredHechizos.length === 0 && (
-          <div className="empty-message">No se encontraron hechizos disponibles.</div>
+          <div className="empty-message">No se encontraron hechizos.</div>
         )}
         {!error &&
           filteredHechizos.map((hechizo) => (
