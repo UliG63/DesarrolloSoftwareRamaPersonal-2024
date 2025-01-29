@@ -11,7 +11,6 @@ const uploadDir = path.join(__dirname, '../../public/uploads');
 // Crear el directorio si no existe
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
-    console.log(`Directorio creado: ${uploadDir}`);
 }
 // Configuración de almacenamiento
 const storage = multer.diskStorage({

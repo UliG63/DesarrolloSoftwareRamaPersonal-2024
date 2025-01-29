@@ -43,7 +43,7 @@ function FormPatenteValidacionRechaza ({idPatente}: formValidacionRechazaProps) 
          empleado: currentUser 
         };
 
-        console.log('Datos enviados al servidor:', formData);
+  
         try {
             // Enviar los datos a la API
             const response = await axios.put(`http://localhost:3000/api/patente/reject/${idPatente}`, formData); //Como obtengo la patente actual?

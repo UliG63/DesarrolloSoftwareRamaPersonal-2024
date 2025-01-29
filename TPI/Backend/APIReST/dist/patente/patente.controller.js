@@ -166,7 +166,6 @@ async function reject(req, res) {
                         reject(new Error('Error al eliminar la imagen'));
                     }
                     else {
-                        console.log('Imagen eliminada con éxito:', imagePath);
                         resolve();
                     }
                 });

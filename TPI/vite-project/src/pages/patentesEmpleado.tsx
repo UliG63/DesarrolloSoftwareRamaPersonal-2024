@@ -72,7 +72,6 @@ const PatentesEmpleadoPage: React.FC = () => {
     }, [currentUser]);
 
     useEffect(() => {
-        console.log('Patentes pendientes de revision cargadas:', Patente);
     }, [Patente]);
 
     return (
