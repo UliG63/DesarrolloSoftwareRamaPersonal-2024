@@ -91,6 +91,69 @@ async function add(req: Request, res:Response){
         }
 }
 
+//Deberiamos utilizar el sanitizeInput, por el momento lo hacemos sin el.
+async function publish(req:Request, res:Response){
+    try {
+        // Buscar la solicitud por su ID
+        const id = Number.parseInt(req.params.id)
+        const solicitud = await em.findOneOrFail(Solicitud,{ id });
+        //Obtengo el empleado actual para asignar a la solicitud
+        const empleado = await em.findOneOrFail(Magos,{id:req.body.empleado.id});
+
+        if (!solicitud) {
+            return res.status(404).json({ message: 'Solicitud no encontrada' });
+        }
+
+        // Verificar que el estado actual sea "pendiente_revision"
+        if (solicitud.estado !== SolicitudEstado.PENDIENTE_REVISION) {
+            return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
+        }
+        // Actualizar el estado, asignar empleado, y definir si la solicitud es permanente o no.
+        solicitud.estado = SolicitudEstado.PUBLICADA;
+        solicitud.empleado = empleado;
+        solicitud.permanente = req.body.permanente;
+       
+        await em.persistAndFlush([solicitud]);
+
+
+        res.status(200).json({ message: 'Solicitud aprobada correctamente', data: solicitud });
+    } catch (error: any) {
+        res.status(500).json({ message: 'Hubo un problema al aprobar la solicitud' });
+    }
+}
+
+//Rechazar la solicitud
+async function reject(req: Request, res: Response) {
+    try {
+        // Busca la solicitud por su ID
+        const id = Number.parseInt(req.params.id);
+        const solicitud= await em.findOneOrFail(Solicitud, { id }, { populate: ['fecha' ,'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
+
+        if (!solicitud) {
+            return res.status(404).json({ message: 'Solicitud no encontrada' });
+        }
+
+        // Verifica que el estado actual sea "pendiente_revision"
+        if (solicitud.estado !== SolicitudEstado.PENDIENTE_REVISION) {
+            return res.status(400).json({ message: 'La solicitud no está pendiente de revisión' });
+        }
+
+        // Actualiza el estado de la solicitud a "rechazada", agrega el motivo y el empleado que la rechazó.
+        solicitud.estado = SolicitudEstado.RECHAZADA;
+        solicitud.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
+        solicitud.empleado = req.body.sanitizedInput.empleado;
+
+        // Actualiza en BD
+        await em.persistAndFlush([solicitud]);
+
+        res.status(200).json({ message: 'Solicitud rechazada', data: solicitud });
+
+    } catch (error: any) {
+        console.error('Error rejecting solicitud:', error);
+        res.status(500).json({ message: 'Hubo un problema rechazando la solicitud' });
+    }
+}
+
 async function update(req: Request, res:Response){
     res.status(500).json({message:'Not implemented'})
 }
@@ -99,4 +162,4 @@ async function remove(req: Request, res:Response){
     res.status(500).json({message:'Not implemented'})
 }
 
-export {findAll,findAllPending, findOne, add, update, remove, sanitizeSolicitudInput}
+export {findAll,findAllPending, findOne, add, publish , update, remove, reject, sanitizeSolicitudInput}
