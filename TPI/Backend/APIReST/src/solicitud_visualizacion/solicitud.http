@@ -1,2 +1,17 @@
 ### GET ALL
-GET http:/localhost:3000/api/solicitud_visualizacion
+GET http://localhost:3000/api/solicitud_visualizacion
+
+###Crear una solicitud (fines de testing de la API)
+POST http://localhost:3000/api/solicitud_visualizacion
+Content-Type: application/json
+
+{
+    "fecha": "2025-01-29",
+    "permanente": false,
+    "motivo": "Esto es una prueba de la prueba",
+    "motivo_rechazo": "",
+    "estado": "pendiente_revision",
+    "hechizo": 45,
+    "mago": 1,
+    "empleado": null 
+}

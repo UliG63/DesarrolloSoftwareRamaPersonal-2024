@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { findAll, findOne, add, update, remove } from "./solicitud.controller.js";
+import { findAll,findAllPending, findOne, add, update, remove ,sanitizeSolicitudInput } from "./solicitud.controller.js";
 
 export const solicitudRouter = Router()
 
 solicitudRouter.get('/',findAll)
+solicitudRouter.get('/pending',findAllPending)
 solicitudRouter.get('/:id', findOne)
-solicitudRouter.post('/', add)
-solicitudRouter.put('/:id', update)
+solicitudRouter.post('/',sanitizeSolicitudInput, add)
+solicitudRouter.put('/:id',sanitizeSolicitudInput, update)
+solicitudRouter.patch('/:id', sanitizeSolicitudInput, update)
 solicitudRouter.delete('/:id', remove)

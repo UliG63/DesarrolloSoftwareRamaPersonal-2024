@@ -8,9 +8,13 @@ export class Solicitud extends BaseEntity{
     @Property({nullable: false, unique: false})
     fecha!: Date
     @Property({nullable: false, unique: false})
+    permanente!: boolean
+    @Property({nullable: false, unique: false})
     motivo!: string
     @Property({nullable: true, unique: false})
-    estado?: boolean
+    motivo_rechazo?: string
+    @Property({nullable: false, unique: false})
+    estado?: string
     @ManyToOne(()=>Hechizo,{nullable:false})
     hechizo!: Rel<Hechizo>
     @ManyToOne(()=>Magos, {nullable:false})

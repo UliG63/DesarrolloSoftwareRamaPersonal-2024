@@ -19,11 +19,19 @@ __decorate([
 ], Solicitud.prototype, "fecha", void 0);
 __decorate([
     Property({ nullable: false, unique: false }),
+    __metadata("design:type", Boolean)
+], Solicitud.prototype, "permanente", void 0);
+__decorate([
+    Property({ nullable: false, unique: false }),
     __metadata("design:type", String)
 ], Solicitud.prototype, "motivo", void 0);
 __decorate([
     Property({ nullable: true, unique: false }),
-    __metadata("design:type", Boolean)
+    __metadata("design:type", String)
+], Solicitud.prototype, "motivo_rechazo", void 0);
+__decorate([
+    Property({ nullable: false, unique: false }),
+    __metadata("design:type", String)
 ], Solicitud.prototype, "estado", void 0);
 __decorate([
     ManyToOne(() => Hechizo, { nullable: false }),
