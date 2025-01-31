@@ -1,0 +1,90 @@
+.solicitud-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+}
+  
+.form-aceptar-solicitud {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f7f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+} 
+
+.close-aceptar-solicitud {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.form-aceptar-solicitud div {
+    margin-bottom: 20px;
+}
+
+.form-aceptar-solicitud p {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.form-aceptar-solicitud h4 {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.button-aceptar-solicitud {
+    padding: 10px;
+    background-color: #7f4e2b;
+    color: #f9f7f4;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.button-aceptar-solicitud:hover {
+    background-color: #663a21;
+}
+
+.aceptar-solicitud-button {
+    background-color: #5cb85c;
+    border: none;
+    color: #f9f7f4;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.aceptar-solicitud-button:hover {
+    background-color: #4cae4c;
+}
+.form-fecha input {
+    margin-top: 20px;
+
+}
+
+@media (max-width: 840px) {
+    .form-aceptar-solicitud {
+        width: 90%;
+    }
+}
