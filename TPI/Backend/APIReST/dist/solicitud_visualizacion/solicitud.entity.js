@@ -14,9 +14,9 @@ import { Magos } from "../magos/magos.entity.js";
 let Solicitud = class Solicitud extends BaseEntity {
 };
 __decorate([
-    Property({ nullable: false, unique: false }),
+    Property({ nullable: true, unique: false }),
     __metadata("design:type", Date)
-], Solicitud.prototype, "fecha", void 0);
+], Solicitud.prototype, "fecha_hasta", void 0);
 __decorate([
     Property({ nullable: false, unique: false }),
     __metadata("design:type", Boolean)

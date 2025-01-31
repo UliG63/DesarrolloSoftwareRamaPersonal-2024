@@ -5,8 +5,8 @@ import { Magos } from "../magos/magos.entity.js"
 
 @Entity()
 export class Solicitud extends BaseEntity{
-    @Property({nullable: false, unique: false})
-    fecha!: Date
+    @Property({nullable: true, unique: false})
+    fecha_hasta?: Date
     @Property({nullable: false, unique: false})
     permanente!: boolean
     @Property({nullable: false, unique: false})

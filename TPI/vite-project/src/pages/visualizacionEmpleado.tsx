@@ -15,11 +15,14 @@ import FormVisualizacionAcepta from "../components/formVisualizacionAcepta/formV
 
 interface Solicitud {
     id: number;
-    fechaCreacion: Date;
-    nombreHechizo: string;
     motivo: string;
     estado: string;
-    motivoRechazo: string | null;
+    motivo_rechazo: string | null;
+    fecha_hasta: Date | null;
+    permanente: boolean | null
+    hechizo:{
+        nombre:string;
+    }
     empleado: {
         nombre: string;
         apellido: string;
@@ -80,12 +83,12 @@ const VisualizacionEmpleadoPage: React.FC = () => {
                 {solicitudes.length > 0 ? (
                     solicitudes.map((solicitud) => (
                         <div key={solicitud.id} className="patentes-card">
-                            <h3>{solicitud.nombreHechizo}</h3>
+                            <h3>{solicitud.hechizo.nombre}</h3>
                             <h6>Información General</h6>
                             <div className='personal-info'>
+                                <p><strong>Hechizo: {solicitud.hechizo.nombre}</strong></p>
                                 <p>Usuario: {solicitud.mago.nombre} {solicitud.mago.apellido}</p>
                                 <p>ID Solicitud: {solicitud.id}</p>
-                                <p>Fecha: {new Date(solicitud.fechaCreacion).toLocaleDateString()}</p>
                                 <p>Motivo: {solicitud.motivo}</p>
                             </div>
                             <div className="buttons-container">

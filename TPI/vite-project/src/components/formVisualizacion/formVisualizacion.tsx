@@ -31,7 +31,7 @@ export default function FormVisualizacion() {
     useEffect(() => {
         const fetchHechizos = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/hechizo');
+                const response = await axios.get(`http://localhost:3000/api/hechizo/visualizacion/${currentUser?.id}`);
                 if (Array.isArray(response.data.data)) {
                     const hechizosRestringidos = response.data.data.filter((h: Hechizo) => h.restringido);
                     setHechizos(hechizosRestringidos);

@@ -10,20 +10,21 @@ interface formVisualizacionAceptaProps {
     idSolicitud: number;
 }
 
-function FormVisualizacionAcepta({ idSolicitud }: formVisualizacionAceptaProps) {
+const FormVisualizacionAcepta: React.FC<formVisualizacionAceptaProps> = ({ idSolicitud }) => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const { currentUser } = useContext(AuthContext);
     const [showModal, setShowModal] = useState(false);
     const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
-    const [recargaPagina, setRecargaPagina] = useState(false)
+    const [recargaPagina, setRecargaPagina] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
+    
     const [fechaValidez, setFechaValidez] = useState('');
+    const [tipoAcceso, setTipoAcceso] = useState('permanente'); // "permanente" o "porFecha"
 
     const togglePopup = () => {
         setIsPopupVisible(!isPopupVisible);
     };
 
-    
     const handlePublish = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -37,20 +38,24 @@ function FormVisualizacionAcepta({ idSolicitud }: formVisualizacionAceptaProps) 
 
         const formData = {
             empleado: currentUser,
-            fechaValidez
+            permanente: tipoAcceso === "permanente",
+            fecha_hasta: tipoAcceso === "porFecha" ? fechaValidez : null
         };
 
         try {
-            const response = await axios.put(`http://localhost:3000/api/solicitud_visualizacion/publish/${idSolicitud}`, formData);
+            const response = await axios.put(
+                `http://localhost:3000/api/solicitud_visualizacion/grant/${idSolicitud}`,
+                formData
+            );
             setIsPopupVisible(false);
             setTipoError(ErrorTipo.SUCCESS);
             setRecargaPagina(true);
-            setModalMessage('Solicitud aceptada correctamente. \n'+response.data.id);
+            setModalMessage('Solicitud aceptada correctamente. \n' + response.data.id);
             setShowModal(true);
         } catch (error) {
             setTipoError(ErrorTipo.SOFT_ERROR);
             setRecargaPagina(true);
-            setModalMessage('Hubo un error al aceptar la solicitud.\n'+error);
+            setModalMessage('Hubo un error al aceptar la solicitud.\n' + error);
             setShowModal(true);
         }
     };
@@ -68,22 +73,40 @@ function FormVisualizacionAcepta({ idSolicitud }: formVisualizacionAceptaProps) 
                             <img src={cross} alt="" />
                         </button>
                         <h4>Aceptación de Solicitud</h4>
-                        <div className='form-fecha'>
-                            <label htmlFor='fechaValidez'>Fecha de Validez</label>
-                            <input
-                                type='date'
-                                id='fechaValidez'
-                                value={fechaValidez}
-                                onChange={(e) => setFechaValidez(e.target.value)}
+
+                        <div className='form-tipo-acceso'>
+                            <label htmlFor='tipoAcceso'>Tipo de Acceso</label>
+                            <select
+                                id='tipoAcceso'
+                                value={tipoAcceso}
+                                onChange={(e) => setTipoAcceso(e.target.value)}
                                 required
-                            />
+                            >
+                                <option value="permanente">Permanente</option>
+                                <option value="porFecha">Por Fecha</option>
+                            </select>
                         </div>
 
-                        <button type="submit" className='button-aceptar-solicitud'>Aceptar</button>
+                        {tipoAcceso === "porFecha" && (
+                            <div className='form-fecha'>
+                                <label htmlFor='fechaValidez'>Fecha de Validez</label>
+                                <input
+                                    type='date'
+                                    id='fechaValidez'
+                                    value={fechaValidez}
+                                    onChange={(e) => setFechaValidez(e.target.value)}
+                                    required={tipoAcceso === "porFecha"}
+                                />
+                            </div>
+                        )}
+
+                        <button type="submit" className='button-aceptar-solicitud'>
+                            Aceptar
+                        </button>
                     </form>
                 </div>
             )}
-             {showModal && (
+            {showModal && (
                 <ModalMessage
                     errorType={tipoError}
                     message={modalMessage}
@@ -92,6 +115,6 @@ function FormVisualizacionAcepta({ idSolicitud }: formVisualizacionAceptaProps) 
             )}
         </div>
     );
-}
+};
 
 export default FormVisualizacionAcepta;

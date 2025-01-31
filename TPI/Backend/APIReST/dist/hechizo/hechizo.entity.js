@@ -7,10 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, Property, ManyToOne } from "@mikro-orm/core";
+import { Entity, OneToMany, Property, Cascade, Collection, ManyToOne } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.js";
 import { Patente } from "../patente/patente.entity.js";
+import { Solicitud } from "../solicitud_visualizacion/solicitud.entity.js";
 let Hechizo = class Hechizo extends BaseEntity {
+    constructor() {
+        super(...arguments);
+        this.solicitudes = new Collection(this);
+    }
 };
 __decorate([
     Property({ nullable: false, unique: true }),
@@ -32,6 +37,10 @@ __decorate([
     ManyToOne(() => Patente, { nullable: false }),
     __metadata("design:type", Object)
 ], Hechizo.prototype, "patente", void 0);
+__decorate([
+    OneToMany(() => Solicitud, solicitud => solicitud.hechizo, { cascade: [Cascade.ALL] }),
+    __metadata("design:type", Object)
+], Hechizo.prototype, "solicitudes", void 0);
 Hechizo = __decorate([
     Entity()
 ], Hechizo);

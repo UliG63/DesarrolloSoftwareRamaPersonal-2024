@@ -6,7 +6,7 @@ import { Hechizo } from "../hechizo/hechizo.entity.js";
 const em = orm.em;
 function sanitizeSolicitudInput(req, res, next) {
     req.body.sanitizedInput = {
-        fecha: req.body.fecha,
+        fecha_hasta: req.body.fecha_hasta,
         permanente: req.body.permanente,
         motivo: req.body.motivo,
         motivo_rechazo: req.body.motivo_rechazo,
@@ -27,7 +27,7 @@ function sanitizeSolicitudInput(req, res, next) {
 //Buscar todas las solicitudes
 async function findAll(req, res) {
     try {
-        const solicitudes = await em.find(Solicitud, {}, { populate: ['fecha', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'
+        const solicitudes = await em.find(Solicitud, {}, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'
             ] });
         res.status(200).json({ message: "Found All Solicitudes", data: solicitudes });
     }
@@ -38,7 +38,7 @@ async function findAll(req, res) {
 //Buscar solicitudes pendientes de revision
 async function findAllPending(req, res) {
     try {
-        const solicitudesPendientes = await em.find(Solicitud, { estado: SolicitudEstado.PENDIENTE_REVISION }, { populate: ['fecha', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
+        const solicitudesPendientes = await em.find(Solicitud, { estado: SolicitudEstado.PENDIENTE_REVISION }, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
         res.status(200).json({ message: "Solicitudes pendientes de revisión encontradas", data: solicitudesPendientes });
     }
     catch (error) {
@@ -73,7 +73,6 @@ async function add(req, res) {
             hechizo: hechizoExistente, //Asociar el hechizo con la solicitud
             estado: SolicitudEstado.PENDIENTE_REVISION, //Asignacion por defecto
             permanente: false, //Asignacion por defecto.
-            fecha: new Date(),
         });
         //Guardado en base de datos
         await em.flush();
@@ -84,7 +83,7 @@ async function add(req, res) {
     }
 }
 //Deberiamos utilizar el sanitizeInput, por el momento lo hacemos sin el.
-async function publish(req, res) {
+async function grant(req, res) {
     try {
         // Buscar la solicitud por su ID
         const id = Number.parseInt(req.params.id);
@@ -99,9 +98,16 @@ async function publish(req, res) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
         // Actualizar el estado, asignar empleado, y definir si la solicitud es permanente o no.
-        solicitud.estado = SolicitudEstado.PUBLICADA;
+        solicitud.estado = SolicitudEstado.APROBADA;
         solicitud.empleado = empleado;
-        solicitud.permanente = req.body.permanente;
+        // Si se ha seleccionado como permanente, no se asigna fecha de validez, sino, asigna la fecha de validez
+        if (req.body.permanente) {
+            solicitud.permanente = req.body.permanente;
+        }
+        else {
+            solicitud.permanente = false;
+            solicitud.fecha_hasta = req.body.fecha_hasta;
+        }
         await em.persistAndFlush([solicitud]);
         res.status(200).json({ message: 'Solicitud aprobada correctamente', data: solicitud });
     }
@@ -114,7 +120,7 @@ async function reject(req, res) {
     try {
         // Busca la solicitud por su ID
         const id = Number.parseInt(req.params.id);
-        const solicitud = await em.findOneOrFail(Solicitud, { id }, { populate: ['fecha', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
+        const solicitud = await em.findOneOrFail(Solicitud, { id }, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
         if (!solicitud) {
             return res.status(404).json({ message: 'Solicitud no encontrada' });
         }
@@ -141,5 +147,19 @@ async function update(req, res) {
 async function remove(req, res) {
     res.status(500).json({ message: 'Not implemented' });
 }
-export { findAll, findAllPending, findOne, add, publish, update, remove, reject, sanitizeSolicitudInput };
+async function findByMago(req, res) {
+    try {
+        const id = Number.parseInt(req.params.id);
+        const magoExistente = await em.findOneOrFail(Magos, { id });
+        if (!magoExistente) {
+            return res.status(404).json({ message: 'Mago no encontrado' });
+        }
+        const solicitudes = await em.find(Solicitud, { mago: magoExistente }, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
+        res.status(200).json({ message: "Solicitudes del mago encontradas", data: solicitudes });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Hubo un problema' });
+    }
+}
+export { findAll, findAllPending, findByMago, findOne, add, grant, update, remove, reject, sanitizeSolicitudInput };
 //# sourceMappingURL=solicitud.controller.js.map

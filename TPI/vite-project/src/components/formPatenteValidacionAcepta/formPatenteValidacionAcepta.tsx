@@ -113,7 +113,7 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
         };
 
         try {
-            const response = await axios.put(`http://localhost:3000/api/patente/publish/${idPatente}`, formData);
+            const response = await axios.put(`http://localhost:3000/api/patente/grant/${idPatente}`, formData);
             setIsPopupVisible(false);
             setTipoError(ErrorTipo.SUCCESS);
             setRecargaPagina(true);

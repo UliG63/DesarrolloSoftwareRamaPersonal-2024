@@ -1,6 +1,6 @@
 export enum SolicitudEstado {
     PENDIENTE_REVISION = 'pendiente_revision',
-    PUBLICADA = 'publicada',
+    APROBADA = 'aprobada',
     RECHAZADA = 'rechazada',
     VENCIDA = 'vencida'
 }

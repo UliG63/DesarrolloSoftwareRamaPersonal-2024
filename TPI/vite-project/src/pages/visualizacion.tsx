@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
 import Navbar from "../components/navbar/navbar";
 import Inicio from '../components/inicio/inicio';
 import Footer from "../components/footer/footer";
@@ -8,16 +9,36 @@ import backgroundImg from '../assets/inicio-visualizacion2.jpeg';
 import FormVisualizacion from "../components/formVisualizacion/formVisualizacion";
 import ModalMessage from "../components/modalMessage/modalMessage";
 import { ErrorTipo } from "../components/modalMessage/error.enum";
+import { AuthContext } from '../context/authContext.tsx';
 
 interface Solicitud {
     id: number;
-    nombreHechizo: string;
-    usuario: string;
-    fecha: string;
     motivo: string;
     estado: string;
-    empleadoRevisor?: string;
-    motivoRechazo?: string;
+    motivo_rechazo: string | null;
+    fecha_hasta: string | null;
+    permanente: boolean | null
+    hechizo:{
+        nombre:string;
+    }
+    empleado: {
+        nombre: string;
+        apellido: string;
+        email: string;
+        profesion: string;
+        madera_varita: string;
+        nucleo_varita: string;
+        largo_varita: number;
+    } | null;
+    mago: {
+        nombre: string;
+        apellido: string;
+        email: string;
+        profesion: string;
+        madera_varita: string;
+        nucleo_varita: string;
+        largo_varita: number;
+    };
 }
 
 export default function VisualizacionPage() {
@@ -25,39 +46,25 @@ export default function VisualizacionPage() {
     const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
     const [recargaPagina, setRecargaPagina] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
-    //valores de test
-    const [solicitudes, setSolicitudes] = useState<Solicitud[]>([
-        {
-            id: 1,
-            nombreHechizo: "Hechizo de Invisibilidad",
-            usuario: "Harry Potter",
-            fecha: "10/10/2023",
-            motivo: "Necesito aprender este hechizo para una misión importante.",
-            estado: "Pendiente",
-            empleadoRevisor: "Albus Dumbledore",
-            motivoRechazo: ""
-        },
-        {
-            id: 2,
-            nombreHechizo: "Hechizo de Levitación",
-            usuario: "Hermione Granger",
-            fecha: "12/10/2023",
-            motivo: "Investigación académica sobre hechizos avanzados.",
-            estado: "Aprobado",
-            empleadoRevisor: "Minerva McGonagall",
-            motivoRechazo: ""
-        },
-        {
-            id: 3,
-            nombreHechizo: "Hechizo de Protección",
-            usuario: "Ron Weasley",
-            fecha: "15/10/2023",
-            motivo: "Preparación para la defensa contra las artes oscuras.",
-            estado: "Rechazado",
-            empleadoRevisor: "Severus Snape",
-            motivoRechazo: "Falta de justificación válida."
+    const { currentUser } = useContext(AuthContext);
+    const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
+    
+    const fetchUserSolicitudes = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/api/solicitud_visualizacion/mago/${currentUser?.id}`);
+            setSolicitudes(response.data.data)
+        } catch (error) {
+            setTipoError(ErrorTipo.HARD_ERROR);
+            setRecargaPagina(false);
+            setModalMessage('No se pudieron recuperar las Patentes del Usuario\n' + error);
+            setShowModal(true);
         }
-    ]);
+    }
+    useEffect(() => {
+        if (currentUser?.id) {
+            fetchUserSolicitudes();
+        }
+    }, [currentUser]);
 
     return (
         <div>
@@ -72,11 +79,10 @@ export default function VisualizacionPage() {
             <div className="solicitudes-container">
                 {solicitudes.map((solicitud) => (
                     <div key={solicitud.id} className="solicitud-card">
-                        <h3>{solicitud.nombreHechizo}</h3>
+                        <h3>{solicitud.hechizo.nombre}</h3>
                         <h6>Información General</h6>
                         <div className="solicitud-info">
-                            <p>Usuario: {solicitud.usuario}</p>
-                            <p>Fecha: {solicitud.fecha}</p>
+                            <p>Usuario: {solicitud.mago.nombre} {solicitud.mago.apellido}</p>
                             <p>Motivo: {solicitud.motivo}</p>
                         </div>
                         <h6>Información de Estado</h6>
@@ -85,11 +91,17 @@ export default function VisualizacionPage() {
                                 <span>Estado: </span>
                                 <span>{solicitud.estado}</span>
                             </p>
-                            {solicitud.empleadoRevisor && (
-                                <p>Empleado Revisor: {solicitud.empleadoRevisor}</p>
+                            {solicitud.empleado && (
+                                <p>Empleado Revisor: {solicitud.empleado.nombre} {solicitud.empleado.apellido}</p>
                             )}
-                            {solicitud.motivoRechazo && (
-                                <p>Motivo de rechazo: {solicitud.motivoRechazo}</p>
+                            {solicitud.motivo_rechazo && (
+                                <p>Motivo de rechazo: {solicitud.motivo_rechazo}</p>
+                            )}
+                            {(solicitud.estado == 'aprobada'&& solicitud.permanente) && (
+                                <p>Vigencia: Permanente</p>
+                            )}
+                            {(solicitud.estado == 'aprobada' && solicitud.fecha_hasta) && (
+                                <p>Vigencia: {solicitud.fecha_hasta}</p>
                             )}
                         </div>
                     </div>
