@@ -1,0 +1,123 @@
+.list-magos-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin-top: 50px;
+}
+
+.list-magos-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    width: 90%;
+}
+
+.list-mago-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px 15px 10px;
+    width: 20%;
+    max-width: 300px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.list-mago-card h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.list-mago-card, .edit-form p {
+    font-size: 16px;
+    margin: 0px 0;
+    color: #666;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-form select {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.edit-form select:focus {
+    outline: none;
+    border-color: #7f4e2b;
+    box-shadow: 0 0 5px rgba(127, 78, 43, 0.5);
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.buttons-container button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.save-button {
+    background-color: #5cb85c;
+    color: #fff;
+}
+
+.cancel-button {
+    background-color: #d9534f;
+    color: #fff;
+}
+
+.save-button:hover {
+    background-color: #4cae4c;
+}
+
+.cancel-button:hover {
+    background-color: #c9302c;
+}
+
+.edit-button {
+    background-color: white;
+    color: #7f4e2b;
+    border: 1px solid #7f4e2b;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.edit-button:hover {
+    background-color: #7f4e2b;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .list-magos-container {
+        width: 90%;
+    }
+    
+    .list-mago-card {
+        width: 100%;
+    }
+}

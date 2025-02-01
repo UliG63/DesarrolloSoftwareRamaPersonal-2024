@@ -14,6 +14,7 @@ import InstitucionesPage from './pages/instituciones';
 import EtiquetasPage from './pages/etiquetas';
 import TipoHechizoPage from './pages/tipoHechizo';
 import { AuthContextProvider, AuthContext } from './context/authContext';
+import MagosEmpleado from './pages/magosEmpleado';
 
 // verifica la autenticación, el rol y selecciona la página según el rol
 const ProtectedRoute: React.FC<{ children: React.ReactNode; empleadoPage?: React.ReactNode; isEmpleadoOnly?: boolean }> = ({ children, empleadoPage, isEmpleadoOnly }) => {
@@ -32,6 +33,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; empleadoPage?: React
   // si el usuario es empleado y se proporciona una página específica para empleados, muestra esa página
   if (currentUser.isEmpleado && empleadoPage) {
     return <>{empleadoPage}</>;
+  }
+
+   // si el usuario tiene id = 1, muestra ListadoMagos en lugar de MagosPage
+   if (currentUser.id === 1 && React.isValidElement(children) && children.type === MagosPage) {
+    return <MagosEmpleado />;
   }
 
   // de lo contrario, muestra la página general
