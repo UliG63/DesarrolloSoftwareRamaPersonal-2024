@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { findAll, findOne, getAvailableForVisualizacion, add, update, remove } from "./hechizo.controller.js";
+import { findAll, findOne, getAvailableForVisualizacion, add, update, remove, findPermitedForUser } from "./hechizo.controller.js";
 
 export const hechizoRouter = Router()
 
-hechizoRouter.get('/',findAll)
+hechizoRouter.get('/all/:id',findAll)
 hechizoRouter.get('/:id', findOne)
 hechizoRouter.get('/visualizacion/:id', getAvailableForVisualizacion)
+hechizoRouter.get('/permitidos/:id', findPermitedForUser)
 hechizoRouter.post('/', add)
 hechizoRouter.put('/:id', update)
 hechizoRouter.delete('/:id', remove)

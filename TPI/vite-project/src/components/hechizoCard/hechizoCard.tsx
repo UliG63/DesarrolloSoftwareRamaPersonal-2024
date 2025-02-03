@@ -43,6 +43,7 @@ interface Hechizo {
 const HechizoCard: React.FC = () => {
   const { currentUser } = useContext(AuthContext);
   const [hechizos, setHechizos] = useState<Hechizo[]>([]);
+  const [hechizosPermitidos, setHechizosPermitidos] = useState(new Set());
   const [filteredHechizos, setFilteredHechizos] = useState<Hechizo[]>([]);
   const [selectedTipo, setSelectedTipo] = useState<{ label: string; value: string } | null>(null);
   const [selectedEtiqueta, setSelectedEtiqueta] = useState<{ label: string; value: string } | null>(null);
@@ -61,7 +62,7 @@ const HechizoCard: React.FC = () => {
   }
   const fetchHechizos = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/hechizo`);
+      const response = await axios.get(`http://localhost:3000/api/hechizo/all/${currentUser?.id}`);
       //manejo por si no hay hechizos cargados o si no se puede recuperar de la API
       const data = response.data.data || []; 
       setHechizos(data);
@@ -77,10 +78,32 @@ const HechizoCard: React.FC = () => {
       setShowModal(true);
     }
   };
-
+  
   useEffect(() => {
     fetchHechizos();
   }, []);
+
+  //Traigo los ids de los hechizos para los cuales tiene permiso de visualizacion el usuario
+  const fetchHechizosPermitidos = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/hechizo/permitidos/${currentUser?.id}`);
+      const idsPermitidos = new Set(response.data.data.map((h: { id: number }) => h.id)); 
+      setHechizosPermitidos(idsPermitidos);
+    } catch (error) {
+      console.error("Error al recuperar hechizos permitidos", error);
+      setHechizosPermitidos(new Set()); // Para no romper todo
+      setError('No se pudieron recuperar los hechizos permitidos para el usuario');
+      setTipoError(ErrorTipo.HARD_ERROR);
+      setRecargaPagina(false);
+      setModalMessage('No se pudieron recuperar los hechizos permitidos para el usuario');
+      setShowModal(true);
+    }
+  };
+  useEffect(() => {
+    if (currentUser?.id) {
+      fetchHechizosPermitidos();
+    }
+  }, [currentUser]);
 
   //Logica de Busqueda
   const handleSearch = () => {
@@ -174,7 +197,7 @@ const HechizoCard: React.FC = () => {
             <div key={hechizo.id} className='hechizo-card'>
               <div className='image-container'>
                 <img src={getImageSrc(hechizo)} alt={hechizo.nombre || 'Hechizo'} className='hechizo-image' />
-                {(!hechizo.restringido || currentUser?.isEmpleado || currentUser?.id === hechizo.patente?.mago?.id) ? (
+                {hechizosPermitidos.has(hechizo.id) ? (
                   <button
                     className='info-button'
                     onClick={() => setIsOpen(isOpen === hechizo.id ? null : hechizo.id)}
