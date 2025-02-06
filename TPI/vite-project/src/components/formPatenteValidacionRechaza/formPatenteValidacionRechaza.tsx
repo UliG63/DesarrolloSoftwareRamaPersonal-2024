@@ -7,6 +7,8 @@ import axios from 'axios';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface formValidacionRechazaProps{
     idPatente: number;
 }
@@ -46,7 +48,7 @@ function FormPatenteValidacionRechaza ({idPatente}: formValidacionRechazaProps) 
   
         try {
             // Enviar los datos a la API
-            const response = await axios.put(`http://localhost:3000/api/patente/reject/${idPatente}`, formData); //Como obtengo la patente actual?
+            const response = await axios.put(`${apiUrl}/api/patente/reject/${idPatente}`, formData); //Como obtengo la patente actual?
             
             // Restablece el formulario y cierra el popup
             setMotivoRechazo('');

@@ -6,6 +6,8 @@ import axios from 'axios';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Etiqueta {
     id: number;
     nombre: string;
@@ -49,7 +51,7 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
 
     const fetchTipoHechizo = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/tipo_hechizo`);
+            const response = await axios.get(`${apiUrl}/api/tipo_hechizo`);
             setTipoHechizo(response.data.data);
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
@@ -61,7 +63,7 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
 
     const fetchEtiqueta = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/etiqueta`);
+            const response = await axios.get(`${apiUrl}/api/etiqueta`);
             setEtiqueta(response.data.data);
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
@@ -113,7 +115,7 @@ function FormPatenteValidacionAcepta({ idPatente }: formValidacionAceptaProps) {
         };
 
         try {
-            const response = await axios.put(`http://localhost:3000/api/patente/publish/${idPatente}`, formData);
+            const response = await axios.put(`${apiUrl}/api/patente/publish/${idPatente}`, formData);
             setIsPopupVisible(false);
             setTipoError(ErrorTipo.SUCCESS);
             setRecargaPagina(true);

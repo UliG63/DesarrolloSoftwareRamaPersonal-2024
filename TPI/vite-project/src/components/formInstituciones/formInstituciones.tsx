@@ -5,6 +5,8 @@ import cross from '../../assets/cross.png';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const FormInstitucion: React.FC = () => {
     // Visibilidad de form 
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -28,7 +30,7 @@ const FormInstitucion: React.FC = () => {
 
         try {
             // Enviar los datos a la API
-            const response = await axios.post('http://localhost:3000/api/institucion', {
+            const response = await axios.post(`${apiUrl}/api/institucion`, {
                 nombre,
                 pais,
                 ciudad

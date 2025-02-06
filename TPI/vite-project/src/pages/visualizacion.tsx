@@ -11,6 +11,8 @@ import ModalMessage from "../components/modalMessage/modalMessage";
 import { ErrorTipo } from "../components/modalMessage/error.enum";
 import { AuthContext } from '../context/authContext.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Solicitud {
     id: number;
     motivo: string;
@@ -51,7 +53,7 @@ export default function VisualizacionPage() {
     
     const fetchUserSolicitudes = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/solicitud_visualizacion/mago/${currentUser?.id}`);
+            const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/mago/${currentUser?.id}`);
             setSolicitudes(response.data.data)
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);

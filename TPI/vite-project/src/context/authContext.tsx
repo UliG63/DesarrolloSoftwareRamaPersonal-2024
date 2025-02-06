@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface User {
   id: number;
   nombre: string;
@@ -50,14 +52,14 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   // envía el email y contraseña para logear
   const login = async (email: string, pass: string) => {
-    const response = await axios.post('http://localhost:3000/api/auth/login', { email, pass });
+    const response = await axios.post(`${apiUrl}/api/auth/login`, { email, pass });
     setCurrentUser(response.data); // almacena los datos del usuario
     document.cookie = `accessToken=${response.data.accessToken}; path=/`; // guarda el token de acceso en una cookie
   };
 
   // envía los datos del usuario al backend para crear una cuenta
   const register = async (data: RegisterData) => {
-    await axios.post('http://localhost:3000/api/auth/register', data);
+    await axios.post(`${apiUrl}/api/auth/register`, data);
     //alert(response.data.message || 'Registro exitoso'); // esto notificar al usuario, podríamos cambiarlo y hacerlo más aesthetic
   };
 
@@ -70,7 +72,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // Actualiza los datos del usuario en el contexto y en el localStorage
   const updateUser = async (data: User) => {
     try {
-      const response = await axios.put('http://localhost:3000/api/auth/update', data);
+      const response = await axios.put(`${apiUrl}/api/auth/update`, data);
       setCurrentUser(response.data); // actualiza el estado con los nuevos datos del usuario
       localStorage.setItem('user', JSON.stringify(response.data)); // guarda los datos actualizados en el localStorage
       alert('Información actualizada con éxito');

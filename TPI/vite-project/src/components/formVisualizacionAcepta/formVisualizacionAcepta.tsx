@@ -6,6 +6,8 @@ import axios from 'axios';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface formVisualizacionAceptaProps {
     idSolicitud: number;
 }
@@ -44,7 +46,7 @@ const FormVisualizacionAcepta: React.FC<formVisualizacionAceptaProps> = ({ idSol
 
         try {
             const response = await axios.put(
-                `http://localhost:3000/api/solicitud_visualizacion/grant/${idSolicitud}`,
+                `${apiUrl}/api/solicitud_visualizacion/grant/${idSolicitud}`,
                 formData
             );
             setIsPopupVisible(false);

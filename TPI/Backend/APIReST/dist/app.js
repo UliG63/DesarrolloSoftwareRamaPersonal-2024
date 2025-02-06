@@ -14,13 +14,17 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+//Cargo las variables de entorno
+const ENV = process.env.NODE_ENV || 'development';
+dotenv.config({ path: `.env.${ENV}` });
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 //Middleware
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173', // Permitir solo solicitudes desde este origen
+    origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
     credentials: true, // Permitir el envío de cookies, si es necesario
 }));
 app.use(cookieParser());
@@ -45,7 +49,8 @@ app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' });
 });
 await syncSchema(); //solo en development
-app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000/');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}/`);
 });
 //# sourceMappingURL=app.js.map

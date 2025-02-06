@@ -7,6 +7,8 @@ import axios from 'axios';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface formVisualizacionRechazaProps{
     idSolicitud: number;
 }
@@ -37,7 +39,7 @@ function FormVisualizacionRechaza ({idSolicitud}: formVisualizacionRechazaProps)
         };
 
         try {
-            const response = await axios.put(`http://localhost:3000/api/solicitud_visualizacion/reject/${idSolicitud}`, formData);
+            const response = await axios.put(`${apiUrl}/api/solicitud_visualizacion/reject/${idSolicitud}`, formData);
             setMotivoRechazo('');
             setIsPopupVisible(false);
             setTipoError(ErrorTipo.SUCCESS);

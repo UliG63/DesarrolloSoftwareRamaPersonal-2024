@@ -11,6 +11,8 @@ import { AuthContext } from '../../context/authContext.tsx';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Hechizo {
   id: number;
   nombre: string;
@@ -62,7 +64,7 @@ const HechizoCard: React.FC = () => {
   }
   const fetchHechizos = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/hechizo/all/${currentUser?.id}`);
+      const response = await axios.get(`${apiUrl}/api/hechizo/all/${currentUser?.id}`);
       //manejo por si no hay hechizos cargados o si no se puede recuperar de la API
       const data = response.data.data || []; 
       setHechizos(data);
@@ -86,7 +88,7 @@ const HechizoCard: React.FC = () => {
   //Traigo los ids de los hechizos para los cuales tiene permiso de visualizacion el usuario
   const fetchHechizosPermitidos = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/hechizo/permitidos/${currentUser?.id}`);
+      const response = await axios.get(`${apiUrl}/api/hechizo/permitidos/${currentUser?.id}`);
       const idsPermitidos = new Set(response.data.data.map((h: { id: number }) => h.id)); 
       setHechizosPermitidos(idsPermitidos);
     } catch (error) {
@@ -156,7 +158,7 @@ const HechizoCard: React.FC = () => {
 
   const getImageSrc = (hechizo: Hechizo) => {
     // Verifica si la patente tiene una imagen y si no, retorna la imagen por defecto
-    const imageURL =  hechizo.patente?.imagen ? `http://localhost:3000/uploads/${hechizo.patente.imagen}` : imgHechizo1;
+    const imageURL =  hechizo.patente?.imagen ? `${apiUrl}/uploads/${hechizo.patente.imagen}` : imgHechizo1;
     return imageURL
   };
 

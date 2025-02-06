@@ -13,6 +13,8 @@ import FormVisualizacionRechaza from "../components/formVisualizacionRechaza/for
 import Footer from "../components/footer/footer";
 import FormVisualizacionAcepta from "../components/formVisualizacionAcepta/formVisualizacionAcepta.tsx";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Solicitud {
     id: number;
     motivo: string;
@@ -53,7 +55,7 @@ const VisualizacionEmpleadoPage: React.FC = () => {
 
     const fetchUserSolicitudes = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/solicitud_visualizacion/pending`);
+            const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/pending`);
             setSolicitudes(response.data.data);
         } catch (error) {
             console.error(error);

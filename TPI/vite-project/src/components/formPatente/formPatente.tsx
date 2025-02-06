@@ -6,6 +6,8 @@ import axios from 'axios';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const FormPatente: React.FC = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -53,7 +55,7 @@ const FormPatente: React.FC = () => {
         formData.append('idMago', currentUser.id.toString());
         formData.append('imagen', imagen);
         try {
-            const response = await axios.post('http://localhost:3000/api/patente/', formData,{
+            const response = await axios.post(`${apiUrl}/api/patente/`, formData,{
                 headers:{'Content-Type':'multipart/form-data'}
             });
             setNombre('');

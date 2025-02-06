@@ -9,6 +9,8 @@ import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Institucion {
     id: number;
     nombre: string;
@@ -37,7 +39,7 @@ const InstitucionesPage: React.FC = () => {
     useEffect(() => {
         const fetchInstituciones = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/institucion');
+                const response = await axios.get(`${apiUrl}/api/institucion`);
                 setInstituciones(response.data.data);
             } catch (err) {
                 setError('Error al cargar las instituciones');
@@ -69,7 +71,7 @@ const InstitucionesPage: React.FC = () => {
     const handleSaveChanges = async () => {
         if (currentInstitucion) {
             try {
-                await axios.put(`http://localhost:3000/api/institucion/${currentInstitucion.id}`, formData);
+                await axios.put(`${apiUrl}/api/institucion/${currentInstitucion.id}`, formData);
                 setInstituciones((prev) => 
                     prev.map((institucion) => 
                         institucion.id === currentInstitucion.id ? { ...institucion, ...formData } : institucion
@@ -99,7 +101,7 @@ const InstitucionesPage: React.FC = () => {
     const handleDelete = async () => {
         if (itemToDelete!==null) {
             try {
-                await axios.delete(`http://localhost:3000/api/institucion/${itemToDelete}`);
+                await axios.delete(`${apiUrl}/api/institucion/${itemToDelete}`);
                 // Elimina la institución del estado
                 setInstituciones((prev) => prev.filter((institucion) => institucion.id !== itemToDelete));
                 setTipoError(ErrorTipo.SUCCESS);

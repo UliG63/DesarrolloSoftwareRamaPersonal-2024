@@ -9,6 +9,8 @@ import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Etiqueta {
     id: number;
     nombre: string;
@@ -35,7 +37,7 @@ const EtiquetaPage: React.FC = () => {
     useEffect(() => {
         const fetchEtiquetas = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/etiqueta');
+                const response = await axios.get(`${apiUrl}/api/etiqueta`);
                 setEtiquetas(response.data.data);
             } catch (err) {
                 setError('No se pudieron recuperar las etiquetas.');
@@ -66,7 +68,7 @@ const EtiquetaPage: React.FC = () => {
     const handleSaveChanges = async () => {
         if (currentEtiqueta) {
             try {
-                await axios.put(`http://localhost:3000/api/etiqueta/${currentEtiqueta.id}`, formData);
+                await axios.put(`${apiUrl}/api/etiqueta/${currentEtiqueta.id}`, formData);
                 setEtiquetas((prev) =>
                     prev.map((etiqueta) =>
                         etiqueta.id === currentEtiqueta.id ? { ...etiqueta, ...formData } : etiqueta
@@ -95,7 +97,7 @@ const EtiquetaPage: React.FC = () => {
     const handleDelete = async () => {
         if (itemToDelete !== null) {
             try {
-                await axios.delete(`http://localhost:3000/api/etiqueta/${itemToDelete}`);
+                await axios.delete(`${apiUrl}/api/etiqueta/${itemToDelete}`);
                 setEtiquetas((prev) => prev.filter((etiqueta) => etiqueta.id !== itemToDelete));
                 setTipoError(ErrorTipo.SUCCESS);
                 setRecargaPagina(true);

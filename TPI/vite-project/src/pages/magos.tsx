@@ -6,6 +6,8 @@ import axios from 'axios';
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Mago {
     id: number;
     nombre: string;
@@ -31,7 +33,7 @@ const MagosPage: React.FC = () => {
     useEffect(() => {
         const fetchMagos = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/magos');
+                const response = await axios.get(`${apiUrl}/api/magos`);
                 setMagos(response.data.data);
             } catch (err) {
                 setError('Error al cargar los magos');

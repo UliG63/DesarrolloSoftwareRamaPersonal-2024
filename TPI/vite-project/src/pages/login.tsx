@@ -7,6 +7,8 @@ import { AuthContext } from '../context/authContext';
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 // Definir la interfaz para Institucion
 interface Institucion {
   id: number;
@@ -38,7 +40,7 @@ export default function LoginPage() {
   useEffect(() => {
     const fetchInstituciones = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/institucion');
+        const response = await axios.get(`${apiUrl}/api/institucion`);
         // Verifica que 'data' sea un arreglo antes de establecer el estado
         if (Array.isArray(response.data.data)) {
           setInstituciones(response.data.data);

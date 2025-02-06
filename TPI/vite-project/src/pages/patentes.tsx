@@ -12,6 +12,8 @@ import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import Select from 'react-select';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Patente {
     id: number;
     fechaCreacion: Date;
@@ -52,7 +54,7 @@ const PatentesPage: React.FC = () => {
 
     const fetchUserPatentes = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/patente/${currentUser?.id}`);
+            const response = await axios.get(`${apiUrl}/api/patente/${currentUser?.id}`);
             setPatentes(response.data.data);
             setFilteredPatentes(response.data.data); // Inicializa las patentes filtradas con todas las patentes
         } catch (error) {

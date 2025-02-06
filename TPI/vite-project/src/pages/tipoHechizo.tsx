@@ -9,6 +9,8 @@ import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface TipoHechizo {
     id: number;
     nombre: string;
@@ -35,7 +37,7 @@ const TipoHechizoPage: React.FC = () => {
     useEffect(() => {
         const fetchTiposHechizo = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/tipo_hechizo');
+                const response = await axios.get(`${apiUrl}/api/tipo_hechizo`);
                 setTiposHechizo(response.data.data);
             } catch (err) {
                 setError('Error al cargar los tipos de hechizo.');
@@ -66,7 +68,7 @@ const TipoHechizoPage: React.FC = () => {
     const handleSaveChanges = async () => {
         if (currentTipoHechizo) {
             try {
-                await axios.put(`http://localhost:3000/api/tipo_hechizo/${currentTipoHechizo.id}`, formData);
+                await axios.put(`${apiUrl}/api/tipo_hechizo/${currentTipoHechizo.id}`, formData);
                 setTiposHechizo((prev) =>
                     prev.map((tipoHechizo) =>
                         tipoHechizo.id === currentTipoHechizo.id ? { ...tipoHechizo, ...formData } : tipoHechizo
@@ -95,7 +97,7 @@ const TipoHechizoPage: React.FC = () => {
     const handleDelete = async () => {
         if (itemToDelete!== null) {
             try {
-                await axios.delete(`http://localhost:3000/api/tipo_hechizo/${itemToDelete}`);
+                await axios.delete(`${apiUrl}/api/tipo_hechizo/${itemToDelete}`);
                 setTiposHechizo((prev) => prev.filter((tipoHechizo) => tipoHechizo.id !== itemToDelete));
                 setTipoError(ErrorTipo.SUCCESS);
                 setRecargaPagina(true);

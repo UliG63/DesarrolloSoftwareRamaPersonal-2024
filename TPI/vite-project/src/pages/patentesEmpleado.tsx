@@ -13,6 +13,7 @@ import Title from "../components/tilte/title.tsx";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface Patente {
     id: number;
@@ -53,7 +54,7 @@ const PatentesEmpleadoPage: React.FC = () => {
 
     const fetchUserPatentes = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/patente/pending`);
+            const response = await axios.get(`${apiUrl}/api/patente/pending`);
             setPatentes(response.data.data);
         } catch (error) {
             console.error(error);

@@ -7,6 +7,8 @@ import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 import ConfirmationModal from '../confirmationModal/confirmationModal.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const User: React.FC = () => {
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate(); //useNavigate para la redirección
@@ -82,7 +84,7 @@ const User: React.FC = () => {
     }
 
     try {
-      await axios.put('http://localhost:3000/api/auth/update', { ...userData, id: currentUser?.id });
+      await axios.put(`${apiUrl}/api/auth/update`, { ...userData, id: currentUser?.id });
     //actualizar el currentUser del contexto con los nuevos datos
     const updatedUser = { ...currentUser, ...userData };
     setUserData(updatedUser); 
@@ -117,7 +119,7 @@ const User: React.FC = () => {
   const handleDelete = async () => {
     if (itemToDelete!==null) {
       try {
-        await axios.delete(`http://localhost:3000/api/magos/${itemToDelete}`);
+        await axios.delete(`${apiUrl}/api/magos/${itemToDelete}`);
         setTipoError(ErrorTipo.SUCCESS);
         setRecargaPagina(true);
         setModalMessage('Cuenta eliminada con éxito.');

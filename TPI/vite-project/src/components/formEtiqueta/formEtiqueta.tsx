@@ -5,6 +5,7 @@ import cross from '../../assets/cross.png';
 import ModalMessage from '../modalMessage/modalMessage.tsx';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const FormEtiqueta: React.FC = () => {
     // manejo de la visibilidad de form 
@@ -28,7 +29,7 @@ const FormEtiqueta: React.FC = () => {
 
         try {
             // enviar los datos a la API
-            const response = await axios.post('http://localhost:3000/api/etiqueta', {
+            const response = await axios.post(`${apiUrl}/api/etiqueta`, {
                 nombre,
                 descripcion,
             });

@@ -5,6 +5,8 @@ import cross from '../../assets/cross.png';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const FormTipoHechizo: React.FC = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
 
@@ -23,7 +25,7 @@ const FormTipoHechizo: React.FC = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:3000/api/tipo_hechizo', {
+            const response = await axios.post(`${apiUrl}/api/tipo_hechizo`, {
                 nombre,
                 caracteristicas,
             });
