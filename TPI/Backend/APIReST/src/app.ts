@@ -39,7 +39,7 @@ app.use(
     /*origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
     credentials: true, // Permitir el envío de cookies, si es necesario*/
     origin: (origin, callback) => {
-      if (!origin || origin.endsWith(".vercel.app")) { // Esta linea permite cualquier subdominio y rutas de Vercel
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error("CORS no permitido para este origen"));
