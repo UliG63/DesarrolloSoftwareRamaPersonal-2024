@@ -25,7 +25,7 @@ dotenv.config({ path: `.env.${ENV}` });
 
 //dotenv.config();
 
-// Leer orígenes desde el archivo .env
+// Leer orígenes desde el archivo .env separados por ','
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
 
 const app = express()
@@ -39,7 +39,7 @@ app.use(
     /*origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
     credentials: true, // Permitir el envío de cookies, si es necesario*/
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || origin.endsWith(".vercel.app")) { // Esta linea permite cualquier subdominio y rutas de Vercel
         callback(null, true);
       } else {
         callback(new Error("CORS no permitido para este origen"));
