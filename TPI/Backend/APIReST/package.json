@@ -5,13 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\"",
-    "build": "npm run build"
+    "start:dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\""
   },
-  "engines": {
-    "node": "22.13.1",
-    "pnpm": "10.2.0"
-  },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
