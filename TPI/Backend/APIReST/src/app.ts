@@ -22,17 +22,31 @@ import dotenv from 'dotenv'
 const ENV = process.env.NODE_ENV || 'production';
 dotenv.config({ path: `.env.${ENV}` });
 
+// 🔥 Leer orígenes desde el archivo .env
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
+
 const app = express()
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //Middleware
+app.use(
+  cors({
+    /*origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
+    credentials: true, // Permitir el envío de cookies, si es necesario*/
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS no permitido para este origen"));
+      }
+    },
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 app.use(express.json())
-app.use(cors({
-    origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
-    credentials: true, // Permitir el envío de cookies, si es necesario
-}));
 app.use(cookieParser())
 
 app.use((req, res, next)=>{
