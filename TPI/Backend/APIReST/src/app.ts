@@ -18,9 +18,12 @@ import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 
 //Cargo las variables de entorno
+
 //const ENV = process.env.NODE_ENV || 'development'; Descomentar para uso en desarrollo
-const ENV = process.env.NODE_ENV || 'production';
-dotenv.config({ path: `.env.${ENV}` });
+//const ENV = process.env.NODE_ENV || 'production';
+//dotenv.config({ path: `.env.${ENV}` });
+
+dotenv.config();
 
 // 🔥 Leer orígenes desde el archivo .env
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
@@ -53,10 +56,8 @@ app.use(cookieParser())
 app.use((req, res, next)=>{
     RequestContext.create(orm.em, next)
 })
-app.get("/api/institucion", (_req, res) => {
-  res.json({ mensaje: "Conexión exitosa con el backend!" });
-});
-//app.use('/api/institucion', institucionRouter)
+
+app.use('/api/institucion', institucionRouter)
 app.use('/api/magos',magosRouter)
 app.use('/api/etiqueta',etiquetaRouter)
 app.use('/api/hechizo',hechizoRouter)
