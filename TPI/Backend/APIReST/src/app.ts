@@ -18,8 +18,15 @@ import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 
 //Cargo las variables de entorno
-const ENV = process.env.NODE_ENV || 'development';
+
+//const ENV = process.env.NODE_ENV || 'development'; Descomentar para uso en desarrollo
+const ENV = process.env.NODE_ENV || 'production';
 dotenv.config({ path: `.env.${ENV}` });
+
+//dotenv.config();
+
+// Leer orígenes desde el archivo .env separados por ','
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
 
 const app = express()
 
@@ -27,11 +34,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //Middleware
+app.use(
+  cors({
+    /*origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
+    credentials: true, // Permitir el envío de cookies, si es necesario*/
+    origin: (origin, callback) => {
+      if (!origin || origin.endsWith(".vercel.app")) { // Esta linea permite cualquier subdominio y rutas de Vercel
+        callback(null, true);
+      } else {
+        callback(new Error("CORS no permitido para este origen"));
+      }
+    },
+    methods: "GET,POST,PUT,DELETE", // Métodos permitidos
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"], // Cabeceras permitidas
+  })
+);
 app.use(express.json())
-app.use(cors({
-    origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
-    credentials: true, // Permitir el envío de cookies, si es necesario
-}));
 app.use(cookieParser())
 
 app.use((req, res, next)=>{
