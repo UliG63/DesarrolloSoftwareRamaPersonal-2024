@@ -53,8 +53,10 @@ app.use(cookieParser())
 app.use((req, res, next)=>{
     RequestContext.create(orm.em, next)
 })
-
-app.use('/api/institucion', institucionRouter)
+app.get("/api/institucion", (_req, res) => {
+  res.json({ mensaje: "Conexión exitosa con el backend!" });
+});
+//app.use('/api/institucion', institucionRouter)
 app.use('/api/magos',magosRouter)
 app.use('/api/etiqueta',etiquetaRouter)
 app.use('/api/hechizo',hechizoRouter)
