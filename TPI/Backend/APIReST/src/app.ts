@@ -42,8 +42,9 @@ app.use(
         callback(new Error("CORS no permitido para este origen"));
       }
     },
-    methods: "GET,POST,PUT,DELETE",
+    methods: "GET,POST,PUT,DELETE", // Métodos permitidos
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"], // Cabeceras permitidas
   })
 );
 app.use(express.json())
