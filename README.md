@@ -1,3 +1,12 @@
+# Desarrollo de Software
+Repositorio utilizado para el cursado de la materia Desarrollo de Software - Mauro Dorigoni
+
+# POC - React
+Proof of Concept realizada sobre el framework de frontend React, utilizando Vite.
+- 49457 - Dorigoni Mauro
+- 49453 - Gelmetti Lucia
+- 41324 - Gimenez Ulises
+
 # Propuesta TP DSW
 
 ## Grupo
