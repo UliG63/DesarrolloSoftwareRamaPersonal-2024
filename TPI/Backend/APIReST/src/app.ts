@@ -19,8 +19,8 @@ import dotenv from 'dotenv'
 
 //Cargo las variables de entorno
 
-//const ENV = process.env.NODE_ENV || 'development'; Descomentar para uso en desarrollo
-const ENV = process.env.NODE_ENV || 'production';
+const ENV = process.env.NODE_ENV || 'development'; //Descomentar para uso en desarrollo
+//const ENV = process.env.NODE_ENV || 'production'; //Descomentar para uso en production
 dotenv.config({ path: `.env.${ENV}` });
 
 //dotenv.config();
@@ -36,18 +36,20 @@ const __dirname = path.dirname(__filename);
 //Middleware
 app.use(
   cors({
-    /*origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
+    //comentar las proximas 2 lineas para prod
+    origin: process.env.FRONTEND_URL, // Permitir solo solicitudes desde este origen
     credentials: true, // Permitir el envío de cookies, si es necesario*/
-    origin: (origin, callback) => {
-      if (!origin || origin.endsWith(".vercel.app")) { // Esta linea permite cualquier subdominio y rutas de Vercel
-        callback(null, true);
-      } else {
-        callback(new Error("CORS no permitido para este origen"));
-      }
-    },
-    methods: "GET,POST,PUT,DELETE", // Métodos permitidos
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"], // Cabeceras permitidas
+    //Descomentar las proximas lineas para prod
+    // origin: (origin, callback) => {
+    //   if (!origin || origin.endsWith(".vercel.app")) { // Esta linea permite cualquier subdominio y rutas de Vercel
+    //     callback(null, true);
+    //   } else {
+    //     callback(new Error("CORS no permitido para este origen"));
+    //   }
+    // },
+    //methods: "GET,POST,PUT,DELETE", // Métodos permitidos
+    //credentials: true,
+    //allowedHeaders: ["Content-Type", "Authorization"], // Cabeceras permitidas
   })
 );
 app.use(express.json())

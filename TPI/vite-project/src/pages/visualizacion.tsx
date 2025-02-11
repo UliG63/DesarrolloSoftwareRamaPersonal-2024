@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
+import Select from 'react-select';
 import axios from 'axios';
 import Navbar from "../components/navbar/navbar";
 import Inicio from '../components/inicio/inicio';
@@ -50,11 +51,14 @@ export default function VisualizacionPage() {
     const [modalMessage, setModalMessage] = useState('');
     const { currentUser } = useContext(AuthContext);
     const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
+    const [filteredSolicitudes, setFilteredSolicitudes] = useState<Solicitud[]>([]);
+    const [selectedFilter, setSelectedFilter] = useState<{ label: string; value: string } | null>({ label: 'Todas', value: '' });
     
     const fetchUserSolicitudes = async () => {
         try {
             const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/mago/${currentUser?.id}`);
-            setSolicitudes(response.data.data)
+            setSolicitudes(response.data.data);
+            setFilteredSolicitudes(response.data.data);
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
             setRecargaPagina(false);
@@ -62,12 +66,42 @@ export default function VisualizacionPage() {
             setShowModal(true);
         }
     }
+
     useEffect(() => {
         if (currentUser?.id) {
             fetchUserSolicitudes();
         }
     }, [currentUser]);
 
+    const filterBy: string[] = ['aprobada', 'rechazada', 'pendiente_revision', 'vencida'];
+    const filterOptions = [{ label: 'Todas', value: '' }, ...filterBy.map((filtro: string) => ({ label: filtro, value: filtro }))];
+
+        const handleFilterChange = () => {
+            let filtered = solicitudes;
+            if (selectedFilter && selectedFilter.value !== '') {
+                filtered = solicitudes.filter(solicitudes => solicitudes.estado === selectedFilter.value);
+            }
+            setFilteredSolicitudes(filtered);
+        };
+    
+    useEffect(() => {
+        handleFilterChange();
+    }, [selectedFilter]);
+
+        const getEstadoClass = (estado: string) => {
+            switch (estado) {
+                case 'aprobada':
+                    return 'estado-verde';
+                case 'rechazada':
+                    return 'estado-rojo';
+                case 'pendiente_revision':
+                    return 'estado-amarillo';
+                case 'vencida':
+                    return 'estado-violeta'
+                default:
+                    return '';
+            }
+        };
     return (
         <div>
             <Navbar />
@@ -78,36 +112,50 @@ export default function VisualizacionPage() {
             />
             <FormVisualizacion />
             <Title encabezado="TUS SOLICITUDES" title="Información" subTitle="" />
+            <div className="filtros-container">
+                <Select
+                    className="select-dropdown"
+                    options={filterOptions}
+                    value={selectedFilter}
+                    onChange={setSelectedFilter}
+                    placeholder="Filtrar por estado"
+                    isClearable
+                />
+            </div>
             <div className="solicitudes-container">
-                {solicitudes.map((solicitud) => (
-                    <div key={solicitud.id} className="solicitud-card">
-                        <h3>{solicitud.hechizo.nombre}</h3>
-                        <h6>Información General</h6>
-                        <div className="solicitud-info">
-                            <p>Usuario: {solicitud.mago.nombre} {solicitud.mago.apellido}</p>
-                            <p>Motivo: {solicitud.motivo}</p>
+                {filteredSolicitudes.length > 0 ? (
+                    filteredSolicitudes.map((solicitud) => (
+                        <div key={solicitud.id} className="solicitud-card">
+                            <h3>{solicitud.hechizo.nombre}</h3>
+                            <h6>Información General</h6>
+                            <div className="solicitud-info">
+                                <p>Usuario: {solicitud.mago.nombre} {solicitud.mago.apellido}</p>
+                                <p>Motivo: {solicitud.motivo}</p>
+                            </div>
+                            <h6>Información de Estado</h6>
+                            <div className="solicitud-estado">
+                                <p>
+                                    <span>Estado: </span>
+                                    <span className={getEstadoClass(solicitud.estado)}>{solicitud.estado}</span>
+                                </p>
+                                {solicitud.empleado && (
+                                    <p>Empleado Revisor: {solicitud.empleado.nombre} {solicitud.empleado.apellido}</p>
+                                )}
+                                {solicitud.motivo_rechazo && (
+                                    <p>Motivo de rechazo: {solicitud.motivo_rechazo}</p>
+                                )}
+                                {(solicitud.estado == 'aprobada'&& solicitud.permanente) && (
+                                    <p>Vigencia: Permanente</p>
+                                )}
+                                {(solicitud.estado == 'aprobada' && solicitud.fecha_hasta) && (
+                                    <p>Vigencia: {solicitud.fecha_hasta}</p>
+                                )}
+                            </div>
                         </div>
-                        <h6>Información de Estado</h6>
-                        <div className="solicitud-estado">
-                            <p>
-                                <span>Estado: </span>
-                                <span>{solicitud.estado}</span>
-                            </p>
-                            {solicitud.empleado && (
-                                <p>Empleado Revisor: {solicitud.empleado.nombre} {solicitud.empleado.apellido}</p>
-                            )}
-                            {solicitud.motivo_rechazo && (
-                                <p>Motivo de rechazo: {solicitud.motivo_rechazo}</p>
-                            )}
-                            {(solicitud.estado == 'aprobada'&& solicitud.permanente) && (
-                                <p>Vigencia: Permanente</p>
-                            )}
-                            {(solicitud.estado == 'aprobada' && solicitud.fecha_hasta) && (
-                                <p>Vigencia: {solicitud.fecha_hasta}</p>
-                            )}
-                        </div>
-                    </div>
-                ))}
+                    ))
+                ):(
+                    <p>No hay solicitudes {selectedFilter?.label || 'registradas'}.</p>)
+                }
             </div>
             {showModal && (
                 <ModalMessage
