@@ -42,7 +42,7 @@ function FormPatenteValidacionRechaza ({idPatente}: formValidacionRechazaProps) 
         //Este es el objeto "Patente con sus respectivas propiedades que le enviare al metodo reject en el back"
         const formData = {
          motivo_rechazo,
-         empleado: currentUser 
+         empleado: currentUser.id
         };
 
   

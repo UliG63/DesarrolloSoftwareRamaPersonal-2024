@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
+//la url de la api está en una variable de entorno para + seguridad
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface User {
@@ -21,7 +22,8 @@ interface AuthContextProps {
   login: (email: string, pass: string) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
-  updateUser: (data: User) => Promise<void>; // Función para actualizar el usuario
+  updateUser: (data: Partial<User>) => Promise<void>;
+  isLoggedIn: () => boolean;
 }
 
 interface RegisterData {
@@ -37,58 +39,94 @@ interface RegisterData {
   isEmpleado: boolean;
 }
 
-export const AuthContext = createContext<AuthContextProps>({
-  currentUser: null,
-  login: async () => {},
-  register: async () => {},
-  logout: () => {},
-  updateUser: async () => {}, // Método vacío inicialmente
-});
+export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(
-    JSON.parse(localStorage.getItem('user') as string) || null
-  );
+  //para almacenar el usuario actual y saber si validó la sesión
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
-  // envía el email y contraseña para logear
+  //configuración para axios para que envíe las cookies con la petición
+  useEffect(() => {
+    axios.defaults.withCredentials = true;
+  }, []);
+
+  //validar la sesión de usuario
+  useEffect(() => {
+    const validateSession = async () => {
+      try {
+        const { data } = await axios.get(`${apiUrl}/api/auth/validate`);
+        //si se valida, almacena usuario en el localStorage
+        setCurrentUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      } catch {
+        //si falla, se elimina usuario almacenado
+        setCurrentUser(null);
+        localStorage.removeItem('user');
+      } finally {
+        //se completó la validación
+        setIsReady(true);
+      }
+    };
+    validateSession();
+  }, []);
+
+  //funcion auxiliar
+  const handleAuthResponse = (response: { data: { user: User } }) => {
+    const { user } = response.data;
+    localStorage.setItem('user', JSON.stringify(user));
+    setCurrentUser(user);
+  };
+
   const login = async (email: string, pass: string) => {
-    const response = await axios.post(`${apiUrl}/api/auth/login`, { email, pass });
-    setCurrentUser(response.data); // almacena los datos del usuario
-    document.cookie = `accessToken=${response.data.accessToken}; path=/`; // guarda el token de acceso en una cookie
-  };
-
-  // envía los datos del usuario al backend para crear una cuenta
-  const register = async (data: RegisterData) => {
-    await axios.post(`${apiUrl}/api/auth/register`, data);
-    //alert(response.data.message || 'Registro exitoso'); // esto notificar al usuario, podríamos cambiarlo y hacerlo más aesthetic
-  };
-
-  const logout = () => {
-    setCurrentUser(null); // limpia al usuario actual
-    localStorage.removeItem('user'); // eliminar el usuario del almacenamiento local
-    document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/"; // eliminar el token de acceso
-  };
-
-  // Actualiza los datos del usuario en el contexto y en el localStorage
-  const updateUser = async (data: User) => {
     try {
-      const response = await axios.put(`${apiUrl}/api/auth/update`, data);
-      setCurrentUser(response.data); // actualiza el estado con los nuevos datos del usuario
-      localStorage.setItem('user', JSON.stringify(response.data)); // guarda los datos actualizados en el localStorage
-      alert('Información actualizada con éxito');
+      const response = await axios.post(`${apiUrl}/api/auth/login`, { email, pass });
+      handleAuthResponse(response);
     } catch (error) {
-      console.error("Error al actualizar la información:", error);
-      alert('Hubo un error al actualizar la información. Por favor, inténtalo de nuevo.');
+      console.error("Error during login:", error);
+      throw error;
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(currentUser)); // guarda los datos en localStorage al cambiar el estado
-  }, [currentUser]);
+  //agregué que luego de registrarse haga login
+  const register = async (data: RegisterData) => {
+    try {
+       await axios.post(`${apiUrl}/api/auth/register`, data);
+      const loginResponse = await axios.post(`${apiUrl}/api/auth/login`, { email: data.email, pass: data.pass });
+      handleAuthResponse(loginResponse);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      throw error;
+    }
+  };
+
+  //se elimina la cookie y se limpia el localStorage
+  const logout = () => {
+    axios.post(`${apiUrl}/api/auth/logout`);
+    setCurrentUser(null);
+    localStorage.removeItem('user');
+  };
+
+  const updateUser = async (data: Partial<User>) => {
+    try {
+      const response = await axios.put(`${apiUrl}/api/auth/update`, data);
+      setCurrentUser(response.data.user);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      alert('Información actualizada con éxito');
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  };
+
+  //es true si hay un usuario autenticado
+  const isLoggedIn = () => {
+    return !!currentUser;
+  };
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, register, logout, updateUser }}>
-      {children}
+    <AuthContext.Provider value={{ currentUser, login, register, logout, updateUser, isLoggedIn }}>
+      {isReady ? children : null}
     </AuthContext.Provider>
   );
 };

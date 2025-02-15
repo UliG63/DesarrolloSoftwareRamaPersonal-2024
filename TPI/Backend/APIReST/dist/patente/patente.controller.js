@@ -47,10 +47,7 @@ async function findByMago(req, res) {
     try {
         const id = Number.parseInt(req.params.idMago);
         const patentes = await em.find(Patente, { mago: id }, { populate: ['empleado', 'mago'] });
-        if (patentes.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron patentes para este mago' });
-        }
-        res.status(200).json({ message: "Found All Patentes del Mago", data: patentes });
+        res.status(200).json({ message: patentes.length === 0 ? "No hay patentes para este mago" : "Patentes encontradas", data: patentes });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -174,7 +171,8 @@ async function reject(req, res) {
         // Actualiza el estado de la patente a "rechazada", agrega el motivo y el empleado que la rechazó, deslinkea la imagen
         patente.estado = PatenteEstado.RECHAZADA;
         patente.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
-        patente.empleado = req.body.sanitizedInput.empleado;
+        const empleado = await em.findOneOrFail(Magos, { id: req.body.empleado });
+        patente.empleado = empleado;
         patente.imagen = null;
         // Actualiza en BD
         await em.persistAndFlush([patente]);
