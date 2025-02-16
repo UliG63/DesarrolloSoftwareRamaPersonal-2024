@@ -71,7 +71,11 @@ async function getAvailableForVisualizacion(req:AuthRequest, res:Response) {
                 return false;
             }
             return true;
-        });        
+        }).map(h => ({
+            id: h.id, 
+            nombre: h.nombre,
+            restringido: h.restringido
+        }));  // Mapeo solo el id y nombre para evitar enviar datos sensibles  
         res.status(200).json({ message: "Hechizos disponibles", data: hechizosFiltrados });
     } catch (error:any) {
         res.status(500).json({ message: error.message });
