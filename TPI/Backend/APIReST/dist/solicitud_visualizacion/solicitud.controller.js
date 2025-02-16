@@ -1,8 +1,8 @@
 import { orm } from "../shared/db/orm.js";
 import { Solicitud } from "./solicitud.entity.js";
 import { SolicitudEstado } from "./solicitud.enum.js";
-import { Magos } from "../magos/magos.entity.js";
 import { Hechizo } from "../hechizo/hechizo.entity.js";
+import { validateUser, validateEmpleado } from "../shared/authFunctions.js";
 const em = orm.em;
 function sanitizeSolicitudInput(req, res, next) {
     req.body.sanitizedInput = {
@@ -45,18 +45,15 @@ async function findAllPending(req, res) {
         res.status(500).json({ message: error.message });
     }
 }
-async function findOne(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
-}
 //Creacion de nueva solicitud
 async function add(req, res) {
     try {
         // Obtener los datos del cuerpo de la request
         const { idMago, idHechizo, ...solicitudData } = req.body.sanitizedInput;
         // Verificar si el mago existe
-        let magoExistente = await em.findOne(Magos, { id: idMago });
+        const magoExistente = validateUser(req);
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
+            return res.status(401).json({ message: "No autenticado" });
         }
         /*
             Verificar si el hechizo existe (podria omitirse en caso de que la request
@@ -89,7 +86,10 @@ async function grant(req, res) {
         const id = Number.parseInt(req.params.id);
         const solicitud = await em.findOneOrFail(Solicitud, { id });
         //Obtengo el empleado actual para asignar a la solicitud
-        const empleado = await em.findOneOrFail(Magos, { id: req.body.empleado.id });
+        const empleado = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
         if (!solicitud) {
             return res.status(404).json({ message: 'Solicitud no encontrada' });
         }
@@ -131,7 +131,11 @@ async function reject(req, res) {
         // Actualiza el estado de la solicitud a "rechazada", agrega el motivo y el empleado que la rechazó.
         solicitud.estado = SolicitudEstado.RECHAZADA;
         solicitud.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
-        solicitud.empleado = req.body.sanitizedInput.empleado;
+        const empleado = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
+        solicitud.empleado = empleado;
         // Actualiza en BD
         await em.persistAndFlush([solicitud]);
         res.status(200).json({ message: 'Solicitud rechazada', data: solicitud });
@@ -141,18 +145,11 @@ async function reject(req, res) {
         res.status(500).json({ message: 'Hubo un problema rechazando la solicitud' });
     }
 }
-async function update(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
-}
-async function remove(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
-}
 async function findByMago(req, res) {
     try {
-        const id = Number.parseInt(req.params.id);
-        const magoExistente = await em.findOneOrFail(Magos, { id });
+        const magoExistente = validateUser(req);
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
+            return res.status(401).json({ message: "No autenticado" });
         }
         const solicitudes = await em.find(Solicitud, { mago: magoExistente }, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
         res.status(200).json({ message: "Solicitudes del mago encontradas", data: solicitudes });
@@ -161,5 +158,5 @@ async function findByMago(req, res) {
         res.status(500).json({ message: 'Hubo un problema' });
     }
 }
-export { findAll, findAllPending, findByMago, findOne, add, grant, update, remove, reject, sanitizeSolicitudInput };
+export { findAll, findAllPending, findByMago, add, grant, reject, sanitizeSolicitudInput };
 //# sourceMappingURL=solicitud.controller.js.map

@@ -18,9 +18,7 @@ async function findOne(req: Request, res:Response){
     try{
         const id = Number.parseInt(req.params.id)
         const institucion= await em.findOneOrFail(Institucion, {id})
-        res
-            .status(200).
-            json({message: 'found institucion', data:institucion})
+        res.status(200).json({message: 'found institucion', data:institucion})
     }catch(error: any){
         res.status(500).json({message: error.message})
     }

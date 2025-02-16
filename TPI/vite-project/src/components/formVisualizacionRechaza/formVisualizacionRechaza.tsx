@@ -35,7 +35,7 @@ function FormVisualizacionRechaza ({idSolicitud}: formVisualizacionRechazaProps)
         }
         const formData = {
          motivo_rechazo,
-         empleado: currentUser 
+         empleado: currentUser.id 
         };
 
         try {

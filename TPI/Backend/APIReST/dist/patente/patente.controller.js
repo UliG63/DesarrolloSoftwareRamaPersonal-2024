@@ -1,12 +1,12 @@
 import { orm } from "../shared/db/orm.js";
 import { Patente } from "./patente.entity.js";
 import { PatenteEstado } from "./patente.enum.js";
-import { Magos } from "../magos/magos.entity.js";
 import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js";
 import { Etiqueta } from "../etiqueta/etiqueta.entity.js";
 import path from "path";
 import fs from 'fs';
 import { fileURLToPath } from "url";
+import { validateUser, validateEmpleado } from "../shared/authFunctions.js";
 const em = orm.em.fork();
 //Obtengo el dirname para el manejo de imagenes
 const __filename = fileURLToPath(import.meta.url);
@@ -45,8 +45,11 @@ async function findAll(req, res) {
 }
 async function findByMago(req, res) {
     try {
-        const id = Number.parseInt(req.params.idMago);
-        const patentes = await em.find(Patente, { mago: id }, { populate: ['empleado', 'mago'] });
+        const magoExistente = validateUser(req);
+        if (!magoExistente) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
+        const patentes = await em.find(Patente, { mago: magoExistente.id }, { populate: ['empleado', 'mago'] });
         res.status(200).json({ message: patentes.length === 0 ? "No hay patentes para este mago" : "Patentes encontradas", data: patentes });
     }
     catch (error) {
@@ -62,17 +65,14 @@ async function findAllPending(req, res) {
         res.status(500).json({ message: error.message });
     }
 }
-async function findOne(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
-}
 async function add(req, res) {
     try {
         // Obtener los datos del cuerpo de la solicitud
         const { idMago, ...patenteData } = req.body;
         // Verificar si el mago existe
-        let magoExistente = await em.findOne(Magos, { id: idMago });
+        const magoExistente = validateUser(req);
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
+            return res.status(401).json({ message: "No autenticado" });
         }
         const imagen = req.file ? req.file.filename : null;
         // Crear la patente vinculada al mago existente
@@ -89,15 +89,8 @@ async function add(req, res) {
         res.status(201).json({ message: "Patente creada correctamente", data: nuevaPatente });
     }
     catch (error) {
-        console.error(error);
         res.status(500).json({ message: error.message });
     }
-}
-async function update(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
-}
-async function remove(req, res) {
-    res.status(500).json({ message: 'Not implemented' });
 }
 async function publish(req, res) {
     try {
@@ -106,7 +99,10 @@ async function publish(req, res) {
         const patente = await em.findOneOrFail(Patente, { id });
         const idTH = Number.parseInt(req.body.tipoHechizo);
         const tipo_hechizo = await em.findOneOrFail(Tipo_Hechizo, { id: idTH });
-        const empleado = await em.findOneOrFail(Magos, { id: req.body.empleado.id });
+        const empleado = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
         }
@@ -159,7 +155,6 @@ async function reject(req, res) {
             await new Promise((resolve, reject) => {
                 fs.unlink(imagePath, (err) => {
                     if (err) {
-                        console.error('Error al eliminar la imagen:', err);
                         reject(new Error('Error al eliminar la imagen'));
                     }
                     else {
@@ -171,7 +166,10 @@ async function reject(req, res) {
         // Actualiza el estado de la patente a "rechazada", agrega el motivo y el empleado que la rechazó, deslinkea la imagen
         patente.estado = PatenteEstado.RECHAZADA;
         patente.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
-        const empleado = await em.findOneOrFail(Magos, { id: req.body.empleado });
+        const empleado = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
         patente.empleado = empleado;
         patente.imagen = null;
         // Actualiza en BD
@@ -179,9 +177,8 @@ async function reject(req, res) {
         res.status(200).json({ message: 'Patente rechazada', data: patente });
     }
     catch (error) {
-        console.error('Error rejecting patente:', error);
         res.status(500).json({ message: 'Hubo un problema rechazando la patente' });
     }
 }
-export { sanitizePatenteInput, findAll, findOne, add, update, remove, publish, reject, findAllPending, findByMago };
+export { sanitizePatenteInput, findAll, add, publish, reject, findAllPending, findByMago };
 //# sourceMappingURL=patente.controller.js.map

@@ -56,7 +56,7 @@ export default function VisualizacionPage() {
     
     const fetchUserSolicitudes = async () => {
         try {
-            const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/mago/${currentUser?.id}`);
+            const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/mago`);
             setSolicitudes(response.data.data);
             setFilteredSolicitudes(response.data.data);
         } catch (error) {

@@ -64,7 +64,7 @@ const HechizoCard: React.FC = () => {
   }
   const fetchHechizos = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/hechizo/all/${currentUser?.id}`);
+      const response = await axios.get(`${apiUrl}/api/hechizo/all`);
       //manejo por si no hay hechizos cargados o si no se puede recuperar de la API
       const data = response.data.data || []; 
       setHechizos(data);
@@ -88,7 +88,7 @@ const HechizoCard: React.FC = () => {
   //Traigo los ids de los hechizos para los cuales tiene permiso de visualizacion el usuario
   const fetchHechizosPermitidos = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/hechizo/permitidos/${currentUser?.id}`);
+      const response = await axios.get(`${apiUrl}/api/hechizo/permitidos`);
       const idsPermitidos = new Set(response.data.data.map((h: { id: number }) => h.id)); 
       setHechizosPermitidos(idsPermitidos);
     } catch (error) {

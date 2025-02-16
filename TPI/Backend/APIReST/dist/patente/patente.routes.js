@@ -1,14 +1,12 @@
 import { Router } from "express";
 import { upload } from "../shared/multerConfig.js";
-import { sanitizePatenteInput, findAll, findOne, add, update, remove, publish, reject, findAllPending, findByMago } from "./patente.controller.js";
+import { authMiddleware } from "../auth/auth.controller.js";
+import { sanitizePatenteInput, findAll, add, publish, reject, findAllPending, findByMago } from "./patente.controller.js";
 export const patenteRouter = Router();
-patenteRouter.post('/', upload.single('imagen'), sanitizePatenteInput, add);
-patenteRouter.get('/pending', findAllPending);
-patenteRouter.get('/:idMago', findByMago);
-patenteRouter.get('/', findAll);
-patenteRouter.get('/:id', findOne);
-patenteRouter.put('/:id', sanitizePatenteInput, update);
-patenteRouter.put('/publish/:id', sanitizePatenteInput, publish);
-patenteRouter.put('/reject/:id', sanitizePatenteInput, reject);
-patenteRouter.delete('/:id', remove);
+patenteRouter.post('/', authMiddleware, upload.single('imagen'), sanitizePatenteInput, add);
+patenteRouter.get('/', authMiddleware, findAll);
+patenteRouter.get('/pending', authMiddleware, findAllPending);
+patenteRouter.get('/mago', authMiddleware, findByMago);
+patenteRouter.put('/publish/:id', authMiddleware, sanitizePatenteInput, publish);
+patenteRouter.put('/reject/:id', authMiddleware, sanitizePatenteInput, reject);
 //# sourceMappingURL=patente.routes.js.map

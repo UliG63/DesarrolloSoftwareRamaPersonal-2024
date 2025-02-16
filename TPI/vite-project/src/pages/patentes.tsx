@@ -54,7 +54,7 @@ const PatentesPage: React.FC = () => {
 
     const fetchUserPatentes = async () => {
         try {
-            const response = await axios.get(`${apiUrl}/api/patente/${currentUser?.id}`);
+            const response = await axios.get(`${apiUrl}/api/patente/mago`);
             setPatentes(response.data.data);
             setFilteredPatentes(response.data.data); // Inicializa las patentes filtradas con todas las patentes
         } catch (error) {

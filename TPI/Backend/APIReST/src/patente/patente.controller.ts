@@ -4,12 +4,12 @@ import { Patente } from "./patente.entity.js";
 import { PatenteEstado } from "./patente.enum.js";
 import { Magos } from "../magos/magos.entity.js";
 import { Tipo_Hechizo } from "../tipo_hechizo/tipo_hechizo.entity.js";
-import { Collection, wrap } from "@mikro-orm/core";
 import { Etiqueta } from "../etiqueta/etiqueta.entity.js";
 import path from "path";
 import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from "url";
+import { validateUser, validateEmpleado } from "../shared/authFunctions.js";
+import { AuthRequest } from "../shared/types.js";
 
 
 const em = orm.em.fork();
@@ -52,10 +52,13 @@ async function findAll(req: Request, res:Response){
     }
 }
 
-async function findByMago(req: Request, res:Response){
+async function findByMago(req: AuthRequest, res:Response){
     try {
-        const id = Number.parseInt(req.params.idMago)
-        const patentes = await em.find(Patente,{ mago: id },{populate:['empleado','mago']})
+        const magoExistente: Magos | null = validateUser(req);
+        if (!magoExistente) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
+        const patentes = await em.find(Patente,{ mago: magoExistente.id },{populate:['empleado','mago']})
         res.status(200).json({ message: patentes.length === 0 ? "No hay patentes para este mago" : "Patentes encontradas", data: patentes });
     } catch (error:any) {
         res.status(500).json({message:error.message})
@@ -71,20 +74,15 @@ async function findAllPending(req:Request, res:Response) {
     }
 }
 
-async function findOne(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-async function add(req: Request, res:Response){
+async function add(req: AuthRequest, res:Response){
     try {
         // Obtener los datos del cuerpo de la solicitud
         const { idMago, ...patenteData } = req.body;
         
         // Verificar si el mago existe
-        let magoExistente = await em.findOne(Magos, { id: idMago });
-        
+        const magoExistente: Magos | null = validateUser(req);
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
+            return res.status(401).json({ message: "No autenticado" });
         }
 
         const imagen = req.file ? req.file.filename : null;
@@ -104,27 +102,21 @@ async function add(req: Request, res:Response){
         // Responder con la nueva patente creada
         res.status(201).json({ message: "Patente creada correctamente", data: nuevaPatente });
     } catch (error: any) {
-        console.error(error);
         res.status(500).json({ message: error.message });
     }
 }
 
-async function update(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-async function remove(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-async function publish(req:Request, res:Response){
+async function publish(req:AuthRequest, res:Response){
     try {
         // Buscar la patente por su ID
         const id = Number.parseInt(req.params.id)
         const patente = await em.findOneOrFail(Patente,{ id });
         const idTH = Number.parseInt(req.body.tipoHechizo);
         const tipo_hechizo = await em.findOneOrFail(Tipo_Hechizo,{ id:idTH });
-        const empleado = await em.findOneOrFail(Magos,{id:req.body.empleado.id});
+        const empleado: Magos | null = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
 
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
@@ -161,7 +153,7 @@ async function publish(req:Request, res:Response){
         res.status(500).json({ message: 'Hubo un problema al publicar la patente' });
     }
 }
-async function reject(req: Request, res: Response) {
+async function reject(req: AuthRequest, res: Response) {
     try {
         // Busca la patente por su ID
         const id = Number.parseInt(req.params.id);
@@ -185,7 +177,6 @@ async function reject(req: Request, res: Response) {
             await new Promise<void>((resolve, reject) => {
                 fs.unlink(imagePath, (err) => {
                     if (err) {
-                        console.error('Error al eliminar la imagen:', err);
                         reject(new Error('Error al eliminar la imagen'));
                     } else {
                         resolve();
@@ -197,7 +188,10 @@ async function reject(req: Request, res: Response) {
         // Actualiza el estado de la patente a "rechazada", agrega el motivo y el empleado que la rechazó, deslinkea la imagen
         patente.estado = PatenteEstado.RECHAZADA;
         patente.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
-        const empleado = await em.findOneOrFail(Magos, { id: req.body.empleado });
+        const empleado: Magos | null = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
         patente.empleado = empleado;
         patente.imagen=null;
 
@@ -207,9 +201,8 @@ async function reject(req: Request, res: Response) {
         res.status(200).json({ message: 'Patente rechazada', data: patente });
 
     } catch (error: any) {
-        console.error('Error rejecting patente:', error);
         res.status(500).json({ message: 'Hubo un problema rechazando la patente' });
     }
 }
 
-export {sanitizePatenteInput,findAll, findOne, add, update, remove, publish, reject, findAllPending,findByMago}
+export {sanitizePatenteInput,findAll, add, publish, reject, findAllPending, findByMago}

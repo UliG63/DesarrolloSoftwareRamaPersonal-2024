@@ -39,7 +39,7 @@ const FormVisualizacionAcepta: React.FC<formVisualizacionAceptaProps> = ({ idSol
         }
 
         const formData = {
-            empleado: currentUser,
+            empleado: currentUser.id,
             permanente: tipoAcceso === "permanente",
             fecha_hasta: tipoAcceso === "porFecha" ? fechaValidez : null
         };

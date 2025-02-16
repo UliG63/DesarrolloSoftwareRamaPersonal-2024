@@ -41,7 +41,7 @@ export const register = async (req, res) => {
 };
 export const login = [
     //agregué validaciones con express-validator
-    //NO cambiar el mínimo de longitud de la pass porque hy usuarios con 5 letras
+    //NO cambiar el mínimo de longitud de la pass porque hay usuarios con 5 letras
     body("email").isEmail().withMessage("Debe ser un email válido").normalizeEmail(),
     body("pass").isLength({ min: 4 }).withMessage("La contraseña debe tener al menos 4 caracteres"),
     async (req, res) => {
@@ -134,6 +134,24 @@ export const updateUser = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({ message: "Error en el servidor", error: err });
+    }
+};
+//Para recuperar el usuario desde el backend, sin necesariamente enviarlo desde el frontend
+export const authMiddleware = async (req, res, next) => {
+    try {
+        const token = req.cookies.accessToken;
+        if (!token)
+            return res.status(401).json({ message: "No autenticado" });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const em = orm.em.fork();
+        const user = await em.findOneOrFail(Magos, { id: decoded.id });
+        if (!user)
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        req.user = user; // Agrego el usuario a la request
+        next();
+    }
+    catch (err) {
+        return res.status(401).json({ message: "Token inválido o expirado" });
     }
 };
 //# sourceMappingURL=auth.controller.js.map

@@ -4,6 +4,8 @@ import { Solicitud } from "./solicitud.entity.js";
 import { SolicitudEstado } from "./solicitud.enum.js";
 import { Magos } from "../magos/magos.entity.js";
 import { Hechizo } from "../hechizo/hechizo.entity.js";
+import { AuthRequest } from "../shared/types.js";
+import { validateUser, validateEmpleado } from "../shared/authFunctions.js";
 
 const em= orm.em;
 function sanitizeSolicitudInput(req: Request, res: Response, next: NextFunction)
@@ -29,7 +31,7 @@ function sanitizeSolicitudInput(req: Request, res: Response, next: NextFunction)
     next()
 }
 //Buscar todas las solicitudes
-async function findAll(req: Request, res:Response){
+async function findAll(req: AuthRequest, res:Response){
     try{
         const solicitudes = await em.find(Solicitud, {}, {populate:['fecha_hasta' ,'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'
                                                                 ]});
@@ -41,7 +43,7 @@ async function findAll(req: Request, res:Response){
 }
 
 //Buscar solicitudes pendientes de revision
-async function findAllPending(req:Request, res:Response) {
+async function findAllPending(req:AuthRequest, res:Response) {
     try {
         const solicitudesPendientes = await em.find(Solicitud, {estado: SolicitudEstado.PENDIENTE_REVISION},{populate:['fecha_hasta' ,'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado']});
         res.status(200).json({ message: "Solicitudes pendientes de revisión encontradas", data: solicitudesPendientes });
@@ -50,55 +52,53 @@ async function findAllPending(req:Request, res:Response) {
     }
 }
 
-async function findOne(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
 //Creacion de nueva solicitud
-async function add(req: Request, res:Response){
+async function add(req: AuthRequest, res:Response){
     try{
-            // Obtener los datos del cuerpo de la request
-                    const { idMago,idHechizo, ...solicitudData } = req.body.sanitizedInput;
-                    
-                    // Verificar si el mago existe
-                    let magoExistente = await em.findOne(Magos, { id: idMago });
-                    if (!magoExistente) {
-                        return res.status(404).json({ message: 'Mago no encontrado' });
-                    }
-                    /*
-                        Verificar si el hechizo existe (podria omitirse en caso de que la request
-                        ya disponga del objeto hechizo ) 
-                    */
-                    let hechizoExistente = await em.findOne(Hechizo, {id: idHechizo} )
-                    if (!hechizoExistente) {
-                        return res.status(404).json({ message: 'Hechizo no encontrado' });
-                    }
-                    // Crear la solicitud vinculada al mago existente
-                    const nuevaSolicitud = em.create(Solicitud, {
-                        ...solicitudData,
-                        mago: magoExistente, // Asociar el mago con la solicitud
-                        hechizo: hechizoExistente, //Asociar el hechizo con la solicitud
-                        estado: SolicitudEstado.PENDIENTE_REVISION, //Asignacion por defecto
-                        permanente: false, //Asignacion por defecto.
-                    });
-            //Guardado en base de datos
-            await em.flush()
-            res.status(201).json({ message: 'Solicitud creada', data:nuevaSolicitud})
+        // Obtener los datos del cuerpo de la request
+        const { idMago,idHechizo, ...solicitudData } = req.body.sanitizedInput;
+        
+        // Verificar si el mago existe
+        const magoExistente: Magos | null = validateUser(req);
+        if (!magoExistente) {
+            return res.status(401).json({ message: "No autenticado" });
         }
-        catch(error: any){
-            res.status(500).json({message:error.message})
+        /*
+            Verificar si el hechizo existe (podria omitirse en caso de que la request
+            ya disponga del objeto hechizo ) 
+        */
+        let hechizoExistente = await em.findOne(Hechizo, {id: idHechizo} )
+        if (!hechizoExistente) {
+            return res.status(404).json({ message: 'Hechizo no encontrado' });
         }
+        // Crear la solicitud vinculada al mago existente
+        const nuevaSolicitud = em.create(Solicitud, {
+            ...solicitudData,
+            mago: magoExistente, // Asociar el mago con la solicitud
+            hechizo: hechizoExistente, //Asociar el hechizo con la solicitud
+            estado: SolicitudEstado.PENDIENTE_REVISION, //Asignacion por defecto
+            permanente: false, //Asignacion por defecto.
+        });
+        //Guardado en base de datos
+        await em.flush()
+        res.status(201).json({ message: 'Solicitud creada', data:nuevaSolicitud})
+        }
+    catch(error: any){
+        res.status(500).json({message:error.message})
+    }
 }
 
 //Deberiamos utilizar el sanitizeInput, por el momento lo hacemos sin el.
-async function grant(req:Request, res:Response){
+async function grant(req:AuthRequest, res:Response){
     try {
         // Buscar la solicitud por su ID
         const id = Number.parseInt(req.params.id)
         const solicitud = await em.findOneOrFail(Solicitud,{ id });
         //Obtengo el empleado actual para asignar a la solicitud
-        const empleado = await em.findOneOrFail(Magos,{id:req.body.empleado.id});
-
+        const empleado: Magos | null = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
         if (!solicitud) {
             return res.status(404).json({ message: 'Solicitud no encontrada' });
         }
@@ -128,7 +128,7 @@ async function grant(req:Request, res:Response){
 }
 
 //Rechazar la solicitud
-async function reject(req: Request, res: Response) {
+async function reject(req: AuthRequest, res: Response) {
     try {
         // Busca la solicitud por su ID
         const id = Number.parseInt(req.params.id);
@@ -146,7 +146,11 @@ async function reject(req: Request, res: Response) {
         // Actualiza el estado de la solicitud a "rechazada", agrega el motivo y el empleado que la rechazó.
         solicitud.estado = SolicitudEstado.RECHAZADA;
         solicitud.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
-        solicitud.empleado = req.body.sanitizedInput.empleado;
+        const empleado: Magos | null = validateEmpleado(req);
+        if (!empleado) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
+        solicitud.empleado = empleado;
 
         // Actualiza en BD
         await em.persistAndFlush([solicitud]);
@@ -159,20 +163,11 @@ async function reject(req: Request, res: Response) {
     }
 }
 
-async function update(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-async function remove(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-async function findByMago(req:Request, res:Response){
+async function findByMago(req:AuthRequest, res:Response){
     try {
-        const id = Number.parseInt(req.params.id)
-        const magoExistente = await em.findOneOrFail(Magos, {id})
+        const magoExistente: Magos | null = validateUser(req);
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
+            return res.status(401).json({ message: "No autenticado" });
         }
         const solicitudes = await em.find(Solicitud, {mago: magoExistente},{populate:['fecha_hasta' ,'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado']});
         res.status(200).json({ message: "Solicitudes del mago encontradas", data: solicitudes });
@@ -181,4 +176,4 @@ async function findByMago(req:Request, res:Response){
     }
 }
 
-export {findAll,findAllPending,findByMago, findOne, add, grant , update, remove, reject, sanitizeSolicitudInput}
+export {findAll, findAllPending, findByMago, add, grant, reject, sanitizeSolicitudInput}

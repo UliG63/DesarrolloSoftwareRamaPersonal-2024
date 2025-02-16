@@ -1,10 +1,11 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { orm } from "../shared/db/orm.js";
 import bcrypt from "bcrypt";
 import { Magos } from "../magos/magos.entity.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
+import { AuthRequest } from "../shared/types.js";
 
 dotenv.config();
 
@@ -45,7 +46,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = [
   //agregué validaciones con express-validator
-  //NO cambiar el mínimo de longitud de la pass porque hy usuarios con 5 letras
+  //NO cambiar el mínimo de longitud de la pass porque hay usuarios con 5 letras
   body("email").isEmail().withMessage("Debe ser un email válido").normalizeEmail(),
   body("pass").isLength({ min: 4}).withMessage("La contraseña debe tener al menos 4 caracteres"),
   async (req: Request, res: Response) => {
@@ -137,5 +138,25 @@ export const updateUser = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Información actualizada.", user: userData });
   } catch (err) {
     return res.status(500).json({ message: "Error en el servidor", error: err });
+  }
+};
+
+
+//Para recuperar el usuario desde el backend, sin necesariamente enviarlo desde el frontend
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const token = req.cookies.accessToken;
+    if (!token) return res.status(401).json({ message: "No autenticado" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
+    const em = orm.em.fork();
+    const user = await em.findOneOrFail(Magos, { id: decoded.id });
+
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    req.user = user; // Agrego el usuario a la request
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Token inválido o expirado" });
   }
 };

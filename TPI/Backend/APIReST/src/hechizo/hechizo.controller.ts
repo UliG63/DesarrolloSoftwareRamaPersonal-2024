@@ -1,20 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import { orm } from "../shared/db/orm.js";
-import { Hechizo } from "./hechizo.entity.js";
 import { Magos } from "../magos/magos.entity.js";
-import { Solicitud } from "../solicitud_visualizacion/solicitud.entity.js";
+import { Hechizo } from "./hechizo.entity.js";
+import { AuthRequest } from "../shared/types.js";
+import { validateUser } from "../shared/authFunctions.js";
 
 const em = orm.em;
 
-async function findAll(req: Request, res: Response) {
+async function findAll(req: AuthRequest, res: Response) {
     try {
         const hechizos = await em.find(Hechizo, {}, {populate:['nombre' , 'descripcion', 'instrucciones','solicitudes', 'restringido', 'patente',
                                                                 'patente.tipo_hechizo','patente.mago', 'patente.etiquetas']});
-        //Protejo los datos sensibles
-        const id = Number.parseInt(req.params.id)
-        const magoExistente = await em.findOneOrFail(Magos, {id})
+        //Protejo los datos sensibles en base al usuario que los pide
+        const magoExistente: Magos | null = validateUser(req);
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
+            return res.status(401).json({ message: "No autenticado" });
         }
         let hechizosFiltrados = hechizos;
         if (!magoExistente.isEmpleado) {
@@ -29,7 +29,6 @@ async function findAll(req: Request, res: Response) {
                 return h;
             });
         }
-        console.log(hechizosFiltrados)
         res.status(200).json({ message: "Found All Hechizos", data: hechizosFiltrados });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -45,37 +44,45 @@ async function findOne(req: Request, res:Response){
         res.status(500).json({ message: error.message });
     }
 }
-//Devuelve los hechizos restringidos para los cuales un mago puede solicitar acceso de visualizacion
-async function getAvailableForVisualizacion(req:Request, res:Response) {
-    try {
-        const id = Number.parseInt(req.params.id)
-        const magoExistente = await em.findOneOrFail(Magos, {id})
-        if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
-        }
-        const hechizos = await em.find(Hechizo, {
-            restringido: true,
-            $or: [
-                {solicitudes:{$eq:null}},
-                {solicitudes:{
-                    mago: magoExistente,
-                    estado: {$nin:['pendiente_revision','aprobada']}
-                }}
-            ]
 
-        }, {populate:['patente']})
-        res.status(200).json({ message: "Hechizos disponibles", data: hechizos });
+//Devuelve los hechizos restringidos para los cuales un mago puede solicitar acceso de visualizacion
+async function getAvailableForVisualizacion(req:AuthRequest, res:Response) {
+    try {
+        const magoExistente: Magos | null = validateUser(req);
+        if (!magoExistente) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
+        const hechizos = await em.find(Hechizo, {}, {populate:['nombre' , 'descripcion', 'instrucciones','solicitudes', 'restringido', 'patente','patente.tipo_hechizo','patente.mago', 'patente.etiquetas']});
+        const hechizosFiltrados = hechizos.filter(h => {
+            // Saco los hechizos no restringidos
+            if (!h.restringido) {
+                return false;
+            }
+            // Si está restringido, pero fue patentado por el mago, lo saco
+            if (h.patente && h.patente.mago && h.patente.mago.id === magoExistente.id) {
+                return false;
+            }
+            // Si está restringido, y el mago tiene solicitudes aprobadas o pendientes de revisión, lo saco
+            const tieneSolicitudAprobadaOPendiente = h.solicitudes.getItems().some(s =>
+                s.mago && s.mago.id === magoExistente.id && ['aprobada', 'pendiente_revision'].includes(s.estado ?? '')
+            );
+        
+            if (tieneSolicitudAprobadaOPendiente) {
+                return false;
+            }
+            return true;
+        });        
+        res.status(200).json({ message: "Hechizos disponibles", data: hechizosFiltrados });
     } catch (error:any) {
         res.status(500).json({ message: error.message });
     }
 }
 //devuelve los IDs de los hachizos que el usuario puede visualizar
-async function findPermitedForUser(req:Request, res:Response) {
+async function findPermitedForUser(req:AuthRequest, res:Response) {
     try {
-        const id = Number.parseInt(req.params.id)
-        const magoExistente = await em.findOneOrFail(Magos, {id})
+        const magoExistente: Magos | null = validateUser(req);
         if (!magoExistente) {
-            return res.status(404).json({ message: 'Mago no encontrado' });
+            return res.status(401).json({ message: "No autenticado" });
         }
         let hechizosPermitidos = null;
         //si es empleado, el usuario puede visualizar todos los hechizos
@@ -97,16 +104,4 @@ async function findPermitedForUser(req:Request, res:Response) {
 }
 
 
-async function add(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-async function update(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-async function remove(req: Request, res:Response){
-    res.status(500).json({message:'Not implemented'})
-}
-
-export {findAll, findOne, add, update, remove, getAvailableForVisualizacion, findPermitedForUser}
+export {findAll, findOne, getAvailableForVisualizacion, findPermitedForUser}
