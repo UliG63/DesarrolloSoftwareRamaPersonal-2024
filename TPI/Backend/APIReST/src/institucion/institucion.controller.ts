@@ -8,7 +8,7 @@ const em = orm.em
 async function findAll(req: Request, res:Response){
     try{
         const instituciones= await em.find(Institucion, {})
-        res.status(200).json({message:'find all instituciones',data:instituciones})
+        res.status(200).json({message:'found all instituciones',data:instituciones})
     }catch (error: any){
         res.status(500).json({message: error.message})
     }

@@ -15,6 +15,8 @@ import cookieParser from "cookie-parser";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import swaggerUI from 'swagger-ui-express';
+import specs from './documentacion/documentacion.js';
 //Cargo las variables de entorno
 const ENV = process.env.NODE_ENV || 'development'; //Descomentar para uso en desarrollo
 //const ENV = process.env.NODE_ENV || 'production'; //Descomentar para uso en production
@@ -55,6 +57,8 @@ app.use('/api/patente', patenteRouter);
 app.use('/api/solicitud_visualizacion', solicitudRouter);
 app.use('/api/tipo_hechizo', tipo_hechizoRouter);
 app.use('/api/auth', authRouter);
+//Ruta de la documentacion de la api
+app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(specs));
 /*
     El siguiente metodo se encarga de devolver un mensaje compatible
     con la API cuando se introduce una URL invalida, y no contenido HTML
@@ -69,4 +73,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}/`);
 });
+export { app };
 //# sourceMappingURL=app.js.map
