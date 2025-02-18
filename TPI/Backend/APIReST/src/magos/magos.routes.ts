@@ -84,11 +84,174 @@ export const magosRouter = Router()
  *                  ciudad: Unknown
  *                  pais: Scotland   
  */
+
+/**
+ * @swagger
+ * tags:
+ *  name: Magos
+ *  description: La API que maneja los Magos (usuarios, empleados y admin) del sistema
+ */
  
 
+
+/**
+ * @swagger
+ * /api/magos:
+ *   get:
+ *     summary: Devuelve todos los magos disponibles en la Base de Datos
+ *     tags: [Magos]
+ *     responses:
+ *       200:
+ *         description: found all magos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                  $ref: '#/components/schemas/Magos'
+ *       500:
+ *          description: Error en el servidor
+ */
 magosRouter.get('/',findAll)
+
+/**
+ * @swagger
+ * /api/magos/{id}:
+ *   get:
+ *      summary: Devuelve un un mago por su ID
+ *      tags: [Magos]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          schema:
+ *              type: integer
+ *          required: true
+ *          description: El ID del mago
+ *      responses:
+ *          200:
+ *              description: found mago
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Magos'
+ *          
+ *          500:
+ *              description: Error en el servidor        
+ */
 magosRouter.get('/:id', findOne)
+
+/**
+ * @swagger
+ * /api/magos:
+ *   post:
+ *      summary: Da de alta un nuevo mago
+ *      tags: [Magos]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Magos'
+ *      responses:
+ *          201:
+ *              description: Mago created
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Magos'
+ *          
+ *          500:
+ *              description: Error en el servidor        
+ */
 magosRouter.post('/',sanitizeMagoInput, add)
+
+/**
+ * @swagger
+ * /api/magos/{id}:
+ *   put:
+ *     summary: Modifica un Mago por su ID
+ *     tags: [Magos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: El ID del Mago
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Magos'
+ *     responses:
+ *       200:
+ *         description: mago updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Magos'
+ *       500:
+ *         description: Error en el servidor
+ *       400: 
+ *         description: El correo electrónico ya está en uso.
+ */
 magosRouter.put('/:id',sanitizeMagoInput, update)
+
+/**
+ * @swagger
+ * /api/magos/{id}:
+ *   put:
+ *     summary: Modifica un Mago por su ID
+ *     tags: [Magos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: El ID del Mago
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Magos'
+ *     responses:
+ *       200:
+ *         description: mago updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Magos'
+ *       500:
+ *         description: Error en el servidor
+ *       400: 
+ *         description: El correo electrónico ya está en uso.
+ */
 magosRouter.patch('/:id', sanitizeMagoInput, update)
+
+/**
+ * @swagger
+ * /api/magos/{id}:
+ *   delete:
+ *     summary: Elimina un mago por su ID
+ *     tags: [Magos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: El ID del Mago
+ *     responses:
+ *       200:
+ *         description: Mago removed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Magos'
+ *       500:
+ *         description: Error en el servidor
+ */
 magosRouter.delete('/:id', remove)

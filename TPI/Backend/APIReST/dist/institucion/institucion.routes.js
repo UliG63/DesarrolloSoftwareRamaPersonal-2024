@@ -83,7 +83,7 @@ institucionRouter.get('/', findAll);
 institucionRouter.get('/:id', findOne);
 /**
  * @swagger
- * /api/institucion/{id}:
+ * /api/institucion:
  *   post:
  *      summary: Da de alta una nueva institucion
  *      tags: [Institucion]
@@ -154,7 +154,7 @@ institucionRouter.put('/:id', update);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Rol'
+ *               $ref: '#/components/schemas/Institucion'
  *       500:
  *         description: Error en el servidor
  */
