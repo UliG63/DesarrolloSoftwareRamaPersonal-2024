@@ -56,6 +56,7 @@ Recordar que esta API esta basada en Bases de Datos SQL.
 Finalmente, para iniciar el servidor que contiene a la API, ejecute:
 
 `pnpm start`
+
 o:
 
 `pnpm start dev`
