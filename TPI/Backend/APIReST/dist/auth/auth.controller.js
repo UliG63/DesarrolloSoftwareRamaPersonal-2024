@@ -141,17 +141,17 @@ export const authMiddleware = async (req, res, next) => {
     try {
         const token = req.cookies.accessToken;
         if (!token)
-            return res.status(401).json({ message: "No autenticado" });
+            return res.status(401).json({ message: "No authenticated iser" });
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const em = orm.em.fork();
         const user = await em.findOneOrFail(Magos, { id: decoded.id });
         if (!user)
-            return res.status(404).json({ message: "Usuario no encontrado" });
+            return res.status(404).json({ message: "User not found" });
         req.user = user; // Agrego el usuario a la request
         next();
     }
     catch (err) {
-        return res.status(401).json({ message: "Token inválido o expirado" });
+        return res.status(401).json({ message: "invalid or expired Token" });
     }
 };
 //# sourceMappingURL=auth.controller.js.map

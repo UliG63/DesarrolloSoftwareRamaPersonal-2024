@@ -146,17 +146,17 @@ export const updateUser = async (req: Request, res: Response) => {
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies.accessToken;
-    if (!token) return res.status(401).json({ message: "No autenticado" });
+    if (!token) return res.status(401).json({ message: "No authenticated iser" });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
     const em = orm.em.fork();
     const user = await em.findOneOrFail(Magos, { id: decoded.id });
 
-    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     req.user = user; // Agrego el usuario a la request
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Token inválido o expirado" });
+    return res.status(401).json({ message: "invalid or expired Token" });
   }
 };

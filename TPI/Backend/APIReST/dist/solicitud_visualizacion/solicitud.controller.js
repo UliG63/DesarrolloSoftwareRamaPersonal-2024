@@ -39,7 +39,7 @@ async function findAll(req, res) {
 async function findAllPending(req, res) {
     try {
         const solicitudesPendientes = await em.find(Solicitud, { estado: SolicitudEstado.PENDIENTE_REVISION }, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
-        res.status(200).json({ message: "Solicitudes pendientes de revisión encontradas", data: solicitudesPendientes });
+        res.status(200).json({ message: "Solicitudes pending revision found", data: solicitudesPendientes });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -53,7 +53,7 @@ async function add(req, res) {
         // Verificar si el mago existe
         const magoExistente = validateUser(req);
         if (!magoExistente) {
-            return res.status(401).json({ message: "No autenticado" });
+            return res.status(401).json({ message: "Not authenticated" });
         }
         /*
             Verificar si el hechizo existe (podria omitirse en caso de que la request
@@ -61,7 +61,7 @@ async function add(req, res) {
         */
         let hechizoExistente = await em.findOne(Hechizo, { id: idHechizo });
         if (!hechizoExistente) {
-            return res.status(404).json({ message: 'Hechizo no encontrado' });
+            return res.status(404).json({ message: 'Hechizo not found' });
         }
         // Crear la solicitud vinculada al mago existente
         const nuevaSolicitud = em.create(Solicitud, {
@@ -73,7 +73,7 @@ async function add(req, res) {
         });
         //Guardado en base de datos
         await em.flush();
-        res.status(201).json({ message: 'Solicitud creada', data: nuevaSolicitud });
+        res.status(201).json({ message: 'Solicitud created', data: nuevaSolicitud });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -88,14 +88,14 @@ async function grant(req, res) {
         //Obtengo el empleado actual para asignar a la solicitud
         const empleado = validateEmpleado(req);
         if (!empleado) {
-            return res.status(401).json({ message: "No autenticado" });
+            return res.status(401).json({ message: "Not authenticated" });
         }
         if (!solicitud) {
-            return res.status(404).json({ message: 'Solicitud no encontrada' });
+            return res.status(404).json({ message: 'Solicitud not found' });
         }
         // Verificar que el estado actual sea "pendiente_revision"
         if (solicitud.estado !== SolicitudEstado.PENDIENTE_REVISION) {
-            return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
+            return res.status(400).json({ message: 'The Solicitud is not pending revision' });
         }
         // Actualizar el estado, asignar empleado, y definir si la solicitud es permanente o no.
         solicitud.estado = SolicitudEstado.APROBADA;
@@ -109,10 +109,10 @@ async function grant(req, res) {
             solicitud.fecha_hasta = req.body.fecha_hasta;
         }
         await em.persistAndFlush([solicitud]);
-        res.status(200).json({ message: 'Solicitud aprobada correctamente', data: solicitud });
+        res.status(200).json({ message: 'Solicitud granted correctly', data: solicitud });
     }
     catch (error) {
-        res.status(500).json({ message: 'Hubo un problema al aprobar la solicitud' });
+        res.status(500).json({ message: 'There was a problem in granting the Solicitud' });
     }
 }
 //Rechazar la solicitud
@@ -122,40 +122,39 @@ async function reject(req, res) {
         const id = Number.parseInt(req.params.id);
         const solicitud = await em.findOneOrFail(Solicitud, { id }, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
         if (!solicitud) {
-            return res.status(404).json({ message: 'Solicitud no encontrada' });
+            return res.status(404).json({ message: 'Solicitud not found' });
         }
         // Verifica que el estado actual sea "pendiente_revision"
         if (solicitud.estado !== SolicitudEstado.PENDIENTE_REVISION) {
-            return res.status(400).json({ message: 'La solicitud no está pendiente de revisión' });
+            return res.status(400).json({ message: 'The Solicitud is not pending revision' });
         }
         // Actualiza el estado de la solicitud a "rechazada", agrega el motivo y el empleado que la rechazó.
         solicitud.estado = SolicitudEstado.RECHAZADA;
         solicitud.motivo_rechazo = req.body.sanitizedInput.motivo_rechazo;
         const empleado = validateEmpleado(req);
         if (!empleado) {
-            return res.status(401).json({ message: "No autenticado" });
+            return res.status(401).json({ message: "Not authenticated" });
         }
         solicitud.empleado = empleado;
         // Actualiza en BD
         await em.persistAndFlush([solicitud]);
-        res.status(200).json({ message: 'Solicitud rechazada', data: solicitud });
+        res.status(200).json({ message: 'Solicitud rejected correctly', data: solicitud });
     }
     catch (error) {
-        console.error('Error rejecting solicitud:', error);
-        res.status(500).json({ message: 'Hubo un problema rechazando la solicitud' });
+        res.status(500).json({ message: 'There was a problem in rejecting the Solicitud' });
     }
 }
 async function findByMago(req, res) {
     try {
         const magoExistente = validateUser(req);
         if (!magoExistente) {
-            return res.status(401).json({ message: "No autenticado" });
+            return res.status(401).json({ message: "Not authenticated" });
         }
         const solicitudes = await em.find(Solicitud, { mago: magoExistente }, { populate: ['fecha_hasta', 'permanente', 'motivo', 'motivo_rechazo', 'estado', 'hechizo', 'mago', 'empleado'] });
-        res.status(200).json({ message: "Solicitudes del mago encontradas", data: solicitudes });
+        res.status(200).json({ message: "Mago solicitudes found", data: solicitudes });
     }
     catch (error) {
-        res.status(500).json({ message: 'Hubo un problema' });
+        res.status(500).json({ message: 'Server error' });
     }
 }
 export { findAll, findAllPending, findByMago, add, grant, reject, sanitizeSolicitudInput };

@@ -59,12 +59,13 @@ app.use('/api/tipo_hechizo', tipo_hechizoRouter);
 app.use('/api/auth', authRouter);
 //Ruta de la documentacion de la api
 app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(specs));
+//Ruta de subida de imagenes de la api
+const uploadsPath = path.join(__dirname, '../public/uploads');
+app.use('/uploads', express.static(uploadsPath));
 /*
     El siguiente metodo se encarga de devolver un mensaje compatible
     con la API cuando se introduce una URL invalida, y no contenido HTML
 */
-const uploadsPath = path.join(__dirname, '../public/uploads');
-app.use('/uploads', express.static(uploadsPath));
 app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' });
 });

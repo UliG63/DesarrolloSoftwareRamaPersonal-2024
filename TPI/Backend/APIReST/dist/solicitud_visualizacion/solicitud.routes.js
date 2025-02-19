@@ -189,12 +189,149 @@ export const solicitudRouter = Router();
  *          500:
  *              description: Error en el Servidor
  *          401:
- *              description: No autenticado
+ *              description: No authenticated user
  */
 solicitudRouter.get('/', authMiddleware, findAll);
+/**
+ * @swagger
+ * /api/solicitud_visualizacion/pending:
+ *  get:
+ *      summary: Devuelve todas las solicitudes de visualizacion disponibles en la Base de Datos cuyo estado sea <pendiente_revision>
+ *      tags: [Solicitud]
+ *      responses:
+ *          200:
+ *              description: Solicitudes pending revision found
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                              $ref: '#/components/schemas/Solicitud'
+ *          401:
+ *              description: No authenticated user
+ *          500:
+ *              description: Error en el Servidor
+ */
 solicitudRouter.get('/pending', authMiddleware, findAllPending);
+/**
+ * @swagger
+ * /api/solicitud_visualizacion/mago:
+ *  get:
+ *      summary: Devuelve todas las solicitudes de visualizacion disponibles en la Base de Datos que correspondan al mago loggeado
+ *      tags: [Solicitud]
+ *      responses:
+ *          200:
+ *              description: Mago Solicitudes found
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                              $ref: '#/components/schemas/Solicitud'
+ *          500:
+ *              description: Error en el Servidor
+ *          401:
+ *              description: No authenticated user
+ */
 solicitudRouter.get('/mago', authMiddleware, findByMago);
+/**
+ * @swagger
+ * /api/solicitud_visualizacion:
+ *   post:
+ *      summary: Da de alta una nueva Solicitud de visualizacion de hechizo
+ *      tags: [Solicitud]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Solicitud'
+ *      responses:
+ *          201:
+ *              description: Solicitud created
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Solicitud'
+ *          401:
+ *              description: Not authenticated
+ *          404:
+ *              description: Hechizo not found
+ *
+ *          500:
+ *              description: Error en el servidor
+ */
 solicitudRouter.post('/', authMiddleware, sanitizeSolicitudInput, add);
+/**
+ * @swagger
+ * /api/solicitud_visualizacion/grant/{id}:
+ *   put:
+ *     summary: Otorga una solicitud de visualizacion de hechizo, cambiando su estado de <pendiente_revision> a <aprobada>
+ *     tags: [Solicitud]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: El ID de la solicitud a aprobar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Solicitud'
+ *     responses:
+ *       200:
+ *         description: Solicitud granted correctly
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Solicitud'
+ *       500:
+ *         description: There was a problem in granting the Solicitud
+ *       400:
+ *         description: The Solicitud is not pendig revision
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Solicitud not found
+ */
 solicitudRouter.put('/grant/:id', authMiddleware, sanitizeSolicitudInput, grant);
+/**
+ * @swagger
+ * /api/solicitud_visualizacion/reject/{id}:
+ *   put:
+ *     summary: Rechaza una solicitud de visualizacion de hechizo, cambiando su estado de <pendiente_revision> a <rechazada>
+ *     tags: [Solicitud]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: El ID de la solicitud a rechazar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Solicitud'
+ *     responses:
+ *       200:
+ *         description: Solicitud rejected correctly
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Solicitud'
+ *       500:
+ *         description: There was a problem in rejecting the Solicitud
+ *       400:
+ *         description: The Solicitud is not pendig revision
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Solicitud not found
+ */
 solicitudRouter.put('/reject/:id', authMiddleware, sanitizeSolicitudInput, reject);
 //# sourceMappingURL=solicitud.routes.js.map
