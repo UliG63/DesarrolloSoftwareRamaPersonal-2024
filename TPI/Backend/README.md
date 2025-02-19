@@ -26,6 +26,7 @@ git checkout main
 ```
 
 Una vez tenga disponible el repositorio, debera instalar las dependencias de desarrollo, posisionandose con la terminal en el directorio APIReST, y ejecutando:
+
 `pnpm install`
 
 Luego, debera crear un archivo de ambiente llamado **.env.development** dentro de APIReST (a la misma altura que package.json) que contenga la siguiente estructura:
@@ -53,6 +54,8 @@ Si desea una Base de Datos con Datos de prueba, puede encontrar un export en htt
 Recordar que esta API esta basada en Bases de Datos SQL.
 
 Finalmente, para iniciar el servidor que contiene a la API, ejecute:
+
 `pnpm start`
-o
+o:
+
 `pnpm start dev`
