@@ -158,7 +158,6 @@ async function reject(req: AuthRequest, res: Response) {
         // Busca la patente por su ID
         const id = Number.parseInt(req.params.id);
         const patente = await em.findOneOrFail(Patente, { id }, { populate: ['hechizos', 'tipo_hechizo', 'empleado', 'mago', 'etiquetas'] });
-
         if (!patente) {
             return res.status(404).json({ message: 'Patente no encontrada' });
         }
@@ -168,7 +167,7 @@ async function reject(req: AuthRequest, res: Response) {
             return res.status(400).json({ message: 'La patente no está pendiente de revisión' });
         }
 
-        const imageName = patente.imagen; 
+        const imageName = patente.imagen;
         if (imageName) {
             // Construye la ruta correcta al archivo en 'uploads' desde la raíz del proyecto
             const imagePath = path.join(rootPath, imageName);
@@ -183,7 +182,7 @@ async function reject(req: AuthRequest, res: Response) {
                     }
                 });
             });
-        }
+        } 
 
         // Actualiza el estado de la patente a "rechazada", agrega el motivo y el empleado que la rechazó, deslinkea la imagen
         patente.estado = PatenteEstado.RECHAZADA;

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
+import LoadingSpinner from "../components/loadingSpinner/loadingSpinner.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -20,6 +21,12 @@ interface Mago {
     institucion: {
         nombre: string;
     };
+    patentes:[{
+      estado: string;  
+    }];
+    solicitudes:[{
+        estado: string;
+    }]
 }
 
 const MagosPage: React.FC = () => {
@@ -29,12 +36,16 @@ const MagosPage: React.FC = () => {
     const [tipoError, setTipoError] = useState<ErrorTipo | null>(null);
     const [recargaPagina, setRecargaPagina] = useState(false)
     const [modalMessage, setModalMessage] = useState('');
+    const [isDataLoading, setIsDataLoading] = useState(false);
+    
 
     useEffect(() => {
         const fetchMagos = async () => {
+            setIsDataLoading(true);
             try {
                 const response = await axios.get(`${apiUrl}/api/magos`);
                 setMagos(response.data.data);
+                setIsDataLoading(false);
             } catch (err) {
                 setError('Error al cargar los magos');
                 setTipoError(ErrorTipo.HARD_ERROR);
@@ -52,7 +63,9 @@ const MagosPage: React.FC = () => {
         <>
             <Navbar />
             <div className="magos-page">
-                {error ? (
+            {isDataLoading ? (
+                <LoadingSpinner/>
+                ) : error ? (
                     <p>{error}</p>
                 ) : magos.length > 0 ? (
                     <div className="magos-container">
@@ -70,6 +83,19 @@ const MagosPage: React.FC = () => {
                                     <p>Madera: {mago.madera_varita}</p>
                                     <p>Núcleo: {mago.nucleo_varita}</p>
                                     <p>Largo: {mago.largo_varita} cm</p>
+                                </div>
+                                <h6>Informacion de Patentes</h6>
+                                <div className='info-info'>
+                                    <p>Hechizos Patentados: {(mago.patentes.filter(patente => patente.estado === "publicada")).length}</p>
+                                    <p>Total de patentes solicitadas: {mago.patentes.length}</p>
+                                    <p>Patentes rechazadas: {(mago.patentes.filter(patente => patente.estado === "rechazada")).length}</p>
+                                </div>
+                                <h6>Informacion de Visualizacion de Hechizos</h6>
+                                <div className='info-info'>
+                                    <p>Solicitudes de Visualizacion Activas: {(mago.solicitudes.filter(solicitud => solicitud.estado === "aprobada")).length}</p>
+                                    <p>Total de Solicitudes de Visualizacion pedidas: {mago.solicitudes.length}</p>
+                                    <p>Solicitudes de Visualizacion rechazadas: {(mago.solicitudes.filter(solicitud => solicitud.estado === "rechazada")).length}</p>
+                                    <p>Solicitudes de Visualizacion vencidas: {(mago.solicitudes.filter(solicitud => solicitud.estado === "vencida")).length}</p>
                                 </div>
                             </div>
                         ))}

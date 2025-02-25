@@ -46,6 +46,12 @@ form p {
     margin-bottom: 5px;
 }
 
+form label {
+    font-size: 14px;
+    color: #201e1c; 
+    margin-bottom: 5px;
+}
+
 form h3 {
     font-size: 18px;
     margin-bottom: 5px;

@@ -12,6 +12,7 @@ import './patentes.css';
 import Title from "../components/tilte/title.tsx";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
+import LoadingSpinner from "../components/loadingSpinner/loadingSpinner.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -51,11 +52,15 @@ const PatentesEmpleadoPage: React.FC = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [Patente, setPatentes] = useState<Patente[]>([]);
     const { currentUser } = useContext(AuthContext);
+    const [isDataLoading, setIsDataLoading] = useState(false);
+    
 
     const fetchUserPatentes = async () => {
+        setIsDataLoading(true)
         try {
             const response = await axios.get(`${apiUrl}/api/patente/pending`);
             setPatentes(response.data.data);
+            setIsDataLoading(false);
         } catch (error) {
             console.error(error);
             setTipoError(ErrorTipo.HARD_ERROR);
@@ -93,7 +98,9 @@ const PatentesEmpleadoPage: React.FC = () => {
             />
             {/* Mostrar las patentes del usuario en tarjetas */}
             <div className="patentes-container">
-                {Patente.length > 0 ? (
+                {isDataLoading ? (
+                    <LoadingSpinner/>
+                ):Patente.length > 0 ? (
                     Patente.map((patente) => (
                         <div key={patente.id} className="patentes-card">
                              <h3>{patente.nombre}</h3>

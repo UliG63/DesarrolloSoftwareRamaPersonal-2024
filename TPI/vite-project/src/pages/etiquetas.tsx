@@ -8,7 +8,7 @@ import deleteIcon from "../assets/basura.png";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
-
+import LoadingSpinner from "../components/loadingSpinner/loadingSpinner.tsx";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface Etiqueta {
@@ -28,6 +28,7 @@ const EtiquetaPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [currentEtiqueta, setCurrentEtiqueta] = useState<Etiqueta | null>(null);
+    const [isDataLoading, setIsDataLoading] = useState(false);
     const [formData, setFormData] = useState<Etiqueta>({
         id: 0,
         nombre: '',
@@ -36,9 +37,11 @@ const EtiquetaPage: React.FC = () => {
 
     useEffect(() => {
         const fetchEtiquetas = async () => {
+            setIsDataLoading(true);
             try {
                 const response = await axios.get(`${apiUrl}/api/etiqueta`);
                 setEtiquetas(response.data.data);
+                setIsDataLoading(false);
             } catch (err) {
                 setError('No se pudieron recuperar las etiquetas.');
                 setTipoError(ErrorTipo.HARD_ERROR);
@@ -121,7 +124,9 @@ const EtiquetaPage: React.FC = () => {
             <Navbar />
             <FormEtiqueta />
             <div className="etiqueta-page">
-                {error ? (
+            {isDataLoading ? (
+                <LoadingSpinner/>
+                ) : error ? (
                     <p>{error}</p>
                 ) : etiquetas.length > 0 ? (
                     <div className="etiqueta-container">

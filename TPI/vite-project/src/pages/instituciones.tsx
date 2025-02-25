@@ -8,6 +8,7 @@ import deleteIcon from "../assets/basura.png";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
+import LoadingSpinner from "../components/loadingSpinner/loadingSpinner.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -29,6 +30,7 @@ const InstitucionesPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [currentInstitucion, setCurrentInstitucion] = useState<Institucion | null>(null);
+    const [isDataLoading, setIsDataLoading] = useState(false);
     const [formData, setFormData] = useState<Institucion>({
         id: 0,
         nombre: '',
@@ -38,9 +40,11 @@ const InstitucionesPage: React.FC = () => {
 
     useEffect(() => {
         const fetchInstituciones = async () => {
+            setIsDataLoading(true);
             try {
                 const response = await axios.get(`${apiUrl}/api/institucion`);
                 setInstituciones(response.data.data);
+                setIsDataLoading(false)
             } catch (err) {
                 setError('Error al cargar las instituciones');
                 console.error(err);
@@ -126,7 +130,9 @@ const InstitucionesPage: React.FC = () => {
             <Navbar />
             <FormInstitucion />
             <div className="instituciones-page">
-                {error ? (
+            {isDataLoading ? (
+                <LoadingSpinner/>
+                ) : error ? (
                     <p>{error}</p>
                 ) : instituciones.length > 0 ? (
                     <div className="instituciones-container">

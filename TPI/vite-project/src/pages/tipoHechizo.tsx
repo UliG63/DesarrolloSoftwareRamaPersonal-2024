@@ -8,6 +8,7 @@ import deleteIcon from "../assets/basura.png";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import ConfirmationModal from "../components/confirmationModal/confirmationModal.tsx";
+import LoadingSpinner from "../components/loadingSpinner/loadingSpinner.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -28,6 +29,7 @@ const TipoHechizoPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [currentTipoHechizo, setCurrentTipoHechizo] = useState<TipoHechizo | null>(null);
+    const [isDataLoading, setIsDataLoading] = useState(false);
     const [formData, setFormData] = useState<TipoHechizo>({
         id: 0,
         nombre: '',
@@ -36,9 +38,11 @@ const TipoHechizoPage: React.FC = () => {
 
     useEffect(() => {
         const fetchTiposHechizo = async () => {
+            setIsDataLoading(true);
             try {
                 const response = await axios.get(`${apiUrl}/api/tipo_hechizo`);
                 setTiposHechizo(response.data.data);
+                setIsDataLoading(false);
             } catch (err) {
                 setError('Error al cargar los tipos de hechizo.');
                 setTipoError(ErrorTipo.HARD_ERROR);
@@ -122,7 +126,9 @@ const TipoHechizoPage: React.FC = () => {
             <Navbar />
             <FormTipoHechizo />
             <div className="tipoHechizo-page">
-                {error ? (
+                {isDataLoading ? (
+                    <LoadingSpinner/>
+                ): error ? (
                     <p>{error}</p>
                 ) : tiposHechizo.length > 0 ? (
                     <div className="tipoHechizo-container">

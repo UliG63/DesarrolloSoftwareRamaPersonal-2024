@@ -11,6 +11,7 @@ import Title from "../components/tilte/title.tsx";
 import ModalMessage from "../components/modalMessage/modalMessage.tsx";
 import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import Select from 'react-select';
+import LoadingSpinner from '../components/loadingSpinner/loadingSpinner.tsx';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -51,12 +52,16 @@ const PatentesPage: React.FC = () => {
     const { currentUser } = useContext(AuthContext);
     const [selectedFilter, setSelectedFilter] = useState<{ label: string; value: string } | null>({ label: 'Todas', value: '' });
     const [filteredPatentes, setFilteredPatentes] = useState<Patente[]>([]);
+    const [isDataLoading, setIsDataLoading] = useState(false);
+    
 
     const fetchUserPatentes = async () => {
+        setIsDataLoading(true);
         try {
             const response = await axios.get(`${apiUrl}/api/patente/mago`);
             setPatentes(response.data.data);
             setFilteredPatentes(response.data.data); // Inicializa las patentes filtradas con todas las patentes
+            setIsDataLoading(false);
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
             setRecargaPagina(false);
@@ -75,11 +80,13 @@ const PatentesPage: React.FC = () => {
     const filterOptions = [{ label: 'Todas', value: '' }, ...filterBy.map((filtro: string) => ({ label: filtro, value: filtro }))];
 
     const handleFilterChange = () => {
+        setIsDataLoading(true);
         let filtered = Patente;
         if (selectedFilter && selectedFilter.value !== '') {
             filtered = Patente.filter(patente => patente.estado === selectedFilter.value);
         }
         setFilteredPatentes(filtered);
+        setIsDataLoading(false)
     };
 
     useEffect(() => {
@@ -98,6 +105,19 @@ const PatentesPage: React.FC = () => {
                 return '';
         }
     };
+
+const [showSpinner, setShowSpinner] = useState(true);
+
+useEffect(() => {
+  if (isDataLoading) {
+    setShowSpinner(true); // Muestra el spinner cuando empieza a cargar
+  } else {
+    // Lo dejo un rato en pantalla pq sino hace una interaccion rara que piensa que las patentes son un arreglo vacio y muestra el mensaje de error
+    const timeoutId = setTimeout(() => setShowSpinner(false), 100); 
+    return () => clearTimeout(timeoutId);
+  }
+}, [isDataLoading]);
+
 
     return (
         <div>
@@ -120,7 +140,9 @@ const PatentesPage: React.FC = () => {
                 />
             </div>
             <div className="patentes-container">
-                {filteredPatentes.length > 0 ? (
+                {showSpinner  ? (
+                    <LoadingSpinner />
+                ): filteredPatentes.length > 0 ? (
                     filteredPatentes.map((patente) => (
                         <div key={patente.id} className="patentes-card">
                             <h3>{patente.nombre}</h3>
@@ -148,7 +170,7 @@ const PatentesPage: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No hay patentes {selectedFilter?.label || 'registradas'}.</p>
+                    <p>No hay patentes {selectedFilter?.value || 'registradas'}.</p>
                 )}
                 {showModal && (
                     <ModalMessage

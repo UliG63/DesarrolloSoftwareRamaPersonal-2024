@@ -37,20 +37,27 @@ export default function LoginPage() {
   const [institucion, setInstitucion] = useState('');
   const [instituciones, setInstituciones] = useState<Institucion[]>([]);
 
+  const getInstituciones = ()=>{
+    return axios.get(`${apiUrl}/api/institucion`);
+  }
+  
   useEffect(() => {
     const fetchInstituciones = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/institucion`);
+        const response = await getInstituciones();
+        console.log(response);
         // Verifica que 'data' sea un arreglo antes de establecer el estado
         if (Array.isArray(response.data.data)) {
           setInstituciones(response.data.data);
         } else {
+          //setInstituciones([]);
           setTipoError(ErrorTipo.SOFT_ERROR);
           setRecargaPagina(true);
           setModalMessage('La respuesta no contiene un arreglo en data\n'+response.data);
           setShowModal(true);
         }
       } catch (error) {
+        //setInstituciones([]);
         setTipoError(ErrorTipo.HARD_ERROR);
         setRecargaPagina(false);
         setModalMessage('No se pudieron recuperar las Instituciones.\n'+error);
@@ -137,64 +144,68 @@ useEffect(() => {
               <div className='form-row'>
                 <div>
                   <p>Nombre</p>
-                  <input type="text" onChange={(e) => setNombre(e.target.value)} value={nombre} required />
+                  <input type="text" data-testid="input-nombre" onChange={(e) => setNombre(e.target.value)} value={nombre} required />
                 </div>
                 <div>
                   <p>Apellido</p>
-                  <input type="text" onChange={(e) => setApellido(e.target.value)} value={apellido} required />
+                  <input type="text" data-testid="input-apellido" onChange={(e) => setApellido(e.target.value)} value={apellido} required />
                 </div>
               </div>
             )}
             <div>
-              <p>Email</p>
-              <input type="email" onChange={(e) => setEmail(e.target.value)} value={email} required />
+              <label>Email
+              <input type="email" data-testid="input-email" onChange={(e) => setEmail(e.target.value)} value={email} required />
+              </label>
             </div>
             <div>
-              <p>Contraseña</p>
-              <input type="password" onChange={(e) => setPass(e.target.value)} value={pass} required />
+              <label>Contraseña
+              <input type="password" data-testid="input-pass1" onChange={(e) => setPass(e.target.value)} value={pass} required />
+              </label>
             </div>
             {state === 'Registrarse' && (
               <>
                 <div>
-                  <p>Confirmar Contraseña</p>
-                  <input type="password" onChange={(e) => setConfirmPass(e.target.value)} value={confirmPass} required />
+                  <label>Confirmar Contraseña
+                  <input type="password" data-testid="input-pass2" onChange={(e) => setConfirmPass(e.target.value)} value={confirmPass} required />
+                  </label>
                 </div>
                 <div>
                   <p>Profesión</p>
-                  <input type="text" onChange={(e) => setProfesion(e.target.value)} value={profesion} required />
+                  <input type="text" data-testid="input-profesion" onChange={(e) => setProfesion(e.target.value)} value={profesion} required />
                 </div>
                 <div className='form-row-tres'>
                   <div>
                     <p>Madera Varita</p>
-                    <input type="text" onChange={(e) => setMaderaVarita(e.target.value)} value={maderaVarita} required />
+                    <input type="text" data-testid="input-mv" onChange={(e) => setMaderaVarita(e.target.value)} value={maderaVarita} required />
                   </div>
                   <div>
                     <p>Núcleo Varita</p>
-                    <input type="text" onChange={(e) => setNucleoVarita(e.target.value)} value={nucleoVarita} required />
+                    <input type="text" data-testid="input-nv" onChange={(e) => setNucleoVarita(e.target.value)} value={nucleoVarita} required />
                   </div>
                   <div>
                     <p>Largo Varita</p>
-                    <input type="text" onChange={(e) => setLargoVarita(e.target.value)} value={largoVarita} required />
+                    <input type="text" data-testid="input-LV" onChange={(e) => setLargoVarita(e.target.value)} value={largoVarita} required />
                   </div>
                 </div>
                 <div className="form-group">
-                  <p>Institución</p>
-                  <select id="institucion" onChange={(e) => setInstitucion(e.target.value)} value={institucion} required>
+                  <label>Institución
+                  <select id="institucion" onChange={(e) => setInstitucion(e.target.value)} value={institucion} /*required*/>
                     <option value="">Selecciona una institución</option>
                     {instituciones.map((inst) => (
                       <option key={inst.id} value={inst.id}>{inst.nombre}</option>
                     ))}
                   </select>
+                  </label>
                 </div>
               </>
             )}
-            <button type="submit" className='button-login'>{state === 'Registrarse' ? 'Registrarse' : 'Ingresar'}</button>
+            <button type="submit" data-testid="registrarse-button" className='button-login'>{state === 'Registrarse' ? 'Registrarse' : 'Ingresar'}</button>
             {
-              state === 'Registrarse'
-                ? <h6>Ya tienes cuenta? <span onClick={() => setState('Ingresar')}>Ingresar</span></h6>
-                : <h6>No tienes cuenta? <span onClick={() => setState('Registrarse')}>Registrarse</span></h6>
-            }
-          </div>
+                state === 'Registrarse'
+                  ? <h6>Ya tienes cuenta? <span data-testid="ingresar-span" onClick={() => setState('Ingresar')}>Ingresar</span></h6>
+                  : <h6>No tienes cuenta? <span onClick={() => setState('Registrarse')}>Registrarse</span></h6>
+              }
+            </div>
         </form>
       </div>
         {showModal && (

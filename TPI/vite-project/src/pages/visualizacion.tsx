@@ -11,6 +11,7 @@ import FormVisualizacion from "../components/formVisualizacion/formVisualizacion
 import ModalMessage from "../components/modalMessage/modalMessage";
 import { ErrorTipo } from "../components/modalMessage/error.enum";
 import { AuthContext } from '../context/authContext.tsx';
+import LoadingSpinner from '../components/loadingSpinner/loadingSpinner.tsx';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -53,12 +54,16 @@ export default function VisualizacionPage() {
     const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
     const [filteredSolicitudes, setFilteredSolicitudes] = useState<Solicitud[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<{ label: string; value: string } | null>({ label: 'Todas', value: '' });
+    const [isDataLoading, setIsDataLoading] = useState(false);
+
     
     const fetchUserSolicitudes = async () => {
+        setIsDataLoading(true);
         try {
             const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/mago`);
             setSolicitudes(response.data.data);
             setFilteredSolicitudes(response.data.data);
+            setIsDataLoading(false);
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
             setRecargaPagina(false);
@@ -77,11 +82,13 @@ export default function VisualizacionPage() {
     const filterOptions = [{ label: 'Todas', value: '' }, ...filterBy.map((filtro: string) => ({ label: filtro, value: filtro }))];
 
         const handleFilterChange = () => {
+            setIsDataLoading(true);
             let filtered = solicitudes;
             if (selectedFilter && selectedFilter.value !== '') {
                 filtered = solicitudes.filter(solicitudes => solicitudes.estado === selectedFilter.value);
             }
             setFilteredSolicitudes(filtered);
+            setIsDataLoading(false)
         };
     
     useEffect(() => {
@@ -102,6 +109,18 @@ export default function VisualizacionPage() {
                     return '';
             }
         };
+
+        const [showSpinner, setShowSpinner] = useState(true);
+        
+        useEffect(() => {
+          if (isDataLoading) {
+            setShowSpinner(true); // Muestra el spinner cuando empieza a cargar
+          } else {
+            // Lo dejo un rato en pantalla pq sino hace una interaccion rara que piensa que las solicitudes son un arreglo vacio y muestra el mensaje de error
+            const timeoutId = setTimeout(() => setShowSpinner(false), 100); 
+            return () => clearTimeout(timeoutId);
+          }
+        }, [isDataLoading]);
     return (
         <div>
             <Navbar />
@@ -123,7 +142,9 @@ export default function VisualizacionPage() {
                 />
             </div>
             <div className="solicitudes-container">
-                {filteredSolicitudes.length > 0 ? (
+                {showSpinner  ? (
+                    <LoadingSpinner />
+                ): filteredSolicitudes.length > 0 ? (
                     filteredSolicitudes.map((solicitud) => (
                         <div key={solicitud.id} className="solicitud-card">
                             <h3>{solicitud.hechizo.nombre}</h3>
@@ -154,7 +175,7 @@ export default function VisualizacionPage() {
                         </div>
                     ))
                 ):(
-                    <p>No hay solicitudes {selectedFilter?.label || 'registradas'}.</p>)
+                    <p>No hay solicitudes {selectedFilter?.value || 'registradas'}.</p>)
                 }
             </div>
             {showModal && (

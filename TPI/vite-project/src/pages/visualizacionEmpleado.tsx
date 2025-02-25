@@ -12,6 +12,7 @@ import { ErrorTipo } from "../components/modalMessage/error.enum.tsx";
 import FormVisualizacionRechaza from "../components/formVisualizacionRechaza/formVisualizacionRechaza.tsx";
 import Footer from "../components/footer/footer";
 import FormVisualizacionAcepta from "../components/formVisualizacionAcepta/formVisualizacionAcepta.tsx";
+import LoadingSpinner from "../components/loadingSpinner/loadingSpinner.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -52,11 +53,15 @@ const VisualizacionEmpleadoPage: React.FC = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
     const { currentUser } = useContext(AuthContext);
+    const [isDataLoading, setIsDataLoading] = useState(false);
+    
 
     const fetchUserSolicitudes = async () => {
+        setIsDataLoading(true);
         try {
             const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/pending`);
             setSolicitudes(response.data.data);
+            setIsDataLoading(false);
         } catch (error) {
             console.error(error);
             setTipoError(ErrorTipo.HARD_ERROR);
@@ -82,7 +87,9 @@ const VisualizacionEmpleadoPage: React.FC = () => {
             />
             <Title encabezado='' title='Solicitudes Pendientes' subTitle='' />
             <div className="solicitudes-container">
-                {solicitudes.length > 0 ? (
+                {isDataLoading ? (
+                    <LoadingSpinner/>
+                ): solicitudes.length > 0 ? (
                     solicitudes.map((solicitud) => (
                         <div key={solicitud.id} className="patentes-card">
                             <h3>{solicitud.hechizo.nombre}</h3>

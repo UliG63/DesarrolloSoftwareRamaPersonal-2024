@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ModalMessage from '../modalMessage/modalMessage';
 import { ErrorTipo } from '../modalMessage/error.enum.tsx';
+import LoadingSpinner from '../loadingSpinner/loadingSpinner.tsx';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -23,6 +24,7 @@ const ListadoMagos: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [currentMago, setCurrentMago] = useState<Mago | null>(null);
+    const [isDataLoading, setIsDataLoading] = useState(false);
     const [formData, setFormData] = useState<Mago>({
         id: 0,
         nombre: '',
@@ -33,9 +35,11 @@ const ListadoMagos: React.FC = () => {
 
     useEffect(() => {
         const fetchMagos = async () => {
+            setIsDataLoading(true);
             try {
                 const response = await axios.get(`${apiUrl}/api/magos`);
                 setMagos(response.data.data);
+                setIsDataLoading(false);
             } catch (err) {
                 setError('Error al cargar los magos.');
                 console.error(err);
@@ -82,7 +86,9 @@ const ListadoMagos: React.FC = () => {
 
     return (
         <div className="list-magos-page">
-            {error ? (
+            {isDataLoading ?(
+                <LoadingSpinner/>
+            ):error ? (
                 <p>{error}</p>
             ) : magos.length > 0 ? (
                 <div className="list-magos-container">

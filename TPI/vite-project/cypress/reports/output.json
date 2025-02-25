@@ -1,0 +1,16 @@
+{
+    "cypress/e2e/test-login-ete.cy.ts": {
+      "visita la pagina de registro de usuario": "passed",
+      "navega a la pagina de login": "passed",
+      "ingresa como usuario": "passed",
+      "rechaza el login": "passed"
+    },
+    "totals": {
+      "suites": 0,
+      "tests": 4,
+      "failed": 0,
+      "passed": 4,
+      "pending": 0,
+      "skipped": 0
+    }
+  }
