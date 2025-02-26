@@ -9,7 +9,7 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    //"emitDeclarationOnly": true,
+    "emitDeclarationOnly": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
