@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2023"],
@@ -11,7 +12,7 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    //"noEmit": true,
+    "noEmit": true,
 
     /* Linting */
     "strict": true,
