@@ -73,9 +73,14 @@ export const login = [
       //cookie HttpOnly con el token
       //eltoken NO se envía en el cuerpo
       res.cookie("accessToken", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        //Descomentar las siguientes lineas para develop
+          //httpOnly: true,
+          //secure: process.env.NODE_ENV === 'production',
+          //sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        //Descomentar las siguientes lineas para deploy
+          httpOnly: true,   // Protege contra ataques XSS
+          secure: true,     // Requiere HTTPS
+          sameSite: "none", // Permite cookies cross-site
         maxAge: 3600000 // 1 hora
       }).status(200).json({ user: userData });
     } catch (err) {
