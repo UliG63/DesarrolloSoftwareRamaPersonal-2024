@@ -59,11 +59,23 @@ const MagosPage: React.FC = () => {
         fetchMagos();
     }, []);
 
+    const [showSpinner, setShowSpinner] = useState(true);
+    
+    useEffect(() => {
+      if (isDataLoading) {
+        setShowSpinner(true); // Muestra el spinner cuando empieza a cargar
+      } else {
+        // Lo dejo un rato en pantalla pq sino hace una interaccion rara que piensa que las patentes son un arreglo vacio y muestra el mensaje de error
+        const timeoutId = setTimeout(() => setShowSpinner(false), 3000); 
+        return () => clearTimeout(timeoutId);
+      }
+    }, [isDataLoading]);
+
     return (
         <>
             <Navbar />
             <div className="magos-page">
-            {isDataLoading ? (
+            {showSpinner ? (
                 <LoadingSpinner/>
                 ) : error ? (
                     <p>{error}</p>
