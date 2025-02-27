@@ -109,7 +109,7 @@ export default function VisualizacionPage() {
                     return '';
             }
         };
-
+/*  Descomentar en caso de que isDataLoading no funcione
         const [showSpinner, setShowSpinner] = useState(true);
         
         useEffect(() => {
@@ -117,10 +117,12 @@ export default function VisualizacionPage() {
             setShowSpinner(true); // Muestra el spinner cuando empieza a cargar
           } else {
             // Lo dejo un rato en pantalla pq sino hace una interaccion rara que piensa que las solicitudes son un arreglo vacio y muestra el mensaje de error
-            const timeoutId = setTimeout(() => setShowSpinner(false), 1000); 
+            const timeoutId = setTimeout(() => setShowSpinner(false), 100); 
             return () => clearTimeout(timeoutId);
           }
         }, [isDataLoading]);
+
+*/
     return (
         <div>
             <Navbar />
@@ -142,7 +144,7 @@ export default function VisualizacionPage() {
                 />
             </div>
             <div className="solicitudes-container">
-                {showSpinner  ? (
+                {isDataLoading  ? (
                     <LoadingSpinner />
                 ): filteredSolicitudes.length > 0 ? (
                     filteredSolicitudes.map((solicitud) => (

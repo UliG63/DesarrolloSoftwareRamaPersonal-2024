@@ -77,18 +77,6 @@ const VisualizacionEmpleadoPage: React.FC = () => {
         }
     }, [currentUser]);
 
-    const [showSpinner, setShowSpinner] = useState(true);
-    
-    useEffect(() => {
-      if (isDataLoading) {
-        setShowSpinner(true); // Muestra el spinner cuando empieza a cargar
-      } else {
-        // Lo dejo un rato en pantalla pq sino hace una interaccion rara que piensa que las patentes son un arreglo vacio y muestra el mensaje de error
-        const timeoutId = setTimeout(() => setShowSpinner(false), 1000); 
-        return () => clearTimeout(timeoutId);
-      }
-    }, [isDataLoading]);
-
     return (
         <div>
             <Navbar />
@@ -99,7 +87,7 @@ const VisualizacionEmpleadoPage: React.FC = () => {
             />
             <Title encabezado='' title='Solicitudes Pendientes' subTitle='' />
             <div className="solicitudes-container">
-                {showSpinner ? (
+                {isDataLoading ? (
                     <LoadingSpinner/>
                 ): solicitudes.length > 0 ? (
                     solicitudes.map((solicitud) => (

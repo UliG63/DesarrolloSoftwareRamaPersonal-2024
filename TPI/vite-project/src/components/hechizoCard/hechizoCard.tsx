@@ -192,16 +192,19 @@ const HechizoCard: React.FC = () => {
     return imageURL
   };
 
+/*Descomentar en caso de que el isDataLoading no funcione
   const [showSpinner, setShowSpinner] = useState(true);
   useEffect(() => {
     if (isDataLoading) {
       setShowSpinner(true); // Muestra el spinner cuando empieza a cargar
     } else {
       // Lo dejo un rato en pantalla pq sino hace una interaccion rara que piensa que los hechizos son un arreglo vacio y muestra el mensaje de error
-      const timeoutId = setTimeout(() => setShowSpinner(false), 1000); 
+      const timeoutId = setTimeout(() => setShowSpinner(false), 100); 
       return () => clearTimeout(timeoutId);
     }
   }, [isDataLoading]);
+*/
+
 
 return (
   <div className='hechizos-cards-container'>
@@ -237,7 +240,7 @@ return (
     </div>
 
     <div className='hechizos-cards' id='hechizos-cards'>
-      {showSpinner ? (
+      {isDataLoading ? (
         <div
         style={{
           position: 'relative',
