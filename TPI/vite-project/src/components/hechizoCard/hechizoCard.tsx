@@ -208,7 +208,7 @@ const HechizoCard: React.FC = () => {
 //Agrega un pequeño delay para que no se muestre el mensaje de 'no se encontraron hechizos' y si se muestre la rueda de carga mientras realiza la busqueda
 useEffect(() => {
   if (filteredHechizos.length === 0 && !isDataLoading) {
-    const timeoutId = setTimeout(() => setShowEmptyMessage(true), 300); // Delay de 300ms
+    const timeoutId = setTimeout(() => setShowEmptyMessage(true), 1000); // Delay de 1000ms
     return () => clearTimeout(timeoutId); // Limpia el timeout si cambia el estado antes de que se ejecute
   } else {
     setShowEmptyMessage(false); // Oculta el mensaje si hay resultados o está cargando
