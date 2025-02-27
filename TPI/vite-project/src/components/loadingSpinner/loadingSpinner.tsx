@@ -6,7 +6,7 @@ const LoadingSpinner = () => {
             <RotatingLines
                 strokeColor="#7f4e2b"
                 strokeWidth="5"
-                animationDuration="0.75"
+                animationDuration="0.90"
                 width="96"
                 visible={true}
             />
