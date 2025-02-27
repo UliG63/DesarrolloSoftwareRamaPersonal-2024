@@ -58,6 +58,7 @@ const HechizoCard: React.FC = () => {
   const [recargaPagina, setRecargaPagina] = useState(false)
   const [modalMessage, setModalMessage] = useState('');
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [showEmptyMessage, setShowEmptyMessage] = useState(false);
 
 
   
@@ -204,7 +205,15 @@ const HechizoCard: React.FC = () => {
     }
   }, [isDataLoading]);
 */
-
+//Agrega un pequeño delay para que no se muestre el mensaje de 'no se encontraron hechizos' y si se muestre la rueda de carga mientras realiza la busqueda
+useEffect(() => {
+  if (filteredHechizos.length === 0 && !isDataLoading) {
+    const timeoutId = setTimeout(() => setShowEmptyMessage(true), 300); // Delay de 300ms
+    return () => clearTimeout(timeoutId); // Limpia el timeout si cambia el estado antes de que se ejecute
+  } else {
+    setShowEmptyMessage(false); // Oculta el mensaje si hay resultados o está cargando
+  }
+}, [filteredHechizos, isDataLoading]);
 
 return (
   <div className='hechizos-cards-container'>
@@ -254,9 +263,10 @@ return (
       </div>
       ) : error ? (
         <div className="error-message">{error}</div>
-       ) : filteredHechizos.length === 0 ? (
+       ) : showEmptyMessage ? (
         <div className="empty-message">No se encontraron hechizos.</div> 
       ) : (
+          // Renderizar los hechizos normalmente
         filteredHechizos.map((hechizo) => (
           <div key={hechizo.id} className='hechizo-card'>
             <div className='image-container'>
