@@ -58,7 +58,7 @@ const HechizoCard: React.FC = () => {
   const [recargaPagina, setRecargaPagina] = useState(false)
   const [modalMessage, setModalMessage] = useState('');
   const [isDataLoading, setIsDataLoading] = useState(false);
-  const [showEmptyMessage, setShowEmptyMessage] = useState(false);
+  //const [showEmptyMessage, setShowEmptyMessage] = useState(false);
 
 
   
@@ -100,7 +100,7 @@ const HechizoCard: React.FC = () => {
       const response = await axios.get(`${apiUrl}/api/hechizo/permitidos`);
       const idsPermitidos = new Set(response.data.data.map((h: { id: number }) => h.id)); 
       setHechizosPermitidos(idsPermitidos);
-      setIsDataLoading(false);
+      //setIsDataLoading(false);
     } catch (error) {
       console.error("Error al recuperar hechizos permitidos", error);
       setHechizosPermitidos(new Set()); // Para no romper todo
@@ -109,6 +109,9 @@ const HechizoCard: React.FC = () => {
       setRecargaPagina(false);
       setModalMessage('No se pudieron recuperar los hechizos permitidos para el usuario');
       setShowModal(true);
+    }
+    finally {
+        setTimeout(() => setIsDataLoading(false), 1500); // ⏳ Delay antes de desactivar el loading
     }
   };
   useEffect(() => {
@@ -127,11 +130,13 @@ const HechizoCard: React.FC = () => {
         hechizo.nombre.toLowerCase().includes(query) || hechizo.descripcion.toLowerCase().includes(query)
       );
       setFilteredHechizos(filteredResults);
-      setIsDataLoading(false)
+      //setIsDataLoading(false)
     } else {
       setFilteredHechizos(hechizos); // Si no hay búsqueda, mostrar todos los hechizos
-      setIsDataLoading(false);
+      //setIsDataLoading(false);
     }
+    setTimeout(() => setIsDataLoading(false), 1500); // ⏳ Delay antes de desactivar el loading
+
   };
 
   // Manejar la búsqueda cuando presionamos "Enter"
@@ -181,7 +186,8 @@ const HechizoCard: React.FC = () => {
     }
 
     setFilteredHechizos(filtered);
-    setIsDataLoading(false);
+    //setIsDataLoading(false);
+    setTimeout(() => setIsDataLoading(false), 1500);
   };
 
   useEffect(() => {
@@ -208,7 +214,7 @@ const HechizoCard: React.FC = () => {
 */
 
 //Agrega un pequeño delay para que no se muestre el mensaje de 'no se encontraron hechizos' y si se muestre la rueda de carga mientras realiza la busqueda
-useEffect(() => {
+/*useEffect(() => {
   if (filteredHechizos.length === 0 && !isDataLoading) {
     setIsDataLoading(true) //Lo fuerzo a true para que se muestre durante el retraso para el renderizado.
     const timeoutId = setTimeout(() => setShowEmptyMessage(true), 1500); // Delay de 1500ms
@@ -218,7 +224,7 @@ useEffect(() => {
     setShowEmptyMessage(false); // Oculta el mensaje si hay resultados o está cargando
   }
 }, [filteredHechizos, isDataLoading]);
-
+*/
 return (
   <div className='hechizos-cards-container'>
     <div className="search-container">
@@ -265,11 +271,11 @@ return (
       >
         <LoadingSpinner />
       </div>
-      ) : error ? (
+        ) : error ? (
         <div className="error-message">{error}</div>
-       ) : showEmptyMessage ? (
+       ) : filteredHechizos.length === 0 ? (
         <div className="empty-message">No se encontraron hechizos.</div> 
-      ) : (
+      )  : (
           // Renderizar los hechizos normalmente
         filteredHechizos.map((hechizo) => (
           <div key={hechizo.id} className='hechizo-card'>
