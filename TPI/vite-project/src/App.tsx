@@ -15,7 +15,6 @@ import EtiquetasPage from './pages/etiquetas';
 import TipoHechizoPage from './pages/tipoHechizo';
 import { AuthContextProvider, AuthContext } from './context/authContext';
 import MagosEmpleado from './pages/magosEmpleado';
-import './styles.css'; // Asegura que los estilos están importados en la raíz
 
 // Verifica la autenticación, el rol y selecciona la página según el rol
 const ProtectedRoute: React.FC<{ children: React.ReactNode; empleadoPage?: React.ReactNode; isEmpleadoOnly?: boolean }> = ({ children, empleadoPage, isEmpleadoOnly }) => {
