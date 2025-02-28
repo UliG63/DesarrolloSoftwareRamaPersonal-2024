@@ -111,7 +111,7 @@ const HechizoCard: React.FC = () => {
       setShowModal(true);
     }
     finally {
-        setTimeout(() => setIsDataLoading(false), 1500); // ⏳ Delay antes de desactivar el loading
+        setTimeout(() => setIsDataLoading(false), 1800); // Delay antes de desactivar el loading
     }
   };
   useEffect(() => {
@@ -135,7 +135,7 @@ const HechizoCard: React.FC = () => {
       setFilteredHechizos(hechizos); // Si no hay búsqueda, mostrar todos los hechizos
       //setIsDataLoading(false);
     }
-    setTimeout(() => setIsDataLoading(false), 1500); // ⏳ Delay antes de desactivar el loading
+    setTimeout(() => setIsDataLoading(false), 1800); //  Delay antes de desactivar el loading
 
   };
 
@@ -187,7 +187,7 @@ const HechizoCard: React.FC = () => {
 
     setFilteredHechizos(filtered);
     //setIsDataLoading(false);
-    setTimeout(() => setIsDataLoading(false), 1500);
+    setTimeout(() => setIsDataLoading(false), 1800);
   };
 
   useEffect(() => {
