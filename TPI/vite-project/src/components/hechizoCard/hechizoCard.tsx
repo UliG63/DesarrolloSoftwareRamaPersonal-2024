@@ -78,6 +78,7 @@ const HechizoCard: React.FC = () => {
       setFilteredHechizos(data);
       setError(null);
     } catch (error) {
+      console.error("Error al recuperar todos los hechizos", error);
       setError('No se pudieron recuperar los hechizos');
       setHechizos([]);
       setFilteredHechizos([]);
@@ -205,9 +206,11 @@ const HechizoCard: React.FC = () => {
     }
   }, [isDataLoading]);
 */
+
 //Agrega un pequeño delay para que no se muestre el mensaje de 'no se encontraron hechizos' y si se muestre la rueda de carga mientras realiza la busqueda
 useEffect(() => {
   if (filteredHechizos.length === 0 && !isDataLoading) {
+    setIsDataLoading(true) //Lo fuerzo a true para que se muestre durante el retraso para el renderizado.
     const timeoutId = setTimeout(() => setShowEmptyMessage(true), 1000); // Delay de 1000ms
     return () => clearTimeout(timeoutId); // Limpia el timeout si cambia el estado antes de que se ejecute
   } else {
@@ -250,7 +253,7 @@ return (
 
     <div className='hechizos-cards' id='hechizos-cards'>
       {isDataLoading ? (
-        <div
+        /*<div
         style={{
           position: 'relative',
           top: '100%',
@@ -258,9 +261,9 @@ return (
           transform: 'translate(-50%, -50%)',
           zIndex: 9999
         }}
-      >
+      >*/
         <LoadingSpinner />
-      </div>
+      //</div>
       ) : error ? (
         <div className="error-message">{error}</div>
        ) : showEmptyMessage ? (
