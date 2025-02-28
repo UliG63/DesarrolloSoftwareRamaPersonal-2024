@@ -40,6 +40,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; empleadoPage?: React
 };
 
 const App: React.FC = () => {
+  //Logica para asegurarme de que se carguen los estilos antes del renderizado
   const [isStylesLoaded, setIsStylesLoaded] = useState(false);
 
   useEffect(() => {

@@ -61,13 +61,16 @@ const PatentesPage: React.FC = () => {
             const response = await axios.get(`${apiUrl}/api/patente/mago`);
             setPatentes(response.data.data);
             setFilteredPatentes(response.data.data); // Inicializa las patentes filtradas con todas las patentes
-            setIsDataLoading(false);
+            //setIsDataLoading(false);
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
             setRecargaPagina(false);
             setModalMessage('No se pudieron recuperar las Patentes del Usuario\n' + error);
             setShowModal(true);
         }
+        finally {
+        setTimeout(() => setIsDataLoading(false), 1500); // Delay antes de desactivar el loading
+    }
     };
 
     useEffect(() => {
@@ -86,7 +89,7 @@ const PatentesPage: React.FC = () => {
             filtered = Patente.filter(patente => patente.estado === selectedFilter.value);
         }
         setFilteredPatentes(filtered);
-        setIsDataLoading(false)
+        setTimeout(() => setIsDataLoading(false), 1500); // Delay antes de desactivar el loading
     };
 
     useEffect(() => {
@@ -105,7 +108,7 @@ const PatentesPage: React.FC = () => {
                 return '';
         }
     };
-
+/*
 const [showSpinner, setShowSpinner] = useState(true);
 
 useEffect(() => {
@@ -117,7 +120,7 @@ useEffect(() => {
     return () => clearTimeout(timeoutId);
   }
 }, [isDataLoading]);
-
+*/
 
     return (
         <div>
@@ -140,7 +143,7 @@ useEffect(() => {
                 />
             </div>
             <div className="patentes-container">
-                {showSpinner  ? (
+                {isDataLoading  ? (
                     <LoadingSpinner />
                 ): filteredPatentes.length > 0 ? (
                     filteredPatentes.map((patente) => (
