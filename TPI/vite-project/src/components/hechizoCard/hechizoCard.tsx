@@ -211,7 +211,8 @@ const HechizoCard: React.FC = () => {
 useEffect(() => {
   if (filteredHechizos.length === 0 && !isDataLoading) {
     setIsDataLoading(true) //Lo fuerzo a true para que se muestre durante el retraso para el renderizado.
-    const timeoutId = setTimeout(() => setShowEmptyMessage(true), 1000); // Delay de 1000ms
+    const timeoutId = setTimeout(() => setShowEmptyMessage(true), 1500); // Delay de 1500ms
+     setIsDataLoading(false)
     return () => clearTimeout(timeoutId); // Limpia el timeout si cambia el estado antes de que se ejecute
   } else {
     setShowEmptyMessage(false); // Oculta el mensaje si hay resultados o está cargando
@@ -253,7 +254,7 @@ return (
 
     <div className='hechizos-cards' id='hechizos-cards'>
       {isDataLoading ? (
-        /*<div
+        <div
         style={{
           position: 'relative',
           top: '100%',
@@ -261,9 +262,9 @@ return (
           transform: 'translate(-50%, -50%)',
           zIndex: 9999
         }}
-      >*/
+      >
         <LoadingSpinner />
-      //</div>
+      </div>
       ) : error ? (
         <div className="error-message">{error}</div>
        ) : showEmptyMessage ? (
