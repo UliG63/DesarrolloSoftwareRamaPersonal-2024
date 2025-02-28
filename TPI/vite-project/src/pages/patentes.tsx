@@ -70,7 +70,7 @@ const PatentesPage: React.FC = () => {
         }
         finally {
         setTimeout(() => setIsDataLoading(false), 1500); // Delay antes de desactivar el loading
-    }
+        }
     };
 
     useEffect(() => {

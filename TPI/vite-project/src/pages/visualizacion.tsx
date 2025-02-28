@@ -63,12 +63,15 @@ export default function VisualizacionPage() {
             const response = await axios.get(`${apiUrl}/api/solicitud_visualizacion/mago`);
             setSolicitudes(response.data.data);
             setFilteredSolicitudes(response.data.data);
-            setIsDataLoading(false);
+            //setIsDataLoading(false);
         } catch (error) {
             setTipoError(ErrorTipo.HARD_ERROR);
             setRecargaPagina(false);
             setModalMessage('No se pudieron recuperar las Patentes del Usuario\n' + error);
             setShowModal(true);
+        }
+        finally {
+        setTimeout(() => setIsDataLoading(false), 1500); // Delay antes de desactivar el loading
         }
     }
 
@@ -88,7 +91,7 @@ export default function VisualizacionPage() {
                 filtered = solicitudes.filter(solicitudes => solicitudes.estado === selectedFilter.value);
             }
             setFilteredSolicitudes(filtered);
-            setIsDataLoading(false)
+            setTimeout(() => setIsDataLoading(false), 1500); // Delay antes de desactivar el loading
         };
     
     useEffect(() => {
@@ -109,20 +112,7 @@ export default function VisualizacionPage() {
                     return '';
             }
         };
-/*  Descomentar en caso de que isDataLoading no funcione
-        const [showSpinner, setShowSpinner] = useState(true);
         
-        useEffect(() => {
-          if (isDataLoading) {
-            setShowSpinner(true); // Muestra el spinner cuando empieza a cargar
-          } else {
-            // Lo dejo un rato en pantalla pq sino hace una interaccion rara que piensa que las solicitudes son un arreglo vacio y muestra el mensaje de error
-            const timeoutId = setTimeout(() => setShowSpinner(false), 100); 
-            return () => clearTimeout(timeoutId);
-          }
-        }, [isDataLoading]);
-
-*/
     return (
         <div>
             <Navbar />
