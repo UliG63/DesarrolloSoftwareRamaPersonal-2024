@@ -76,7 +76,7 @@ app.use((_, res) => {
   return res.status(404).send({ message: 'Resource not found' });
 });
 
-//await syncSchema(); //solo en development
+await syncSchema(); //solo en development
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
